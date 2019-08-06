@@ -117,7 +117,7 @@ contract Webaverse is ERC721Metadata {
     _owners.push(msg.sender);
   }
   
-  function _isOwner(address addr) internal view returns (bool) {
+  function isOwner(address addr) internal view returns (bool) {
     for (uint i = 0; i < _owners.length; i++) {
       if (_owners[i] == addr) {
         return true;
@@ -127,12 +127,12 @@ contract Webaverse is ERC721Metadata {
   }
   
   function addOwner(address newOwner) public {
-    require(_isOwner(msg.sender) && !_isOwner(newOwner));
+    require(isOwner(msg.sender) && !isOwner(newOwner));
     _owners.push(newOwner);
   }
   
   function removeOwner(address oldOwner) external {
-    require(_isOwner(msg.sender) && _isOwner(oldOwner));
+    require(isOwner(msg.sender) && isOwner(oldOwner));
     address[] memory newOwners = new address[](_owners.length - 1);
     uint j = 0;
     for (uint i = 0; i < _owners.length; i++) {
@@ -270,7 +270,7 @@ contract Webaverse is ERC721Metadata {
   /*** OTHER EXTERNAL FUNCTIONS ***/
 
   function mintToken(address addr, int x, int y) external returns (uint256) {
-    require(_isOwner(msg.sender));
+    require(isOwner(msg.sender));
     uint256 tokenId = tokenCoordsToId[x][y];
     require(tokenId == 0);
     return _mint(addr, x, y);
@@ -323,7 +323,7 @@ contract Webaverse is ERC721Metadata {
   }
 }
 
-interface ERC20 {
+/* interface ERC20 {
     function totalSupply() external view returns (uint);
     function balanceOf(address tokenOwner) external view returns (uint balance);
     function allowance(address tokenOwner, address spender) external view returns (uint remaining);
@@ -464,7 +464,7 @@ contract Webagen is ERC20 {
       addressToSubscriptionIds[addr].push(subscriptionId);
     }
     
-    /* function unsubscribe(address addr) external {
+    function unsubscribe(address addr) external {
       require(_isOwner(msg.sender));
 
       uint256[] storage _subscriptionIds = addressToSubscriptionIds[addr];
@@ -477,7 +477,7 @@ contract Webagen is ERC20 {
           subscription.done = true;
         }
       }
-    } */
+    }
   
     function _getCurrentAddressBalance(address addr) internal view returns (uint256) {
       uint result = balances[addr];
@@ -538,7 +538,7 @@ contract Webagen is ERC20 {
 
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
-}
+} */
 
 contract Webascene {
     struct Scene {
@@ -546,16 +546,49 @@ contract Webascene {
       int256[] coords;
       bytes apps;
     }
-    
+
+    address[] public _owners;
     uint256 public sceneIds = 0;
     mapping (uint256 => Scene) public scenes;
     mapping (uint256 => uint256) public tokenIdToSceneId;
     mapping (int256 => mapping (int256 => uint256)) public coordsToSceneId;
-    
+    uint256 tokenPrice = 5000000000000000; // 0.005 * 10e8 ETH = $1
     Webaverse webaverse;
-    
+
     constructor(address addr) public {
-        webaverse = Webaverse(addr);
+      webaverse = Webaverse(addr);
+      _owners.push(msg.sender);
+    }
+    
+    function isOwner(address addr) internal view returns (bool) {
+      for (uint i = 0; i < _owners.length; i++) {
+        if (_owners[i] == addr) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    function addOwner(address newOwner) external {
+      require(isOwner(msg.sender) && !isOwner(newOwner));
+      _owners.push(newOwner);
+    }
+
+    function removeOwner(address oldOwner) external {
+      require(isOwner(msg.sender) && isOwner(oldOwner));
+      address[] memory newOwners = new address[](_owners.length - 1);
+      uint j = 0;
+      for (uint i = 0; i < _owners.length; i++) {
+        if (_owners[i] != oldOwner) {
+          newOwners[j++] = _owners[i];
+        }
+      }
+      _owners = newOwners;
+    }
+    
+    function setTokenPrice(uint256 newPrice) external {
+      require(isOwner(msg.sender));
+      tokenPrice = newPrice;
     }
     
     function getSceneById(uint256 _sceneId) external view returns (uint256 id, int256[] memory coords, bytes memory apps) {
@@ -575,7 +608,13 @@ contract Webascene {
       apps = scene.apps;
     }
     
-    function setScene(int256[] calldata coords, bytes calldata apps) external {
+    function ensurePayment() internal {
+      require(msg.value >= tokenPrice);
+    }
+    
+    function setScene(int256[] calldata coords, bytes calldata apps) external payable {
+      ensurePayment();
+
       require((coords.length % 2) == 0);
       for (uint i = 0; i < coords.length; i += 2) {
         for (uint j = i+2; j < coords.length; j += 2) {
@@ -612,7 +651,9 @@ contract Webascene {
       });
     }
     
-    function setSceneApps(uint256 sceneId, bytes calldata apps) external {
+    function setSceneApps(uint256 sceneId, bytes calldata apps) external payable {
+      ensurePayment();
+        
       Scene storage scene = scenes[sceneId];
       for (uint i = 0; i < scene.coords.length; i += 2) {
         int256 x = scene.coords[i];
@@ -624,5 +665,22 @@ contract Webascene {
         require(owner == msg.sender);
       }
       scene.apps = apps;
+    }
+    
+    function buyToken(int x, int y, bytes calldata apps) external payable {
+      ensurePayment();
+      
+      uint tokenId = webaverse.mintToken(msg.sender, x, y);
+      uint sceneId = ++sceneIds;
+      tokenIdToSceneId[tokenId] = sceneId;
+      coordsToSceneId[x][y] = sceneId;
+      int256[] memory coords = new int256[](2);
+      coords[0] = x;
+      coords[1] = y;
+      scenes[sceneId] = Scene({
+        id: sceneId,
+        coords: coords,
+        apps: apps
+      });
     }
 }
