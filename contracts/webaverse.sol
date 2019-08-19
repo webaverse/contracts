@@ -66,7 +66,7 @@ contract Webaverse is ERC721Metadata {
     return "WEBV";
   }
   function tokenURI(uint256 tokenId) external view returns (string memory) {
-    return strConcat('https://webaverse.com/t/', uint2str(tokenId));
+    return strConcat('https://token.webaverse.com/', uint2str(tokenId));
   }
 
   bytes4 constant InterfaceID_ERC165 =
@@ -89,6 +89,7 @@ contract Webaverse is ERC721Metadata {
   struct Token {
     uint256 id;
     string name;
+    string url;
   } 
   struct TokenOwnership {
     uint256 tokenId;
@@ -98,7 +99,8 @@ contract Webaverse is ERC721Metadata {
   /*** STORAGE ***/
 
   address[] public _owners;
-  uint256 public tokenIds = 0;
+  // uint256 public tokenIds = 0;
+  uint256 public numTokens = 0;
   mapping (uint256 => Token) public tokens;
   mapping (string => uint256) public tokenNameToIndex;
   mapping (uint256 => address) public tokenIndexToOwner;
@@ -155,13 +157,15 @@ contract Webaverse is ERC721Metadata {
     emit Approval(tokenIndexToOwner[_tokenId], tokenIndexToApproved[_tokenId], _tokenId);
   }
 
-  function _mint(address owner, string memory _name) internal returns (uint256) {
-    uint tokenId = ++tokenIds;
+  function _mint(uint256 tokenId, address owner, string memory _name, string memory url) internal returns (uint256) {
+    // uint tokenId = ++tokenIds;
     tokens[tokenId] = Token({
       id: tokenId,
-      name: _name
+      name: _name,
+      url: url
     });
     tokenNameToIndex[_name] = tokenId;
+    numTokens++;
 
     // Mint(_owner, tokenId);
 
@@ -199,7 +203,8 @@ contract Webaverse is ERC721Metadata {
   }
 
   function totalSupply() public view returns (uint256) {
-    return tokenIds;
+    // return tokenIds;
+    return numTokens;
   }
 
   function balanceOf(address owner) public view returns (uint256) {
@@ -265,11 +270,11 @@ contract Webaverse is ERC721Metadata {
 
   /*** OTHER EXTERNAL FUNCTIONS ***/
 
-  function mintToken(address addr, string calldata _name) external {
+  function mintToken(uint256 tokenId, address addr, string calldata _name, string calldata url) external {
     require(isOwner(msg.sender));
-    uint256 tokenId = tokenNameToIndex[_name];
-    require(tokenId == 0);
-    _mint(addr, _name);
+    // require((tokenIds+1) == tokenId);
+    require(tokenNameToIndex[_name] == 0);
+    _mint(tokenId, addr, _name, url);
   }
   
   function renameToken(uint256 tokenId, string calldata _name) external {
@@ -281,16 +286,22 @@ contract Webaverse is ERC721Metadata {
     token.name = _name;
     tokenNameToIndex[token.name] = tokenId;
   }
+  
+  function setTokenUrl(uint256 tokenId, string calldata url) external {
+    require(tokenIndexToOwner[tokenId] == msg.sender);
+    tokens[tokenId].url = url;
+  }
 
-  function getTokenById(uint256 _tokenId) external view returns (address owner, uint256 id, string memory _name) {
+  function getTokenById(uint256 _tokenId) external view returns (address owner, uint256 id, string memory _name, string memory url) {
     Token storage token = tokens[_tokenId];
 
     owner = tokenIndexToOwner[_tokenId];
     id = token.id;
     _name = token.name;
+    url = token.url;
   }
   
-  function getTokenByName(string calldata _name) external view returns (address owner, uint256 id, string memory _name2) {
+  function getTokenByName(string calldata _name) external view returns (address owner, uint256 id, string memory _name2, string memory url) {
     id = tokenNameToIndex[_name];
     if (id != 0) {
         Token storage token = tokens[id];
@@ -298,10 +309,12 @@ contract Webaverse is ERC721Metadata {
         owner = tokenIndexToOwner[id];
         id = token.id;
         _name2 = token.name;
+        url = token.url;
     } else {
       owner = address(0);
       id = id;
       _name2 = "";
+      url = "";
     }
   }
 }
