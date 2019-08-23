@@ -231,15 +231,15 @@ contract Webaverse is ERC721Metadata {
   }
 
   function transfer(address _to, uint256 _tokenId) external {
-    require(_to != address(0));
+    // require(_to != address(0));
     // require(_to != address(this));
-    require(_owns(msg.sender, _tokenId));
+    require(_owns(msg.sender, _tokenId) || _approvedFor(msg.sender, _tokenId));
 
     _transfer(msg.sender, _to, _tokenId);
   }
 
   function transferFrom(address _from, address _to, uint256 _tokenId) external {
-    require(_to != address(0));
+    // require(_to != address(0));
     // require(_to != address(this));
     require(_approvedFor(msg.sender, _tokenId));
     require(_owns(_from, _tokenId));
