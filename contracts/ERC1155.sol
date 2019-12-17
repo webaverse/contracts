@@ -3,11 +3,12 @@ pragma solidity ^0.5.0;
 import "./SafeMath.sol";
 import "./Address.sol";
 import "./Common.sol";
+import "./IERC1155Metadata.sol";
 import "./IERC1155TokenReceiver.sol";
 import "./IERC1155.sol";
 
 // A sample implementation of core ERC1155 function.
-contract ERC1155 is IERC1155, ERC165, CommonConstants
+contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
 {
     using SafeMath for uint256;
     using Address for address;
@@ -17,6 +18,71 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
 
     // owner => (operator => approved)
     mapping (address => mapping(address => bool)) internal operatorApproval;
+    
+    mapping(uint256 => bool) internal minted;
+    mapping(uint256 => mapping(address => bool)) internal minterApproval;
+    
+    function name() public pure returns (string memory _name) {
+        return "M3 3";
+      }
+
+      function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (_i != 0) {
+            bstr[k--] = byte(uint8(48 + _i % 10));
+            _i /= 10;
+        }
+        return string(bstr);
+      }
+      function strConcat(string memory _a, string memory _b) internal pure returns (string memory) {
+        bytes memory _ba = bytes(_a);
+        bytes memory _bb = bytes(_b);
+        string memory ab = new string(_ba.length + _bb.length);
+        bytes memory bab = bytes(ab);
+        uint k = 0;
+        for (uint i = 0; i < _ba.length; i++) bab[k++] = _ba[i];
+        for (uint i = 0; i < _bb.length; i++) bab[k++] = _bb[i];
+        return string(bab);
+      }
+      
+    function _uri(uint256 _id) internal pure returns (string memory) {
+        return strConcat("https://tokens.webaverse.com/", uint2str(_id));  
+    }
+    function uri(uint256 _id) external view returns (string memory) {
+        return _uri(_id);
+    }
+
+    function mint(uint256 id, address addr, uint256 count) external {
+        require(!minted[id] || minterApproval[id][addr]);
+
+        if (!minted[id]) {
+            minted[id] = true;
+            minterApproval[id][addr] = true;
+        }
+        balances[id][addr] += count;
+        
+        emit TransferSingle(msg.sender, address(0), addr, id, count);
+        emit URI(_uri(id), id);
+    }
+    
+    function approveMint(uint256 id, address addr) external {
+        require(minterApproval[id][msg.sender]);
+        minterApproval[id][addr] = true;
+    }
+    function revokeMint(uint256 id, address addr) external {
+        require(minterApproval[id][msg.sender]);
+        minterApproval[id][addr] = true;
+    }
 
 /////////////////////////////////////////// ERC165 //////////////////////////////////////////////
 
@@ -138,9 +204,6 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
         @return        The _owner's balance of the Token type requested
      */
     function balanceOf(address _owner, uint256 _id) external view returns (uint256) {
-        // The balance of any account can be calculated from the Transfer events history.
-        // However, since we need to keep the balances to validate transfer request,
-        // there is no extra cost to also privide a querry function.
         return balances[_id][_owner];
     }
 
@@ -208,3 +271,4 @@ contract ERC1155 is IERC1155, ERC165, CommonConstants
         require(ERC1155TokenReceiver(_to).onERC1155BatchReceived(_operator, _from, _ids, _values, _data) == ERC1155_BATCH_ACCEPTED, "contract returned an unknown value from onERC1155BatchReceived");
     }
 }
+
