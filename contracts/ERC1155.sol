@@ -13,17 +13,20 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     using SafeMath for uint256;
     using Address for address;
 
+    uint256 nonce = 0;
+
     // id => (owner => balance)
     mapping (uint256 => mapping(address => uint256)) internal balances;
 
     // owner => (operator => approved)
     mapping (address => mapping(address => bool)) internal operatorApproval;
     
-    mapping(uint256 => bool) internal minted;
+    mapping(uint256 => uint256) internal idToHash;
+    mapping(uint256 => uint256) internal hashToId;
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     
     function name() public pure returns (string memory _name) {
-        return "M3 3";
+        return "Meteria";
       }
 
       function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
@@ -62,26 +65,35 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return _uri(_id);
     }
 
-    function mint(uint256 id, address addr, uint256 count) external {
-        require(!minted[id] || minterApproval[id][addr]);
+    function mint(uint256 hash, address addr, uint256 count) external {
+        require(hashToId[hash] == 0 || minterApproval[hash][addr]);
 
-        if (!minted[id]) {
-            minted[id] = true;
-            minterApproval[id][addr] = true;
-        }
+        uint256 id = ++nonce;
+        idToHash[id] = hash;
+        hashToId[hash] = id;
+        minterApproval[hash][addr] = true;
         balances[id][addr] += count;
         
         emit TransferSingle(msg.sender, address(0), addr, id, count);
         emit URI(_uri(id), id);
     }
     
-    function approveMint(uint256 id, address addr) external {
-        require(minterApproval[id][msg.sender]);
-        minterApproval[id][addr] = true;
+    function approveMint(uint256 hash, address addr) external {
+        require(minterApproval[hash][msg.sender]);
+        minterApproval[hash][addr] = true;
     }
-    function revokeMint(uint256 id, address addr) external {
-        require(minterApproval[id][msg.sender]);
-        minterApproval[id][addr] = true;
+    function revokeMint(uint256 hash, address addr) external {
+        require(minterApproval[hash][msg.sender]);
+        minterApproval[hash][addr] = true;
+    }
+    function isMinted(uint256 hash) external view returns (bool) {
+        return hashToId[hash] != 0;
+    }
+    function getId(uint256 hash) external view returns (uint256) {
+        return hashToId[hash];
+    }
+    function getHash(uint256 id) external view returns (uint256) {
+        return idToHash[id];
     }
 
 /////////////////////////////////////////// ERC165 //////////////////////////////////////////////
