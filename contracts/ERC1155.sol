@@ -69,7 +69,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       }
       
     function _uri(uint256 _id) internal view returns (string memory) {
-        return strConcat(uriPrefix, uint2str(_id));  
+        uint256 hash = idToHash[_id];
+        return strConcat(uriPrefix, uint2str(hash));
     }
     function setUriPrefix(string memory newUriPrefix) public {
         uriPrefix = newUriPrefix;
