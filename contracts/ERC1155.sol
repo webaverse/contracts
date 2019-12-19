@@ -13,6 +13,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     using SafeMath for uint256;
     using Address for address;
 
+    address owner;
+    string tokenName = "Meteria";
+    string uriPrefix = "https://tokens.exokit.org/";
     uint256 nonce = 0;
 
     // id => (owner => balance)
@@ -25,9 +28,16 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     mapping(uint256 => uint256) internal hashToId;
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     
-    function name() public pure returns (string memory _name) {
-        return "Meteria";
-      }
+    constructor() public {
+        owner = msg.sender;
+    }
+    
+    function name() public view returns (string memory _name) {
+        return tokenName;
+    }
+    function setName(string memory newTokenName) public {
+        tokenName = newTokenName;
+    }
 
       function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
@@ -58,8 +68,14 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return string(bab);
       }
       
-    function _uri(uint256 _id) internal pure returns (string memory) {
-        return strConcat("https://tokens.webaverse.com/", uint2str(_id));  
+    function _uri(uint256 _id) internal view returns (string memory) {
+        return strConcat(uriPrefix, uint2str(_id));  
+    }
+    function setUriPrefix(string memory newUriPrefix) public {
+        uriPrefix = newUriPrefix;
+        for (uint256 id = 1; id <= nonce; id++) {
+          emit URI(_uri(id), id);
+        }
     }
     function uri(uint256 _id) external view returns (string memory) {
         return _uri(_id);
