@@ -57,6 +57,19 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         }
         return string(bstr);
       }
+      function uint2hex(uint256 ui) public pure returns (string memory) {
+            bytes32 value = bytes32(ui);
+            bytes memory alphabet = "0123456789abcdef";
+        
+            bytes memory str = new bytes(32*2);
+            /*( str[0] = '0';
+            str[1] = 'x'; */
+            for (uint i = 0; i < 32; i++) {
+                str[/*2+*/i*2] = alphabet[uint8(value[i] >> 4)];
+                str[/*3+*/i*2+1] = alphabet[uint8(value[i] & 0x0f)];
+            }
+            return string(str);
+        }
       function strConcat(string memory _a, string memory _b) internal pure returns (string memory) {
         bytes memory _ba = bytes(_a);
         bytes memory _bb = bytes(_b);
@@ -70,7 +83,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       
     function _uri(uint256 _id) internal view returns (string memory) {
         uint256 hash = idToHash[_id];
-        return strConcat(uriPrefix, uint2str(hash));
+        return strConcat(uriPrefix, uint2hex(hash));
     }
     function setUriPrefix(string memory newUriPrefix) public {
         uriPrefix = newUriPrefix;
