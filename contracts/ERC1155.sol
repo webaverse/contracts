@@ -27,6 +27,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     mapping(uint256 => uint256) internal idToHash;
     mapping(uint256 => uint256) internal hashToId;
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
+    // localId -> contractAddress -> remoteId -> value
+    mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
     
     constructor() public {
         owner = msg.sender;
@@ -108,14 +110,28 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         emit URI(_uri(id), id);
     }
     
-    function approveMint(uint256 hash, address addr) external {
+    function deposit(address remoteContractAddress, uint256 _toId, uint256 _id, uint256 _value, bytes calldata _data) external {
+        assets[_toId][remoteContractAddress][_id] += _value;
+        IERC1155 remoteContract = IERC1155(remoteContractAddress);
+        address localContractAddress = address(this);
+        remoteContract.safeTransferFrom(msg.sender, localContractAddress, _id, _value, _data);
+    }
+    function withdraw(address remoteContractAddress, uint256 _fromId, uint256 _id, uint256 _value, bytes calldata _data) external {
+        uint256 oldValue = assets[_fromId][remoteContractAddress][_id];
+        require(oldValue >= _value);
+        assets[_fromId][remoteContractAddress][_id] -= _value;
+        IERC1155 remoteContract = IERC1155(remoteContractAddress);
+        address localContractAddress = address(this);
+        remoteContract.safeTransferFrom(localContractAddress, msg.sender, _id, _value, _data);
+    }
+    /* function approveMint(uint256 hash, address addr) external {
         require(minterApproval[hash][msg.sender]);
         minterApproval[hash][addr] = true;
     }
     function revokeMint(uint256 hash, address addr) external {
         require(minterApproval[hash][msg.sender]);
         minterApproval[hash][addr] = true;
-    }
+    } */
     function isMinted(uint256 hash) external view returns (bool) {
         return hashToId[hash] != 0;
     }
@@ -313,4 +329,3 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         require(ERC1155TokenReceiver(_to).onERC1155BatchReceived(_operator, _from, _ids, _values, _data) == ERC1155_BATCH_ACCEPTED, "contract returned an unknown value from onERC1155BatchReceived");
     }
 }
-
