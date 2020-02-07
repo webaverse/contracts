@@ -97,6 +97,56 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function uri(uint256 _id) external view returns (string memory) {
         return _uri(_id);
     }
+    
+    function recoverSignerAddress(bytes32 hash, bytes memory signature)
+        internal
+        pure
+        returns (address)
+    {
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
+    
+        // Check the signature length
+        if (signature.length != 65) {
+          return (address(0));
+        }
+    
+        // Divide the signature in r, s and v variables with inline assembly.
+        assembly {
+          r := mload(add(signature, 0x20))
+          s := mload(add(signature, 0x40))
+          v := byte(0, mload(add(signature, 0x60)))
+        }
+    
+        // Version of signature should be 27 or 28, but 0 and 1 are also possible versions
+        if (v < 27) {
+          v += 27;
+        }
+    
+        // If the version is correct return the signer address
+        if (v != 27 && v != 28) {
+          return (address(0));
+        } else {
+          // solium-disable-next-line arg-overflow
+          return ecrecover(hash, v, r, s);
+        }
+    }
+    function toEthSignedMessageHash(string memory s)
+        internal
+        pure
+        returns (bytes32)
+    {
+        return keccak256(
+          abi.encodePacked("\x19Ethereum Signed Message:\n", uint2str(bytes(s).length), s)
+        );
+    }  
+    function checkSignature(uint256 _id, bytes memory signature) internal view returns (bool) {
+      string memory s = strConcat(tokenName, uint2str(_id));
+      bytes32 h = toEthSignedMessageHash(s);
+      address signerAddress = recoverSignerAddress(h, signature);
+      return balances[_id][signerAddress] > 0;
+    }
 
     function mint(uint256 id, address addr, uint256 count) external returns (uint256) {
         require(id == 0 || minterApproval[id][addr]);
@@ -134,8 +184,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function getMetadata(uint256 _id, string memory _key) public view returns (string memory) {
       return metadata[_id][_key];
     }
-    function setMetadata(uint256 _id, string calldata _key, string calldata _value) external {
-      require(balances[_id][msg.sender] > 0);
+    function setMetadataInternal(uint256 _id, string memory _key, string memory _value) internal {
       string storage oldValue = metadata[_id][_key];
       if (bytes(oldValue).length > 0) {
         reverseMetadata[_key][oldValue] = 0;
@@ -166,6 +215,14 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
           keys.push(_key);
         }
       }
+    }
+    function setMetadata(uint256 _id, string calldata _key, string calldata _value) external {
+      require(balances[_id][msg.sender] > 0);
+      setMetadataInternal(_id, _key, _value);
+    }
+    function setMetadataFromSignature(uint256 _id, string calldata _key, string calldata _value, bytes calldata signature) external {
+      require(checkSignature(_id, signature));
+      setMetadataInternal(_id, _key, _value);
     }
     function getMetadataKeys(uint256 _id) public view returns (string[] memory) {
       return metadataKeys[_id];
