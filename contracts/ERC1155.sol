@@ -153,14 +153,18 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         require(reverseMetadata[_key][_value] == 0);
         reverseMetadata[_key][_value] = _id;
         
-        string[] memory keys = metadataKeys[_id];
+        string[] storage keys = metadataKeys[_id];
         uint256 i;
         for (i = 0; i < keys.length; i++) {
           if (bytes(keys[i]).length == 0) {
              break;
           }
         }
-        keys[i] = _key;
+        if (i < keys.length) {
+          keys[i] = _key;
+        } else {
+          keys.push(_key);
+        }
       }
     }
     function getMetadataKeys(uint256 _id) public view returns (string[] memory) {
