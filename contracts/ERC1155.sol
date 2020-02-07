@@ -15,7 +15,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
 
     address owner;
     string tokenName = "Meteria";
-    string uriPrefix = "https://tokens.exokit.org/";
+    string uriPrefix = "https://tokens.gunt.one/";
     uint256 nonce = 0;
 
     // id => (owner => balance)
@@ -29,6 +29,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     // localId -> contractAddress -> remoteId -> value
     mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
+    mapping(uint256 => mapping(string => string)) metadata;
     
     constructor() public {
         owner = msg.sender;
@@ -117,12 +118,20 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         remoteContract.safeTransferFrom(msg.sender, localContractAddress, _id, _value, _data);
     }
     function withdraw(address remoteContractAddress, uint256 _fromId, uint256 _id, uint256 _value, bytes calldata _data) external {
+        require(balances[_fromId][msg.sender] > 0);
         uint256 oldValue = assets[_fromId][remoteContractAddress][_id];
         require(oldValue >= _value);
         assets[_fromId][remoteContractAddress][_id] -= _value;
         IERC1155 remoteContract = IERC1155(remoteContractAddress);
         address localContractAddress = address(this);
         remoteContract.safeTransferFrom(localContractAddress, msg.sender, _id, _value, _data);
+    }
+    function getMetadata(uint256 _id, string memory _key) public view returns (string memory) {
+      return metadata[_id][_key];
+    }
+    function setMetadata(uint256 _id, string calldata _key, string calldata _value) external {
+      require(balances[_id][msg.sender] > 0);
+      metadata[_id][_key] = _value;
     }
     /* function approveMint(uint256 hash, address addr) external {
         require(minterApproval[hash][msg.sender]);
