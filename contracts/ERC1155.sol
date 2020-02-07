@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 
 import "./SafeMath.sol";
 import "./Address.sol";
@@ -14,7 +15,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     using Address for address;
 
     address owner;
-    string tokenName = "Meteria";
+    string tokenName = "Gunt";
     string uriPrefix = "https://tokens.gunt.one/";
     uint256 nonce = 0;
 
@@ -29,6 +30,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
     mapping(uint256 => mapping(string => string)) metadata;
     mapping(string => mapping(string => uint256)) reverseMetadata;
+    mapping(uint256 => string[]) metadataKeys;
     
     constructor() public {
         owner = msg.sender;
@@ -110,6 +112,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         
         return id;
     }
+    function isMinted(uint256 id) external view returns (bool) {
+        return id >= nonce;
+    }
     
     function deposit(address remoteContractAddress, uint256 _toId, uint256 _id, uint256 _value, bytes calldata _data) external {
         assets[_toId][remoteContractAddress][_id] += _value;
@@ -132,12 +137,34 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function setMetadata(uint256 _id, string calldata _key, string calldata _value) external {
       require(balances[_id][msg.sender] > 0);
       string storage oldValue = metadata[_id][_key];
-      if (bytes(oldValue).length != 0) {
+      if (bytes(oldValue).length > 0) {
         reverseMetadata[_key][oldValue] = 0;
+        
+        string[] storage keys = metadataKeys[_id];
+        for (uint256 i = 0; i < keys.length; i++) {
+          if (keccak256(bytes(keys[i])) == keccak256(bytes(_key))) {
+             delete keys[i];
+             break;
+          }
+        }
       }
-      require(reverseMetadata[_key][_value] == 0);
       metadata[_id][_key] = _value;
-      reverseMetadata[_key][_value] = _id;
+      if (bytes(_value).length > 0) {
+        require(reverseMetadata[_key][_value] == 0);
+        reverseMetadata[_key][_value] = _id;
+        
+        string[] memory keys = metadataKeys[_id];
+        uint256 i;
+        for (i = 0; i < keys.length; i++) {
+          if (bytes(keys[i]).length == 0) {
+             break;
+          }
+        }
+        keys[i] = _key;
+      }
+    }
+    function getMetadataKeys(uint256 _id) public view returns (string[] memory) {
+      return metadataKeys[_id];
     }
     function getIdFromMetadata(string calldata _key, string calldata _value) external view returns (uint256) {
       return reverseMetadata[_key][_value];
