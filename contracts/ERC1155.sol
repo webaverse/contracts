@@ -24,12 +24,11 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     // owner => (operator => approved)
     mapping (address => mapping(address => bool)) internal operatorApproval;
     
-    mapping(uint256 => uint256) internal idToHash;
-    mapping(uint256 => uint256) internal hashToId;
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     // localId -> contractAddress -> remoteId -> value
     mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
     mapping(uint256 => mapping(string => string)) metadata;
+    mapping(string => mapping(string => uint256)) reverseMetadata;
     
     constructor() public {
         owner = msg.sender;
@@ -85,8 +84,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       }
       
     function _uri(uint256 _id) internal view returns (string memory) {
-        uint256 hash = idToHash[_id];
-        return strConcat(uriPrefix, uint2hex(hash));
+        return strConcat(uriPrefix, uint2hex(_id));
     }
     function setUriPrefix(string memory newUriPrefix) public {
         uriPrefix = newUriPrefix;
@@ -98,17 +96,19 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return _uri(_id);
     }
 
-    function mint(uint256 hash, address addr, uint256 count) external {
-        require(hashToId[hash] == 0 || minterApproval[hash][addr]);
+    function mint(uint256 id, address addr, uint256 count) external returns (uint256) {
+        require(id == 0 || minterApproval[id][addr]);
 
-        uint256 id = ++nonce;
-        idToHash[id] = hash;
-        hashToId[hash] = id;
-        minterApproval[hash][addr] = true;
+        if (id == 0) {
+          id = ++nonce;
+        }
+        minterApproval[id][addr] = true;
         balances[id][addr] += count;
         
         emit TransferSingle(msg.sender, address(0), addr, id, count);
         emit URI(_uri(id), id);
+        
+        return id;
     }
     
     function deposit(address remoteContractAddress, uint256 _toId, uint256 _id, uint256 _value, bytes calldata _data) external {
@@ -131,7 +131,16 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     }
     function setMetadata(uint256 _id, string calldata _key, string calldata _value) external {
       require(balances[_id][msg.sender] > 0);
+      string storage oldValue = metadata[_id][_key];
+      if (bytes(oldValue).length != 0) {
+        reverseMetadata[_key][oldValue] = 0;
+      }
+      require(reverseMetadata[_key][_value] == 0);
       metadata[_id][_key] = _value;
+      reverseMetadata[_key][_value] = _id;
+    }
+    function getIdFromMetadata(string calldata _key, string calldata _value) external view returns (uint256) {
+      return reverseMetadata[_key][_value];
     }
     /* function approveMint(uint256 hash, address addr) external {
         require(minterApproval[hash][msg.sender]);
@@ -140,7 +149,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function revokeMint(uint256 hash, address addr) external {
         require(minterApproval[hash][msg.sender]);
         minterApproval[hash][addr] = true;
-    } */
+    }
     function isMinted(uint256 hash) external view returns (bool) {
         return hashToId[hash] != 0;
     }
@@ -149,7 +158,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     }
     function getHash(uint256 id) external view returns (uint256) {
         return idToHash[id];
-    }
+    } */
 
 /////////////////////////////////////////// ERC165 //////////////////////////////////////////////
 
