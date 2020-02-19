@@ -203,26 +203,53 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return id;
     }
     function isMinted(uint256 id) external view returns (bool) {
-        return id >= nonce;
+        return id <= nonce;
     }
     function getNonce() external view returns (uint256) {
         return nonce;
     }
     
-    function deposit(address remoteContractAddress, uint256 _toId, uint256 _id, uint256 _value, bytes calldata _data) external {
-        assets[_toId][remoteContractAddress][_id] += _value;
+    function deposit(uint256 _toId, address remoteContractAddress, uint256 _id, uint256 _value, bytes calldata _data) external {
         IERC1155 remoteContract = IERC1155(remoteContractAddress);
         address localContractAddress = address(this);
+        require(remoteContract.isApprovedForAll(msg.sender, localContractAddress), "Need to approve this contract as operator for remote contract");
         remoteContract.safeTransferFrom(msg.sender, localContractAddress, _id, _value, _data);
+        assets[_toId][remoteContractAddress][_id] += _value;
     }
-    function withdraw(address remoteContractAddress, uint256 _fromId, uint256 _id, uint256 _value, bytes calldata _data) external {
+    function withdraw(uint256 _fromId, address remoteContractAddress, uint256 _id, uint256 _value, bytes calldata _data) external {
         require(balances[_fromId][msg.sender] > 0);
-        uint256 oldValue = assets[_fromId][remoteContractAddress][_id];
-        require(oldValue >= _value);
+        require(assets[_fromId][remoteContractAddress][_id] >= _value, "Insufficient tokens deposited");
         assets[_fromId][remoteContractAddress][_id] -= _value;
         IERC1155 remoteContract = IERC1155(remoteContractAddress);
         address localContractAddress = address(this);
         remoteContract.safeTransferFrom(localContractAddress, msg.sender, _id, _value, _data);
+    }
+    // safeBatchTransferFrom(address _from, address _to, uint256[][] calldata _ids, uint256[][] calldata _values, bytes calldata _data)
+    function depositAll(uint256 _toId, address[] calldata remoteContractAddresses, uint256[][] calldata _ids, uint256[][] calldata _values, bytes[] calldata _datas) external {
+        address localContractAddress = address(this);
+        for (uint256 i = 0; i < remoteContractAddresses.length; i++) {
+            require(_ids[i].length == _values[i].length);
+            IERC1155 remoteContract = IERC1155(remoteContractAddresses[i]);
+            require(remoteContract.isApprovedForAll(msg.sender, localContractAddress), "Need to approve this contract as operator for remote contract");
+            remoteContract.safeBatchTransferFrom(msg.sender, localContractAddress, _ids[i], _values[i], _datas[i]);
+            for (uint256 j = 0; j < _ids[i].length; j++) {
+                assets[_toId][remoteContractAddresses[i]][_ids[i][j]] += _values[i][j];
+            }
+        }
+    }
+    function withdrawAll(uint256 _toId, address[] calldata remoteContractAddresses, uint256[][] calldata _ids, uint256[][] calldata _values, bytes[] calldata _datas) external {
+        address localContractAddress = address(this);
+        for (uint256 i = 0; i < remoteContractAddresses.length; i++) {
+            for (uint256 j = 0; j < _ids[i].length; j++) {
+                require(_ids[i].length == _values[i].length);
+                require(assets[_toId][remoteContractAddresses[i]][_ids[i][j]] >= _values[i][j], "Insufficient tokens");
+            }
+            IERC1155 remoteContract = IERC1155(remoteContractAddresses[i]);
+            remoteContract.safeBatchTransferFrom(localContractAddress, msg.sender, _ids[i], _values[i], _datas[i]);
+            for (uint256 j = 0; j < _ids[i].length; j++) {
+                assets[_toId][remoteContractAddresses[i]][_ids[i][j]] -= _values[i][j];
+            }
+        }
     }
     function getMetadata(uint256 _id, string memory _key) public view returns (string memory) {
       return metadata[_id][_key];
@@ -305,7 +332,6 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         @param _data    Additional data with no specified format, MUST be sent unaltered in call to `onERC1155Received` on `_to`
     */
     function safeTransferFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data) external {
-
         require(_to != address(0x0), "_to must be non-zero.");
         require(_from == msg.sender || operatorApproval[_from][msg.sender] == true, "Need operator approval for 3rd party transfers.");
 
