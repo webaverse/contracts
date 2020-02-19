@@ -147,8 +147,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       address signerAddress = recoverSignerAddress(h, signature);
       return balances[_id][signerAddress] > 0;
     }
-
-    function mint(uint256 id, address addr, uint256 count) external returns (uint256) {
+    function mintInternal(uint256 id, address addr, uint256 count) internal returns (uint256) {
         require(id == 0 || minterApproval[id][addr]);
 
         if (id == 0) {
@@ -161,28 +160,6 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         emit URI(_uri(id), id);
         
         return id;
-    }
-    function isMinted(uint256 id) external view returns (bool) {
-        return id >= nonce;
-    }
-    
-    function deposit(address remoteContractAddress, uint256 _toId, uint256 _id, uint256 _value, bytes calldata _data) external {
-        assets[_toId][remoteContractAddress][_id] += _value;
-        IERC1155 remoteContract = IERC1155(remoteContractAddress);
-        address localContractAddress = address(this);
-        remoteContract.safeTransferFrom(msg.sender, localContractAddress, _id, _value, _data);
-    }
-    function withdraw(address remoteContractAddress, uint256 _fromId, uint256 _id, uint256 _value, bytes calldata _data) external {
-        require(balances[_fromId][msg.sender] > 0);
-        uint256 oldValue = assets[_fromId][remoteContractAddress][_id];
-        require(oldValue >= _value);
-        assets[_fromId][remoteContractAddress][_id] -= _value;
-        IERC1155 remoteContract = IERC1155(remoteContractAddress);
-        address localContractAddress = address(this);
-        remoteContract.safeTransferFrom(localContractAddress, msg.sender, _id, _value, _data);
-    }
-    function getMetadata(uint256 _id, string memory _key) public view returns (string memory) {
-      return metadata[_id][_key];
     }
     function setMetadataInternal(uint256 _id, string memory _key, string memory _value) internal {
       string storage oldValue = metadata[_id][_key];
@@ -215,6 +192,40 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
           keys.push(_key);
         }
       }
+    }
+
+    function mint(uint256 id, address addr, uint256 count) external returns (uint256) {
+        return mintInternal(id, addr, count);
+    }
+    function mintWithMetadata(uint256 id, address addr, uint256 count, string calldata _key, string calldata _value) external returns (uint256) {
+        id = mintInternal(id, addr, count);
+        setMetadataInternal(id, _key, _value);
+        return id;
+    }
+    function isMinted(uint256 id) external view returns (bool) {
+        return id >= nonce;
+    }
+    function getNonce() external view returns (uint256) {
+        return nonce;
+    }
+    
+    function deposit(address remoteContractAddress, uint256 _toId, uint256 _id, uint256 _value, bytes calldata _data) external {
+        assets[_toId][remoteContractAddress][_id] += _value;
+        IERC1155 remoteContract = IERC1155(remoteContractAddress);
+        address localContractAddress = address(this);
+        remoteContract.safeTransferFrom(msg.sender, localContractAddress, _id, _value, _data);
+    }
+    function withdraw(address remoteContractAddress, uint256 _fromId, uint256 _id, uint256 _value, bytes calldata _data) external {
+        require(balances[_fromId][msg.sender] > 0);
+        uint256 oldValue = assets[_fromId][remoteContractAddress][_id];
+        require(oldValue >= _value);
+        assets[_fromId][remoteContractAddress][_id] -= _value;
+        IERC1155 remoteContract = IERC1155(remoteContractAddress);
+        address localContractAddress = address(this);
+        remoteContract.safeTransferFrom(localContractAddress, msg.sender, _id, _value, _data);
+    }
+    function getMetadata(uint256 _id, string memory _key) public view returns (string memory) {
+      return metadata[_id][_key];
     }
     function setMetadata(uint256 _id, string calldata _key, string calldata _value) external {
       require(balances[_id][msg.sender] > 0);
