@@ -84,6 +84,13 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         for (uint i = 0; i < _bb.length; i++) bab[k++] = _bb[i];
         return string(bab);
       }
+      function getSlice(uint256 begin, uint256 end, string memory text) internal pure returns (string memory) {
+        bytes memory a = new bytes(end-begin);
+        for(uint i=0;i<=end-begin;i++){
+            a[i] = bytes(text)[i+begin-1];
+        }
+        return string(a);    
+      }
       
     function _uri(uint256 _id) internal view returns (string memory) {
         return strConcat(uriPrefix, uint2hex(_id));
@@ -200,14 +207,29 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function mint(uint256 id, address addr, uint256 count) external returns (uint256) {
         return mintInternal(id, addr, count);
     }
-    function mintWithMetadatas(uint256 id, address addr, uint256 count, string[] calldata _keys, string[] calldata _values) external returns (uint256) {
-        require(_keys.length == _values.length);
+    function mintWithMetadata(uint256 id, address addr, uint256 count, string calldata _key, string calldata _value) external returns (uint256) {
         id = mintInternal(id, addr, count);
-        for (uint256 i = 0; i < _keys.length; i++) {
-          setMetadataInternal(id, _keys[i], _values[i]);
-        }
+        setMetadataInternal(id, _key, _value);
         return id;
     }
+    /* function mintWithMetadata1(uint256 id, address addr, uint256 count, string calldata _key1, string calldata _value1) external returns (uint256) {
+        id = mintInternal(id, addr, count);
+        setMetadataInternal(id, _key1, _value1);
+        return id;
+    }
+    function mintWithMetadata2(uint256 id, address addr, uint256 count, string calldata _key1, string calldata _value1, string calldata _key2, string calldata _value2) external returns (uint256) {
+        id = mintInternal(id, addr, count);
+        setMetadataInternal(id, _key1, _value1);
+        setMetadataInternal(id, _key2, _value2);
+        return id;
+    }
+    function mintWithMetadata3(uint256 id, address addr, uint256 count, string calldata _key1, string calldata _value1, string calldata _key2, string calldata _value2, string calldata _key3, string calldata _value3) external returns (uint256) {
+        id = mintInternal(id, addr, count);
+        setMetadataInternal(id, _key1, _value1);
+        setMetadataInternal(id, _key2, _value2);
+        setMetadataInternal(id, _key3, _value3);
+        return id;
+    } */
     function isMinted(uint256 id) external view returns (bool) {
         return id <= nonce;
     }
