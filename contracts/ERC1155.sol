@@ -148,6 +148,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       return balances[_id][signerAddress] > 0;
     }
     function mintInternal(uint256 id, address addr, uint256 count) internal returns (uint256) {
+        if (addr == address(0)) {
+            addr = msg.sender;
+        }
         require(id == 0 || minterApproval[id][addr]);
 
         if (id == 0) {
@@ -197,9 +200,12 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function mint(uint256 id, address addr, uint256 count) external returns (uint256) {
         return mintInternal(id, addr, count);
     }
-    function mintWithMetadata(uint256 id, address addr, uint256 count, string calldata _key, string calldata _value) external returns (uint256) {
+    function mintWithMetadatas(uint256 id, address addr, uint256 count, string[] calldata _keys, string[] calldata _values) external returns (uint256) {
+        require(_keys.length == _values.length);
         id = mintInternal(id, addr, count);
-        setMetadataInternal(id, _key, _value);
+        for (uint256 i = 0; i < _keys.length; i++) {
+          setMetadataInternal(id, _keys[i], _values[i]);
+        }
         return id;
     }
     function isMinted(uint256 id) external view returns (bool) {
@@ -224,7 +230,6 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         address localContractAddress = address(this);
         remoteContract.safeTransferFrom(localContractAddress, msg.sender, _id, _value, _data);
     }
-    // safeBatchTransferFrom(address _from, address _to, uint256[][] calldata _ids, uint256[][] calldata _values, bytes calldata _data)
     function depositAll(uint256 _toId, address[] calldata remoteContractAddresses, uint256[][] calldata _ids, uint256[][] calldata _values, bytes[] calldata _datas) external {
         address localContractAddress = address(this);
         for (uint256 i = 0; i < remoteContractAddresses.length; i++) {
