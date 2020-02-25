@@ -179,7 +179,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     } */
     function mintInternal(int256[] memory size) internal returns (uint256) {
         uint256 id = ++nonce;
-        require(size.length == 3 && size[0] < maxTokenSize[0] && size[1] < maxTokenSize[1] && size[2] < maxTokenSize[2], "Invalid size");
+        require(size.length == 3 && size[0] > 0 && size[0] < maxTokenSize[0] && size[1] > 0 && size[1] < maxTokenSize[1] && size[2] > 0 && size[2] < maxTokenSize[2], "Invalid size");
         minterApproval[id][msg.sender] = true;
         balances[id][msg.sender]++;
         sizes[id] = size;
