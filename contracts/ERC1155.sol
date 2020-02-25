@@ -258,7 +258,11 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function getNonce() external view returns (uint256) {
         return nonce;
     }
-    function intsersectsRect(int256 x1, int256 z1, int256 x2, int256 z2, int256 x3, int256 z3, int256 x4, int256 z4) internal pure returns (bool) {
+    function intersectsRect(int256 x1, int256 z1, int256 x2, int256 z2, int256 x3, int256 z3, int256 x4, int256 z4) internal pure returns (bool) {
+        x2 += x1;
+        z2 += z1;
+        x4 += x3;
+        z4 += z3;
         // If one rectangle is on left side of other 
         // l1.x, l1.y, r1.x, r1.y, l2.x, l2.y, r2.x, r2.y,
         if (x1 > x4 || x3 > x2) 
@@ -287,8 +291,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + maxTokenSize[0]; x++) {
             for (int256 z = location[2] - maxTokenSize[2]; z < location[2] + maxTokenSize[2]; z++) {
                 if (grid[x][z] != 0) {
-                  int256[] storage occupiedSize = sizes[grid[x][z]];
-                  require(!intsersectsRect(x, z, x + occupiedSize[0], z + occupiedSize[2], location[0], location[2], location[0] + size[0], location[2] + size[2]));
+                  require(!intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], size[0], size[2]));
                 }
             }
         }
@@ -299,6 +302,24 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function unbindFromGrid(uint256 id) external {
         require(bindings[id].length > 0, "Token not boudn to grid");
         unbindFromGridInternal(id);
+    }
+    function getGridTokenIds(int256[] calldata location, int256[] calldata range) external view returns (uint256[] memory) {
+        uint256[] memory result = new uint256[](256);
+        uint256 index = 0;
+        for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + range[0] + maxTokenSize[0]; x++) {
+            for (int256 z = location[2] - maxTokenSize[2]; x < location[2] + range[2] + maxTokenSize[2]; z++) {
+                if (grid[x][z] != 0) {
+                    if (intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], range[0], range[2])) {
+                        result[index++] = grid[x][z];
+                    }
+                }
+            }
+        }
+        uint256[] memory result2 = new uint256[](index);
+        for (uint256 i = 0; i < index; i++) {
+            result2[i] = result[i];
+        }
+        return result2;
     }
     function unbindFromTokenInternal(uint256 to) internal {
         uint256 from = subtokenBindings[to];
@@ -327,6 +348,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function unbindFromToken(uint256 id) external {
         require(subtokenBindings[id] != 0, "Token not bound to token");
         unbindFromTokenInternal(id);
+    }
+    function getSubtokenIds(uint256 id) external view returns (uint256[] memory) {
+        return subtokenIds[id];
     }
     
     function deposit(uint256 _toId, address remoteContractAddress, uint256 _id, uint256 _value, bytes calldata _data) external {
