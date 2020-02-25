@@ -128,7 +128,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return _uri(_id);
     }
     
-    function recoverSignerAddress(bytes32 hash, bytes memory signature)
+    /* function recoverSignerAddress(bytes32 hash, bytes memory signature)
         internal
         pure
         returns (address)
@@ -176,7 +176,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       bytes32 h = toEthSignedMessageHash(s);
       address signerAddress = recoverSignerAddress(h, signature);
       return balances[_id][signerAddress] > 0;
-    }
+    } */
     function mintInternal(uint256 id, int256[] memory size) internal returns (uint256) {
         require(id == 0 || minterApproval[id][msg.sender], "Not approved to mint");
         require(size.length == 3 && size[0] < maxTokenSize[0] && size[1] < maxTokenSize[1] && size[2] < maxTokenSize[2], "Invalid size");
@@ -333,17 +333,28 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
             }
         }
     }
+    function _getRootToken(uint256 id) internal view returns (uint256) {
+        uint256 parentId = subtokenBindings[id];
+        if (parentId != 0) {
+            return parentId;
+        } else {
+            return _getRootToken(parentId);
+        }
+    }
     function bindToToken(uint256 from, uint256 to, uint256 location) external {
+        require(from != to, "From and to tokens must be different");
         require(balances[from][msg.sender] > 0, "From token not owned");
         require(balances[to][msg.sender] > 0, "To token not owned");
-        require(bindings[from].length == 0, "From token already bound to grid");
-        require(bindings[to].length > 0, "To token not bound");
-        
+        require(bindings[from].length > 0, "From token not bound to grid");
+
+        unbindFromGridInternal(to);
         unbindFromTokenInternal(to);
         
         subtokens[from][to] = location;
         subtokenIds[from].push(to);
         subtokenBindings[to] = from;
+        
+        require(_getRootToken(to) == 0, "Could not find root token");
     }
     function unbindFromToken(uint256 id) external {
         require(subtokenBindings[id] != 0, "Token not bound to token");
@@ -401,10 +412,10 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       require(balances[_id][msg.sender] > 0);
       setMetadataInternal(_id, _key, _value);
     }
-    function setMetadataFromSignature(uint256 _id, string calldata _key, string calldata _value, bytes calldata signature) external {
+    /* function setMetadataFromSignature(uint256 _id, string calldata _key, string calldata _value, bytes calldata signature) external {
       require(checkSignature(_id, signature));
       setMetadataInternal(_id, _key, _value);
-    }
+    } */
     function getMetadataKeys(uint256 _id) public view returns (string[] memory) {
       return metadataKeys[_id];
     }
@@ -474,10 +485,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         @param _value   Transfer amount
         @param _data    Additional data with no specified format, MUST be sent unaltered in call to `onERC1155Received` on `_to`
     */
-    function safeTransferFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data) external {
-        require(_to != address(0x0), "_to must be non-zero.");
-        require(_from == msg.sender || operatorApproval[_from][msg.sender] == true, "Need operator approval for 3rd party transfers.");
-
+    function safeTransferFromInternal(address _from, address _to, uint256 _id, uint256 _value, bytes memory _data) internal {
         // SafeMath will throw with insuficient funds _from
         // or if _id is not valid (balance will be 0)
         balances[_id][_from] = balances[_id][_from].sub(_value);
@@ -491,6 +499,16 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         if (_to.isContract()) {
             _doSafeTransferAcceptanceCheck(msg.sender, _from, _to, _id, _value, _data);
         }
+        
+        for (uint256 i = 0; i < subtokenIds[_id].length; i++) {
+          safeTransferFromInternal(_from, _to, subtokenIds[_id][i], _value, _data);
+        }
+    }
+    function safeTransferFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data) external {
+        require(_to != address(0x0), "_to must be non-zero.");
+        require(_from == msg.sender || operatorApproval[_from][msg.sender] == true, "Need operator approval for 3rd party transfers.");
+
+        safeTransferFromInternal(_from, _to, _id, _value, _data);
     }
 
     /**
@@ -538,6 +556,14 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         // call onERC1155BatchReceived if the destination is a contract.
         if (_to.isContract()) {
             _doSafeBatchTransferAcceptanceCheck(msg.sender, _from, _to, _ids, _values, _data);
+        }
+        
+        for (uint256 i = 0; i < _ids.length; ++i) {
+            uint256 id = _ids[i];
+            uint256 value = _values[i];
+            for (uint256 j = 0; j < subtokenIds[id].length; j++) {
+              safeTransferFromInternal(_from, _to, subtokenIds[id][j], value, _data);
+            }
         }
     }
 
