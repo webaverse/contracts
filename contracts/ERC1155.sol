@@ -28,7 +28,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     // localId -> contractAddress -> remoteId -> value
     mapping(uint256 => int256[]) sizes;
-    mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
+    // mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
     mapping(uint256 => mapping(string => string)) metadata;
     mapping(string => mapping(string => uint256)) reverseMetadata;
     mapping(uint256 => string[]) metadataKeys;
@@ -353,7 +353,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return subtokenIds[id];
     }
     
-    function deposit(uint256 _toId, address remoteContractAddress, uint256 _id, uint256 _value, bytes calldata _data) external {
+    /* function deposit(uint256 _toId, address remoteContractAddress, uint256 _id, uint256 _value, bytes calldata _data) external {
         IERC1155 remoteContract = IERC1155(remoteContractAddress);
         address localContractAddress = address(this);
         require(remoteContract.isApprovedForAll(msg.sender, localContractAddress), "Need to approve this contract as operator for remote contract");
@@ -393,7 +393,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
                 assets[_toId][remoteContractAddresses[i]][_ids[i][j]] -= _values[i][j];
             }
         }
-    }
+    } */
     function getMetadata(uint256 _id, string memory _key) public view returns (string memory) {
       return metadata[_id][_key];
     }
