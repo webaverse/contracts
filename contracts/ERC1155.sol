@@ -15,8 +15,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     using Address for address;
 
     address owner;
-    string tokenName = "Gunt";
-    string uriPrefix = "https://tokens.gunt.one/";
+    string tokenName = "Cryptopolys";
+    string uriPrefix = "https://tokens.cryptopolys.com/";
     uint256 nonce = 0;
 
     // id => (owner => balance)
@@ -27,6 +27,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     // localId -> contractAddress -> remoteId -> value
+    mapping(uint256 => uint256[]) sizes;
     mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
     mapping(uint256 => mapping(string => string)) metadata;
     mapping(string => mapping(string => uint256)) reverseMetadata;
@@ -154,7 +155,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       address signerAddress = recoverSignerAddress(h, signature);
       return balances[_id][signerAddress] > 0;
     }
-    function mintInternal(uint256 id, address addr, uint256 count) internal returns (uint256) {
+    function mintInternal(uint256 id, address addr, uint256 count, uint256[] memory size) internal returns (uint256) {
+        require(size.length == 3);
         if (addr == address(0)) {
             addr = msg.sender;
         }
@@ -165,6 +167,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         }
         minterApproval[id][addr] = true;
         balances[id][addr] += count;
+        sizes[id] = size;
         
         emit TransferSingle(msg.sender, address(0), addr, id, count);
         emit URI(_uri(id), id);
@@ -204,11 +207,11 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       }
     }
 
-    function mint(uint256 id, address addr, uint256 count) external returns (uint256) {
-        return mintInternal(id, addr, count);
+    function mint(uint256 id, address addr, uint256 count, uint256[] calldata size) external returns (uint256) {
+        return mintInternal(id, addr, count, size);
     }
-    function mintWithMetadata(uint256 id, address addr, uint256 count, string calldata _key, string calldata _value) external returns (uint256) {
-        id = mintInternal(id, addr, count);
+    function mintWithMetadata(uint256 id, address addr, uint256 count, uint256[] calldata size, string calldata _key, string calldata _value) external returns (uint256) {
+        id = mintInternal(id, addr, count, size);
         setMetadataInternal(id, _key, _value);
         return id;
     }
