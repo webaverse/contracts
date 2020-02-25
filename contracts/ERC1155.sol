@@ -107,13 +107,13 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         for (uint i = 0; i < _bb.length; i++) bab[k++] = _bb[i];
         return string(bab);
       }
-      function getSlice(uint256 begin, uint256 end, string memory text) internal pure returns (string memory) {
+      /* function getSlice(uint256 begin, uint256 end, string memory text) internal pure returns (string memory) {
         bytes memory a = new bytes(end-begin);
         for(uint i=0;i<=end-begin;i++){
             a[i] = bytes(text)[i+begin-1];
         }
         return string(a);    
-      }
+      } */
       
     function _uri(uint256 _id) internal view returns (string memory) {
         return strConcat(uriPrefix, uint2hex(_id));
@@ -253,6 +253,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     }
     function getNonce() external view returns (uint256) {
         return nonce;
+    }
+    function getSize(uint256 id) external view returns (int256[] memory) {
+        return sizes[id];
     }
     function intersectsRect(int256 x1, int256 z1, int256 x2, int256 z2, int256 x3, int256 z3, int256 x4, int256 z4) internal pure returns (bool) {
         x2 += x1;
