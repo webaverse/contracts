@@ -27,14 +27,36 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     // localId -> contractAddress -> remoteId -> value
-    mapping(uint256 => uint256[]) sizes;
+    mapping(uint256 => int256[]) sizes;
     mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
     mapping(uint256 => mapping(string => string)) metadata;
     mapping(string => mapping(string => uint256)) reverseMetadata;
     mapping(uint256 => string[]) metadataKeys;
+
+    // grid
+    mapping(int256 => mapping(int256 => uint256)) grid;
+    mapping(uint256 => int256[]) bindings;
+    mapping(uint256 => mapping(uint256 => uint256)) subtokens;
+    mapping(uint256 => uint256[]) subtokenIds;
+    mapping(uint256 => uint256) subtokenBindings;
+    int256[] gridSize;
+    int256[] maxTokenSize;
     
     constructor() public {
         owner = msg.sender;
+
+        gridSize = new int256[](6);
+        gridSize[0] = -100;
+        gridSize[1] = 0;
+        gridSize[2] = -100;
+        gridSize[3] = 100;
+        gridSize[4] = 0;
+        gridSize[5] = 100;
+        
+        maxTokenSize = new int256[](3);
+        maxTokenSize[0] = 16;
+        maxTokenSize[1] = 128;
+        maxTokenSize[2] = 16;
     }
     
     function name() public view returns (string memory _name) {
@@ -155,12 +177,12 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       address signerAddress = recoverSignerAddress(h, signature);
       return balances[_id][signerAddress] > 0;
     }
-    function mintInternal(uint256 id, address addr, uint256 count, uint256[] memory size) internal returns (uint256) {
-        require(size.length == 3);
+    function mintInternal(uint256 id, address addr, uint256 count, int256[] memory size) internal returns (uint256) {
         if (addr == address(0)) {
             addr = msg.sender;
         }
-        require(id == 0 || minterApproval[id][addr]);
+        require(id == 0 || minterApproval[id][addr], "Not approved to mint");
+        require(size.length == 3 && size[0] < maxTokenSize[0] && size[1] < maxTokenSize[1] && size[2] < maxTokenSize[2], "Invalid size");
 
         if (id == 0) {
           id = ++nonce;
@@ -207,10 +229,10 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       }
     }
 
-    function mint(uint256 id, address addr, uint256 count, uint256[] calldata size) external returns (uint256) {
+    function mint(uint256 id, address addr, uint256 count, int256[] calldata size) external returns (uint256) {
         return mintInternal(id, addr, count, size);
     }
-    function mintWithMetadata(uint256 id, address addr, uint256 count, uint256[] calldata size, string calldata _key, string calldata _value) external returns (uint256) {
+    function mintWithMetadata(uint256 id, address addr, uint256 count, int256[] calldata size, string calldata _key, string calldata _value) external returns (uint256) {
         id = mintInternal(id, addr, count, size);
         setMetadataInternal(id, _key, _value);
         return id;
@@ -238,6 +260,76 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     }
     function getNonce() external view returns (uint256) {
         return nonce;
+    }
+    function intsersectsRect(int256 x1, int256 z1, int256 x2, int256 z2, int256 x3, int256 z3, int256 x4, int256 z4) internal pure returns (bool) {
+        // If one rectangle is on left side of other 
+        // l1.x, l1.y, r1.x, r1.y, l2.x, l2.y, r2.x, r2.y,
+        if (x1 > x4 || x3 > x2) 
+            return false; 
+      
+        // If one rectangle is above other 
+        if (z1 < z4 || z3 < z2) 
+            return false; 
+      
+        return true; 
+    }
+    function unbindFromGridInternal(uint256 id) internal {
+        int256[] storage oldBinding = bindings[id];
+        if (oldBinding.length > 0) {
+            grid[oldBinding[0]][oldBinding[2]] = 0;
+            oldBinding.length = 0;
+        }
+    }
+    function bindToGrid(uint256 id, int256[] calldata location) external {
+        require(balances[id][msg.sender] > 0, "Token not owned.");
+        require(location.length == 3);
+        
+        unbindFromGridInternal(id);
+        
+        int256[] storage size = sizes[id];
+        for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + maxTokenSize[0]; x++) {
+            for (int256 z = location[2] - maxTokenSize[2]; z < location[2] + maxTokenSize[2]; z++) {
+                if (grid[x][z] != 0) {
+                  int256[] storage occupiedSize = sizes[grid[x][z]];
+                  require(!intsersectsRect(x, z, x + occupiedSize[0], z + occupiedSize[2], location[0], location[2], location[0] + size[0], location[2] + size[2]));
+                }
+            }
+        }
+
+        grid[location[0]][location[2]] = id;
+        bindings[id] = location;
+    }
+    function unbindFromGrid(uint256 id) external {
+        require(bindings[id].length > 0, "Token not boudn to grid");
+        unbindFromGridInternal(id);
+    }
+    function unbindFromTokenInternal(uint256 to) internal {
+        uint256 from = subtokenBindings[to];
+        if (from != 0) {
+            subtokens[from][to] = 0;
+            uint256[] storage subtokenIdsList = subtokenIds[from];
+            for (uint256 i = 0; i < subtokenIdsList.length; i++) {
+                if (subtokenIdsList[i] == to) {
+                  subtokenIdsList[i] = 0;
+                }
+            }
+        }
+    }
+    function bindToToken(uint256 from, uint256 to, uint256 location) external {
+        require(balances[from][msg.sender] > 0, "From token not owned");
+        require(balances[to][msg.sender] > 0, "To token not owned");
+        require(bindings[from].length == 0, "From token already bound to grid");
+        require(bindings[to].length > 0, "To token not bound");
+        
+        unbindFromTokenInternal(to);
+        
+        subtokens[from][to] = location;
+        subtokenIds[from].push(to);
+        subtokenBindings[to] = from;
+    }
+    function unbindFromToken(uint256 id) external {
+        require(subtokenBindings[id] != 0, "Token not bound to token");
+        unbindFromTokenInternal(id);
     }
     
     function deposit(uint256 _toId, address remoteContractAddress, uint256 _id, uint256 _value, bytes calldata _data) external {
