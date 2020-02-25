@@ -279,7 +279,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     }
     function bindToGrid(uint256 id, int256[] calldata location) external {
         require(balances[id][msg.sender] > 0, "Token not owned.");
-        require(location.length == 3);
+        require(location.length == 3, "Invalid location");
         
         unbindFromGridInternal(id);
         
@@ -287,7 +287,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + maxTokenSize[0]; x++) {
             for (int256 z = location[2] - maxTokenSize[2]; z < location[2] + maxTokenSize[2]; z++) {
                 if (grid[x][z] != 0) {
-                  require(!intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], size[0], size[2]));
+                  require(!intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], size[0], size[2]), "Grid conflict");
                 }
             }
         }
