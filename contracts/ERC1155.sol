@@ -262,16 +262,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         z2 += z1;
         x4 += x3;
         z4 += z3;
-        // If one rectangle is on left side of other 
-        // l1.x, l1.y, r1.x, r1.y, l2.x, l2.y, r2.x, r2.y,
-        if (x1 > x4 || x3 > x2) 
-            return false; 
-      
-        // If one rectangle is above other 
-        if (z1 < z4 || z3 < z2) 
-            return false; 
-      
-        return true; 
+        return x1 < x4 && x2 > x3 && z1 < z4 && z2 > z3;
     }
     function unbindFromGridInternal(uint256 id) internal {
         int256[] storage oldBinding = bindings[id];
@@ -301,6 +292,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function unbindFromGrid(uint256 id) external {
         require(bindings[id].length > 0, "Token not bound to grid");
         unbindFromGridInternal(id);
+    }
+    function getGrid(int256 x, int256 z) external view returns (uint256) {
+        return grid[x][z];
     }
     function getGridTokenIds(int256[] calldata location, int256[] calldata range) external view returns (uint256[] memory) {
         uint256[] memory result = new uint256[](256);
