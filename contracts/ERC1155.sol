@@ -35,7 +35,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
 
     // grid
     mapping(int256 => mapping(int256 => uint256)) grid;
-    mapping(uint256 => int256[]) bindings;
+    mapping(uint256 => int256[]) gridBindings;
     mapping(uint256 => mapping(uint256 => uint256)) subtokens;
     mapping(uint256 => uint256[]) subtokenIds;
     mapping(uint256 => uint256) subtokenBindings;
@@ -265,10 +265,10 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return x1 < x4 && x2 > x3 && z1 < z4 && z2 > z3;
     }
     function unbindFromGridInternal(uint256 id) internal {
-        int256[] storage oldBinding = bindings[id];
-        if (oldBinding.length > 0) {
-            grid[oldBinding[0]][oldBinding[2]] = 0;
-            oldBinding.length = 0;
+        int256[] storage oldGridBinding = gridBindings[id];
+        if (oldGridBinding.length > 0) {
+            grid[oldGridBinding[0]][oldGridBinding[2]] = 0;
+            oldGridBinding.length = 0;
         }
     }
     function bindToGrid(uint256 id, int256[] calldata location) external {
@@ -287,14 +287,17 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         }
 
         grid[location[0]][location[2]] = id;
-        bindings[id] = location;
+        gridBindings[id] = location;
     }
     function unbindFromGrid(uint256 id) external {
-        require(bindings[id].length > 0, "Token not bound to grid");
+        require(gridBindings[id].length > 0, "Token not bound to grid");
         unbindFromGridInternal(id);
     }
     function getGrid(int256 x, int256 z) external view returns (uint256) {
         return grid[x][z];
+    }
+    function getGridBinding(uint256 id) external view returns (int256[] memory) {
+        return gridBindings[id];
     }
     function getGridTokenIds(int256[] calldata location, int256[] calldata range) external view returns (uint256[] memory) {
         uint256[] memory result = new uint256[](256);
@@ -338,7 +341,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         require(from != to, "From and to tokens must be different");
         require(balances[from][msg.sender] > 0, "From token not owned");
         require(balances[to][msg.sender] > 0, "To token not owned");
-        require(bindings[from].length > 0, "From token not bound to grid");
+        require(gridBindings[from].length > 0, "From token not bound to grid");
 
         unbindFromGridInternal(to);
         unbindFromTokenInternal(to);
