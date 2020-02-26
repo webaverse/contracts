@@ -306,7 +306,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         uint256[] memory result = new uint256[](256);
         uint256 index = 0;
         for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + range[0] + maxTokenSize[0]; x++) {
-            for (int256 z = location[2] - maxTokenSize[2]; x < location[2] + range[2] + maxTokenSize[2]; z++) {
+            for (int256 z = location[2] - maxTokenSize[2]; z < location[2] + range[2] + maxTokenSize[2]; z++) {
                 if (grid[x][z] != 0) {
                     if (intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], range[0], range[2])) {
                         result[index++] = grid[x][z];
