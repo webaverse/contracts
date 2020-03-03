@@ -254,6 +254,20 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function getNonce() external view returns (uint256) {
         return nonce;
     }
+    function getInventory(address addr) external view returns (uint256[] memory) {
+        uint256[] memory result = new uint256[](1024);
+        uint256 index = 0;
+        for (uint256 i = 1; i <= nonce; i++) {
+            if (balances[i][addr] > 0) {
+                result[index++] = i;
+            }
+        }
+        uint256[] memory result2 = new uint256[](index);
+        for (uint256 i = 0; i < index; i++) {
+            result2[i] = result[i];
+        }
+        return result2;
+    }
     function getSize(uint256 id) external view returns (int256[] memory) {
         return sizes[id];
     }
@@ -300,7 +314,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         return gridBindings[id];
     }
     function getGridTokenIds(int256[] calldata location, int256[] calldata range) external view returns (uint256[] memory) {
-        uint256[] memory result = new uint256[](256);
+        uint256[] memory result = new uint256[](1024);
         uint256 index = 0;
         for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + range[0] + maxTokenSize[0]; x++) {
             for (int256 z = location[2] - maxTokenSize[2]; z < location[2] + range[2] + maxTokenSize[2]; z++) {
