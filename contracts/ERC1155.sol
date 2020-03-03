@@ -20,8 +20,9 @@ contract RealityScript {
       uint256 id;
       Transform transform;
   }
-  struct HPStateChange {
-      int256 delta;
+  struct State {
+      Transform transform;
+      int256 hpDelta;
   }
 
   function abs(int x) internal pure returns (uint) {
@@ -44,6 +45,9 @@ contract RealityScript {
   function stringEquals(string memory a, string memory b) internal pure returns (bool) {
       return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))) );
   }
+  function transformEquals(Transform memory a, Transform memory b) internal pure returns (bool) {
+      return a.x == b.x && a.y == b.y && a.z == b.z;
+  }
 
   ERC1155 parent;
   uint256 id;
@@ -53,19 +57,24 @@ contract RealityScript {
       id = _id;
       hp = 100;
   }
-  function initState() public pure returns (HPStateChange memory) {
-      return HPStateChange(0);
+  function initState() public pure returns (State memory) {
+      return State(Transform(0, 0, 0), 0);
   }
-  function tickState(Transform memory t, Object[] memory os, HPStateChange memory state) public returns (bool, HPStateChange memory) {
-      return (false, state);
+  function tickState(Transform memory t, Object[] memory os, State memory state) public pure returns (bool, State memory) {
+      bool doApply = (
+        !transformEquals(t, state.transform) &&
+        os.length > 0 && t.x == os[0].transform.x && t.y == os[0].transform.y && t.z == os[0].transform.z
+      );
+      state.transform = t;
+      return (doApply, state);
   }
-  function applyState(HPStateChange memory stateChange) public {
+  function applyState(State memory stateChange) public {
       require(hp > 0);
       
-      hp += stateChange.delta;
-      parent.setChildMetadata();
+      hp += stateChange.hpDelta;
+      // parent.setChildMetadata();
       if (hp < 0) {
-          parent.destroyChild(id);
+          parent.childChangeBalance(id, address(0), -1);
           // parent.safeTransferFrom(_from, address(0), uint256 _id, uint256 _value, data);
       }
   }
@@ -260,6 +269,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         balances[id][msg.sender]++;
         sizes[id] = size;
         contracts[id] = createInternal(bytecode, id);
+        operatorApproval[msg.sender][contracts[id]] = true;
         
         emit TransferSingle(msg.sender, address(0), msg.sender, id, 1);
         emit URI(_uri(id), id);
@@ -524,11 +534,21 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     
     // children
     
-    function setChildMetadata() external pure {
-        
-    }
-    function destroyChild(uint256 id) external pure {
-        
+    /* function setChildMetadata() external pure {
+    } */
+    function childChangeBalance(uint256 id, address addr, int256 value) external {
+       require(contracts[id] == msg.sender);
+       require(value != 0);
+
+       int256 newBalance = int256(balances[id][addr]) + value;
+       if (newBalance >= 0) {
+            balances[id][addr] = uint256(newBalance);
+       }
+       if (value > 0) {
+           emit TransferSingle(msg.sender, address(0), addr, id, uint256(value));
+       } else {
+           emit TransferSingle(msg.sender, addr, address(0), id, uint256(-value));
+       }
     }
 
 /////////////////////////////////////////// ERC165 //////////////////////////////////////////////
