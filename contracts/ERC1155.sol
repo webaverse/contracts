@@ -8,9 +8,68 @@ import "./IERC1155Metadata.sol";
 import "./IERC1155TokenReceiver.sol";
 import "./IERC1155.sol";
 
-/* contract RealityScript {
-    
-} */
+contract RealityScript {
+  struct Transform {
+      int256 x;
+      int256 y;
+      int256 z;
+      /* bytes32[4] quaternion;
+      bytes32[3] scale; */
+  }
+  struct Object {
+      uint256 id;
+      Transform transform;
+  }
+  struct HPStateChange {
+      int256 delta;
+  }
+
+  function abs(int x) internal pure returns (uint) {
+      if (x < 0) {
+          x *= -1;
+      }
+      return uint(x);
+  }
+  function sqrt(uint x) internal pure returns (uint y) {
+        uint z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
+    }
+  function collides(Transform memory p1, Transform memory p2) internal pure returns (bool) {
+      return sqrt(abs(p1.x - p2.x)**2 + abs(p1.y - p2.y)**2 + abs(p1.z - p2.z)**2) <= 1;
+  }
+  function stringEquals(string memory a, string memory b) internal pure returns (bool) {
+      return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))) );
+  }
+
+  ERC1155 parent;
+  uint256 id;
+  int256 hp;
+  constructor(ERC1155 _parent, uint256 _id) public payable {
+      parent = _parent;
+      id = _id;
+      hp = 100;
+  }
+  function initState() public pure returns (HPStateChange memory) {
+      return HPStateChange(0);
+  }
+  function tickState(Transform memory t, Object[] memory os, HPStateChange memory state) public returns (bool, HPStateChange memory) {
+      return (false, state);
+  }
+  function applyState(HPStateChange memory stateChange) public {
+      require(hp > 0);
+      
+      hp += stateChange.delta;
+      parent.setChildMetadata();
+      if (hp < 0) {
+          parent.destroyChild(id);
+          // parent.safeTransferFrom(_from, address(0), uint256 _id, uint256 _value, data);
+      }
+  }
+}
 
 // A sample implementation of core ERC1155 function.
 contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
@@ -182,6 +241,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       address signerAddress = recoverSignerAddress(h, signature);
       return balances[_id][signerAddress] > 0;
     } */
+    
+    // mint
+    
     function createInternal(bytes memory bytecode, uint256 id) internal returns (address addr) {
         bytes memory bytecode2 = abi.encode(bytecode, id); // constructor argument
         uint256 value = 0; // change if you want to attach ether
@@ -269,6 +331,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function getNonce() external view returns (uint256) {
         return nonce;
     }
+    
+    // grid
+    
     function getSize(uint256 id) external view returns (int256[] memory) {
       return sizes[id];
     }
@@ -419,6 +484,9 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
             }
         }
     } */
+    
+    // metadata
+    
     function getMetadata(uint256 _id, string memory _key) public view returns (string memory) {
       return metadata[_id][_key];
     }
@@ -453,6 +521,15 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function getHash(uint256 id) external view returns (uint256) {
         return idToHash[id];
     } */
+    
+    // children
+    
+    function setChildMetadata() external pure {
+        
+    }
+    function destroyChild(uint256 id) external pure {
+        
+    }
 
 /////////////////////////////////////////// ERC165 //////////////////////////////////////////////
 
