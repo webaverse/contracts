@@ -8,6 +8,10 @@ import "./IERC1155Metadata.sol";
 import "./IERC1155TokenReceiver.sol";
 import "./IERC1155.sol";
 
+/* contract RealityScript {
+    
+} */
+
 // A sample implementation of core ERC1155 function.
 contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
 {
@@ -28,6 +32,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     mapping(uint256 => mapping(address => bool)) internal minterApproval;
     // localId -> contractAddress -> remoteId -> value
     mapping(uint256 => int256[]) sizes;
+    mapping(uint256 => address) contracts;
     // mapping(uint256 => mapping(address => mapping(uint256 => uint256))) assets;
     mapping(uint256 => mapping(string => string)) metadata;
     mapping(string => mapping(string => uint256)) reverseMetadata;
@@ -35,7 +40,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
 
     // grid
     mapping(int256 => mapping(int256 => uint256)) grid;
-    mapping(uint256 => int256[]) gridBindings;
+    mapping(uint256 => int256[]) bindings;
     mapping(uint256 => mapping(uint256 => uint256)) subtokens;
     mapping(uint256 => uint256[]) subtokenIds;
     mapping(uint256 => uint256) subtokenBindings;
@@ -177,12 +182,22 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       address signerAddress = recoverSignerAddress(h, signature);
       return balances[_id][signerAddress] > 0;
     } */
-    function mintInternal(int256[] memory size) internal returns (uint256) {
+    function createInternal(bytes memory bytecode, uint256 id) internal returns (address addr) {
+        bytes memory bytecode2 = abi.encode(bytecode, id); // constructor argument
+        uint256 value = 0; // change if you want to attach ether
+        assembly {
+            addr := create(value, add(bytecode2, 0x20), mload(bytecode2))
+        }
+        require(addr != address(0), "Contract creation failed.");
+        return addr;
+    }
+    function mintInternal(int256[] memory size, bytes memory bytecode) internal returns (uint256) {
         uint256 id = ++nonce;
         require(size.length == 3 && size[0] > 0 && size[0] < maxTokenSize[0] && size[1] > 0 && size[1] < maxTokenSize[1] && size[2] > 0 && size[2] < maxTokenSize[2], "Invalid size");
         minterApproval[id][msg.sender] = true;
         balances[id][msg.sender]++;
         sizes[id] = size;
+        contracts[id] = createInternal(bytecode, id);
         
         emit TransferSingle(msg.sender, address(0), msg.sender, id, 1);
         emit URI(_uri(id), id);
@@ -225,8 +240,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     /* function mint(uint256 id, address addr, int256[] calldata size) external returns (uint256) {
         return mintInternal(id, size);
     } */
-    function mint(int256[] calldata size, string calldata _key, string calldata _value) external returns (uint256) {
-        uint256 id = mintInternal(size);
+    function mint(int256[] calldata size, bytes calldata bytecode, string calldata _key, string calldata _value) external returns (uint256) {
+        uint256 id = mintInternal(size, bytecode);
         setMetadataInternal(id, _key, _value);
         return id;
     }
@@ -254,40 +269,35 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
     function getNonce() external view returns (uint256) {
         return nonce;
     }
-    function getInventory(address addr) external view returns (uint256[] memory) {
-        uint256[] memory result = new uint256[](1024);
-        uint256 index = 0;
-        for (uint256 i = 1; i <= nonce; i++) {
-            if (balances[i][addr] > 0) {
-                result[index++] = i;
-            }
-        }
-        uint256[] memory result2 = new uint256[](index);
-        for (uint256 i = 0; i < index; i++) {
-            result2[i] = result[i];
-        }
-        return result2;
-    }
     function getSize(uint256 id) external view returns (int256[] memory) {
-        return sizes[id];
+      return sizes[id];
     }
     function intersectsRect(int256 x1, int256 z1, int256 x2, int256 z2, int256 x3, int256 z3, int256 x4, int256 z4) internal pure returns (bool) {
         x2 += x1;
         z2 += z1;
         x4 += x3;
         z4 += z3;
-        return x1 < x4 && x2 > x3 && z1 < z4 && z2 > z3;
+        // If one rectangle is on left side of other 
+        // l1.x, l1.y, r1.x, r1.y, l2.x, l2.y, r2.x, r2.y,
+        if (x1 > x4 || x3 > x2) 
+            return false; 
+      
+        // If one rectangle is above other 
+        if (z1 < z4 || z3 < z2) 
+            return false; 
+      
+        return true; 
     }
     function unbindFromGridInternal(uint256 id) internal {
-        int256[] storage oldGridBinding = gridBindings[id];
-        if (oldGridBinding.length > 0) {
-            grid[oldGridBinding[0]][oldGridBinding[2]] = 0;
-            oldGridBinding.length = 0;
+        int256[] storage oldBinding = bindings[id];
+        if (oldBinding.length > 0) {
+            grid[oldBinding[0]][oldBinding[2]] = 0;
+            oldBinding.length = 0;
         }
     }
     function bindToGrid(uint256 id, int256[] calldata location) external {
-        require(balances[id][msg.sender] > 0, "Token not owned");
-        require(location.length == 3, "Invalid location");
+        require(balances[id][msg.sender] > 0, "Token not owned.");
+        require(location.length == 3);
         
         unbindFromGridInternal(id);
         
@@ -295,29 +305,23 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + maxTokenSize[0]; x++) {
             for (int256 z = location[2] - maxTokenSize[2]; z < location[2] + maxTokenSize[2]; z++) {
                 if (grid[x][z] != 0) {
-                  require(!intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], size[0], size[2]), "Grid conflict");
+                  require(!intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], size[0], size[2]));
                 }
             }
         }
 
         grid[location[0]][location[2]] = id;
-        gridBindings[id] = location;
+        bindings[id] = location;
     }
     function unbindFromGrid(uint256 id) external {
-        require(gridBindings[id].length > 0, "Token not bound to grid");
+        require(bindings[id].length > 0, "Token not boudn to grid");
         unbindFromGridInternal(id);
     }
-    function getGrid(int256 x, int256 z) external view returns (uint256) {
-        return grid[x][z];
-    }
-    function getGridBinding(uint256 id) external view returns (int256[] memory) {
-        return gridBindings[id];
-    }
     function getGridTokenIds(int256[] calldata location, int256[] calldata range) external view returns (uint256[] memory) {
-        uint256[] memory result = new uint256[](1024);
+        uint256[] memory result = new uint256[](256);
         uint256 index = 0;
         for (int256 x = location[0] - maxTokenSize[0]; x < location[0] + range[0] + maxTokenSize[0]; x++) {
-            for (int256 z = location[2] - maxTokenSize[2]; z < location[2] + range[2] + maxTokenSize[2]; z++) {
+            for (int256 z = location[2] - maxTokenSize[2]; x < location[2] + range[2] + maxTokenSize[2]; z++) {
                 if (grid[x][z] != 0) {
                     if (intersectsRect(x, z, sizes[grid[x][z]][0], sizes[grid[x][z]][2], location[0], location[2], range[0], range[2])) {
                         result[index++] = grid[x][z];
@@ -355,7 +359,7 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
         require(from != to, "From and to tokens must be different");
         require(balances[from][msg.sender] > 0, "From token not owned");
         require(balances[to][msg.sender] > 0, "To token not owned");
-        require(gridBindings[from].length > 0, "From token not bound to grid");
+        require(bindings[from].length > 0, "From token not bound to grid");
 
         unbindFromGridInternal(to);
         unbindFromTokenInternal(to);
