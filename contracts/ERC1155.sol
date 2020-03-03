@@ -21,8 +21,9 @@ contract RealityScript {
       Transform transform;
   }
   struct State {
+      address addr;
       Transform transform;
-      int256 hpDelta;
+      uint256 hp;
   }
 
   function abs(int x) internal pure returns (uint) {
@@ -39,44 +40,61 @@ contract RealityScript {
             z = (x / z + z) / 2;
         }
     }
-  function collides(Transform memory p1, Transform memory p2) internal pure returns (bool) {
+  /* function collides(Transform memory p1, Transform memory p2) internal pure returns (bool) {
       return sqrt(abs(p1.x - p2.x)**2 + abs(p1.y - p2.y)**2 + abs(p1.z - p2.z)**2) <= 1;
-  }
+  } */
   function stringEquals(string memory a, string memory b) internal pure returns (bool) {
       return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))) );
   }
   function transformEquals(Transform memory a, Transform memory b) internal pure returns (bool) {
       return a.x == b.x && a.y == b.y && a.z == b.z;
   }
+  function someTransformEquals(Transform memory t, Object[] memory os) internal pure returns (bool) {
+      for (uint256 i = 0; i < os.length; i++) {
+          if (transformEquals(t, os[i].transform)) {
+              return true;
+          }
+      }
+      return false;
+  }
 
   ERC1155 parent;
   uint256 id;
-  int256 hp;
+  uint256 hp;
   constructor(ERC1155 _parent, uint256 _id) public payable {
       parent = _parent;
       id = _id;
       hp = 100;
   }
-  function initState() public pure returns (State memory) {
-      return State(Transform(0, 0, 0), 0);
+  function initState(address a, Transform memory t) public view returns (State memory) {
+      return State(a, t, hp);
   }
   function tickState(Transform memory t, Object[] memory os, State memory state) public pure returns (bool, State memory) {
-      bool doApply = (
+      bool doApply = false;
+      if (
+        state.hp > 0 &&
         !transformEquals(t, state.transform) &&
-        os.length > 0 && t.x == os[0].transform.x && t.y == os[0].transform.y && t.z == os[0].transform.z
-      );
+        someTransformEquals(t, os)
+      ) {
+          state.hp--;
+          doApply = true;
+      }
       state.transform = t;
       return (doApply, state);
   }
-  function applyState(State memory stateChange) public {
-      require(hp > 0);
+  function applyState(State memory state) public {
+      require(msg.sender == parent.getOwner());
+      // require(hp > 0);
       
-      hp += stateChange.hpDelta;
+      hp = state.hp;
       // parent.setChildMetadata();
-      if (hp < 0) {
-          parent.childChangeBalance(id, address(0), -1);
+      // if (hp < 0) {
+          // parent.childChangeBalance(id, state.addr, -1);
           // parent.safeTransferFrom(_from, address(0), uint256 _id, uint256 _value, data);
-      }
+      // }
+  }
+  function getHp() public view returns (uint256) {
+      return hp;
   }
 }
 
@@ -250,6 +268,10 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants
       address signerAddress = recoverSignerAddress(h, signature);
       return balances[_id][signerAddress] > 0;
     } */
+    
+    function getOwner() external view returns (address) {
+        return owner;
+    }
     
     // mint
     
