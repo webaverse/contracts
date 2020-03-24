@@ -121,6 +121,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants, IRea
     mapping(uint256 => mapping(string => string)) metadata;
     mapping(string => mapping(string => uint256)) reverseMetadata;
     mapping(uint256 => string[]) metadataKeys;
+    mapping(address => mapping(string => uint256)) pointers;
+    mapping(address => mapping(uint256 => string)) reversePointers;
 
     // grid
     mapping(int256 => mapping(int256 => uint256)) grid;
@@ -577,6 +579,20 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants, IRea
     function getHash(uint256 id) external view returns (uint256) {
         return idToHash[id];
     } */
+    function getPointer(string calldata _key) external view returns (uint256) {
+      return pointers[msg.sender][_key];
+    }
+    function setPointer(string calldata _key, uint256 _id) external {
+      require(balances[_id][msg.sender] > 0, "From token not owned");
+      string storage oldKey = reversePointers[msg.sender][_id];
+      if (bytes(oldKey).length > 0) {
+        delete pointers[msg.sender][oldKey];
+        delete reversePointers[msg.sender][_id];
+      }
+      
+      pointers[msg.sender][_key] = _id;
+      reversePointers[msg.sender][_id] = _key;
+    }
     
     // children
 
@@ -647,8 +663,24 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants, IRea
     function safeTransferFromInternal(address _from, address _to, uint256 _id, uint256 _value, bytes memory _data) internal {
         // SafeMath will throw with insuficient funds _from
         // or if _id is not valid (balance will be 0)
+        uint256 oldBalanceFrom = balances[_id][_from];
+        uint256 oldBalanceTo = balances[_id][_to];
+        
         balances[_id][_from] = balances[_id][_from].sub(_value);
         balances[_id][_to]   = _value.add(balances[_id][_to]);
+
+        if (oldBalanceFrom > 0 && balances[_id][_from] <= 0) {
+          string memory oldKey = reversePointers[_from][_id];
+          if (bytes(oldKey).length > 0) {
+            delete pointers[_from][oldKey];
+          }
+        }
+        if (oldBalanceTo > 0 && balances[_id][_to] <= 0) {
+          string memory oldKey = reversePointers[_to][_id];
+          if (bytes(oldKey).length > 0) {
+            delete pointers[_to][oldKey];
+          }
+        }
 
         // MUST emit event
         emit TransferSingle(msg.sender, _from, _to, _id, _value);
