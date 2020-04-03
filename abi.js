@@ -176,77 +176,6 @@ export default [
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"internalType": "int256[]",
-				"name": "location",
-				"type": "int256[]"
-			}
-		],
-		"name": "bindToGrid",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "from",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "to",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "location",
-				"type": "uint256"
-			}
-		],
-		"name": "bindToToken",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"internalType": "int256[]",
-				"name": "location",
-				"type": "int256[]"
-			},
-			{
-				"internalType": "int256[]",
-				"name": "range",
-				"type": "int256[]"
-			}
-		],
-		"name": "getGridTokenIds",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"constant": true,
 		"inputs": [
 			{
@@ -374,48 +303,6 @@ export default [
 		"constant": true,
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "getSize",
-		"outputs": [
-			{
-				"internalType": "int256[]",
-				"name": "",
-				"type": "int256[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "getSubtokenIds",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "_owner",
 				"type": "address"
@@ -462,11 +349,6 @@ export default [
 	{
 		"constant": false,
 		"inputs": [
-			{
-				"internalType": "int256[]",
-				"name": "size",
-				"type": "int256[]"
-			},
 			{
 				"internalType": "string",
 				"name": "_key",
@@ -710,36 +592,6 @@ export default [
 		],
 		"payable": false,
 		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "unbindFromGrid",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "unbindFromToken",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
