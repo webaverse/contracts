@@ -100,8 +100,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants/*, IR
     using Address for address;
 
     address owner;
-    string tokenName = "Cryptopolys";
-    string uriPrefix = "https://tokens.cryptopolys.com/";
+    string tokenName = "Webaverse";
+    string uriPrefix = "https://tokens.webaverse.com/";
     uint256 nonce = 0;
 
     // id => (owner => balance)
