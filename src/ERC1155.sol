@@ -310,11 +310,11 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants/*, IR
         contracts[id] = addr;
         return addr;
     } */
-    function mintInternal(uint256 value) internal returns (uint256) {
+    function mintInternal(uint256 count, uint256 value) internal returns (uint256) {
         uint256 id = ++nonce;
         // require(size.length == 3 && size[0] > 0 && size[0] < maxTokenSize[0] && size[1] > 0 && size[1] < maxTokenSize[1] && size[2] > 0 && size[2] < maxTokenSize[2], "Invalid size");
         minterApproval[id][msg.sender] = true;
-        balances[id][msg.sender]++;
+        balances[id][msg.sender] += count;
         values[id] += value;
         // sizes[id] = size;
         // contracts[id] = createInternal(bytecode, id);
@@ -365,8 +365,8 @@ contract ERC1155 is IERC1155, ERC165, ERC1155Metadata_URI, CommonConstants/*, IR
     /* function mint(uint256 id, address addr, int256[] calldata size) external returns (uint256) {
         return mintInternal(id, size);
     } */
-    function mint(string calldata _key, string calldata _value) external payable returns (uint256) {
-        uint256 id = mintInternal(msg.value);
+    function mint(uint256 _count, string calldata _key, string calldata _value) external payable returns (uint256) {
+        uint256 id = mintInternal(_count, msg.value);
         setMetadataInternal(id, _key, _value);
         return id;
     }
