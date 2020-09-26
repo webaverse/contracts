@@ -9,6 +9,7 @@ pub contract ExampleNFT: NonFungibleToken {
     pub var totalSupply: UInt64
     pub var hashToIdMap: {String: UInt64}
     pub var idToHashMap: {UInt64: String}
+    pub var idToMetadata : {UInt64: {String: String}}
 
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
@@ -17,11 +18,11 @@ pub contract ExampleNFT: NonFungibleToken {
     pub resource NFT: NonFungibleToken.INFT {
         pub let id: UInt64
 
-        pub var metadata: {String: String}
+        // pub var metadata: {String: String}
 
         init(initID: UInt64) {
             self.id = initID
-            self.metadata = {}
+            // self.metadata = {}
         }
     }
 
@@ -63,6 +64,21 @@ pub contract ExampleNFT: NonFungibleToken {
             return self.ownedNFTs.keys
         }
 
+        pub fun getMetadata(id: UInt64, key: String) : String? {
+            let idMetadata = ExampleNFT.idToMetadata[id]
+            if (idMetadata != nil) {
+                return idMetadata![key]
+            } else {
+                return nil
+            }
+        }
+
+        pub fun setMetadata(id: UInt64, key: String, value: String) {
+            let metadata : {String: String} = ExampleNFT.idToMetadata[id] ?? {}
+            metadata.insert(key: key, value)
+            ExampleNFT.idToMetadata.insert(key: id, metadata)
+        }
+
         // borrowNFT gets a reference to an NFT in the collection
         // so that the caller can read its metadata and call its methods
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
@@ -86,11 +102,13 @@ pub contract ExampleNFT: NonFungibleToken {
 
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
-		pub fun mintNFT(hash: String, recipient: &{NonFungibleToken.CollectionPublic}) {
+		pub fun mintNFT(hash: String, filename: String, recipient: &{NonFungibleToken.CollectionPublic}) {
             if (ExampleNFT.hashToIdMap[hash] == nil) {
     			// create a new NFT
     			var newNFT <- create NFT(initID: ExampleNFT.totalSupply)
-                newNFT.metadata["hash"] = hash
+                let metadata : {String: String} = {}
+                metadata.insert(key: "filename", filename)
+                ExampleNFT.idToMetadata.insert(key: ExampleNFT.totalSupply, metadata)
 
     			// deposit it in the recipient's account using their reference
     			recipient.deposit(token: <-newNFT)
@@ -114,6 +132,7 @@ pub contract ExampleNFT: NonFungibleToken {
         self.totalSupply = 0
         self.hashToIdMap = {}
         self.idToHashMap = {}
+        self.idToMetadata = {}
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
