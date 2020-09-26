@@ -19,7 +19,8 @@ transaction {
 
     execute {
         let hash : String = "ARG0"
-        let recipient : Address = ARG1
+        let filename : String = "ARG1"
+        let recipient : Address = ARG2
 
         // Get the public account object for the recipient
         let acct = getAccount(recipient)
@@ -31,6 +32,6 @@ transaction {
             ?? panic("Could not get receiver reference to the NFT Collection")
 
         // Mint the NFT and deposit it to the recipient's collection
-        self.minter.mintNFT(hash: hash, recipient: receiver)
+        self.minter.mintNFT(hash: hash, filename: filename, recipient: receiver)
     }
 }
