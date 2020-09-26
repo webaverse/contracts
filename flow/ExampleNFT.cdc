@@ -64,15 +64,6 @@ pub contract ExampleNFT: NonFungibleToken {
             return self.ownedNFTs.keys
         }
 
-        pub fun getMetadata(id: UInt64, key: String) : String? {
-            let idMetadata = ExampleNFT.idToMetadata[id]
-            if (idMetadata != nil) {
-                return idMetadata![key]
-            } else {
-                return nil
-            }
-        }
-
         pub fun setMetadata(id: UInt64, key: String, value: String) {
             let nft = self.borrowNFT(id: id)
             let metadata : {String: String} = ExampleNFT.idToMetadata[id] ?? {}
@@ -126,6 +117,15 @@ pub contract ExampleNFT: NonFungibleToken {
     // public function that anyone can call to create a new empty collection
     pub fun getHash(id: UInt64): String {
         return ExampleNFT.idToHashMap[id]!
+    }
+
+    pub fun getMetadata(id: UInt64, key: String) : String? {
+        let idMetadata = ExampleNFT.idToMetadata[id]
+        if (idMetadata != nil) {
+            return idMetadata![key]
+        } else {
+            return nil
+        }
     }
 
 	init() {
