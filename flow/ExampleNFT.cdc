@@ -87,10 +87,14 @@ pub contract ExampleNFT: NonFungibleToken {
         return <- create Collection()
     }
 
+    pub resource interface PublicNFTMinter {
+        pub fun mintNFT(hash: String, filename: String, recipient: &{NonFungibleToken.CollectionPublic})
+    }
+
     // Resource that an admin or something similar would own to be
     // able to mint new NFTs
     //
-	pub resource NFTMinter {
+	pub resource NFTMinter : PublicNFTMinter {
 
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
@@ -148,6 +152,7 @@ pub contract ExampleNFT: NonFungibleToken {
         // Create a Minter resource and save it to storage
         let minter <- create NFTMinter()
         self.account.save(<-minter, to: /storage/NFTMinter)
+        self.account.link<&{PublicNFTMinter}>(/public/NFTMinter, target: /storage/NFTMinter)
 
         emit ContractInitialized()
 	}
