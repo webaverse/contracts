@@ -1,4 +1,4 @@
-export default {
+export default ({
   host: 'https://access-testnet.onflow.org',
 
   FungibleToken: '0x9a0766d93b6608b7',
@@ -8,4 +8,4 @@ export default {
   ExampleToken: '0xbd726a7affc6afbf',
   ExampleNFT: '0xa00c3dd0aa47dbf7',
   ExampleAccount: '0x4ad4afd89179f79b',
-};
+})
