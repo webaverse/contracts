@@ -7,17 +7,13 @@ import ExampleNFT from EXAMPLENFTADDRESS
 
 transaction {
 
-    execute {
+    prepare(acct: AuthAccount) {
         let hash : String = "ARG0"
         let filename : String = "ARG1"
-        let recipient : Address = ARG2
 
         let contractAcct = getAccount(EXAMPLENFTADDRESS)
         let minterRef = contractAcct.getCapability(/public/NFTMinter)!.borrow<&{ExampleNFT.PublicNFTMinter}>()
             ?? panic("Could not borrow nft minter capability")
-
-        // Get the public account object for the recipient
-        let acct = getAccount(recipient)
 
         // Borrow the recipient's public NFT collection reference
         let receiver = acct
