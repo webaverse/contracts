@@ -74,6 +74,7 @@ pub contract ExampleNFT: NonFungibleToken {
         }
 
         pub fun setMetadata(id: UInt64, key: String, value: String) {
+            let nft = self.borrowNFT(id: id)
             let metadata : {String: String} = ExampleNFT.idToMetadata[id] ?? {}
             metadata.insert(key: key, value)
             ExampleNFT.idToMetadata.insert(key: id, metadata)
