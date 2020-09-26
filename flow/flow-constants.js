@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   host: 'https://access-testnet.onflow.org',
 
   FungibleToken: '0x9a0766d93b6608b7',
