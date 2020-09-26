@@ -10,6 +10,6 @@ transaction {
     }
 
     execute {
-        self.state.keyValueMap["name"] = "ARG0"
+        self.state.keyValueMap["ARG0"] = "ARG1"
     }
 }
