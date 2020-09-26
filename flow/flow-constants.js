@@ -6,6 +6,6 @@ export default ({
   NonFungibleToken: '0x631e88ae7f1d7c20',
 
   ExampleToken: '0xbd726a7affc6afbf',
-  ExampleNFT: '0x1d3d6f8b023cf91c',
+  ExampleNFT: '0x16175d12ceb98735',
   ExampleAccount: '0x4ad4afd89179f79b',
 })
