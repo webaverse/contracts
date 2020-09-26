@@ -6,21 +6,15 @@ import ExampleNFT from EXAMPLENFTADDRESS
 // stored in /storage/NFTMinter
 
 transaction {
-    
-    // local variable for storing the minter reference
-    let minter: &ExampleNFT.NFTMinter
-
-    prepare(signer: AuthAccount) {
-
-        // borrow a reference to the NFTMinter resource in storage
-        self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: /storage/NFTMinter)
-            ?? panic("Could not borrow a reference to the NFT minter")
-    }
 
     execute {
         let hash : String = "ARG0"
         let filename : String = "ARG1"
         let recipient : Address = ARG2
+
+        let contractAcct = getAccount(EXAMPLENFTADDRESS)
+        let minterRef = contractAcct.getCapability(/public/NFTMinter)!.borrow<&{ExampleNFT.PublicNFTMinter}>()
+            ?? panic("Could not borrow nft minter capability")
 
         // Get the public account object for the recipient
         let acct = getAccount(recipient)
@@ -32,6 +26,6 @@ transaction {
             ?? panic("Could not get receiver reference to the NFT Collection")
 
         // Mint the NFT and deposit it to the recipient's collection
-        self.minter.mintNFT(hash: hash, filename: filename, recipient: receiver)
+        minterRef.mintNFT(hash: hash, filename: filename, recipient: receiver)
     }
 }
