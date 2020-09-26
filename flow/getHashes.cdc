@@ -6,10 +6,12 @@ import ExampleNFT from EXAMPLENFTADDRESS
 pub struct Entry {
     pub let id : UInt64
     pub let hash : String
+    pub let filename : String
 
-    init(id: UInt64, hash : String) {
+    init(id: UInt64, hash: String, filename: String) {
         self.id = id
         self.hash = hash
+        self.filename = filename
     }
 }
 pub fun main() : [Entry] {
@@ -21,7 +23,8 @@ pub fun main() : [Entry] {
     let res : [Entry] = []
     for id in ids {
       let hash = ExampleNFT.idToHashMap[id] ?? ""
-      let e : Entry = Entry(id: id, hash: hash);
+      let filename = ExampleNFT.getMetadata(id: id, key: "filename") ?? ""
+      let e : Entry = Entry(id: id, hash: hash, filename: filename)
       res.append(e)
     }
     return res
