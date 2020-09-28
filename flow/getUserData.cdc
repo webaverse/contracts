@@ -56,7 +56,7 @@ pub fun parseUInt64(s: String?) : UInt64? {
 }
 
 pub fun main() : [String?] {
-    let acct = getAccount(0x0911253774d38330)
+    let acct = getAccount(ARG0)
     
     let collectionRef = acct.getCapability(/public/AccountCollection)!.borrow<&{ExampleAccount.ExampleAccountStatePublic}>()
       ?? panic("Could not borrow capability from public collection")
