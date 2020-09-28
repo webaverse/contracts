@@ -1,8 +1,11 @@
 import NonFungibleToken from NONFUNGIBLETOKENADDRESS
 import ExampleNFT from EXAMPLENFTADDRESS
 
-pub fun main() : String? {
+pub fun main() : [String?] {
     let id : UInt64 = ARG0
 
-    return ExampleNFT.idToHashMap[id]
+    return [
+      ExampleNFT.idToHashMap[id],
+      ExampleNFT.getMetadata(id, "filename")
+    ]
 }
