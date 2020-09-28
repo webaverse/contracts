@@ -9,6 +9,7 @@ pub contract ExampleNFT: NonFungibleToken {
     pub var totalSupply: UInt64
     pub var hashToIdMap: {String: UInt64}
     pub var idToHashMap: {UInt64: String}
+    pub var idToOwnerMap: {UInt64: Address}
     pub var idToMetadata : {UInt64: {String: String}}
 
     pub event ContractInitialized()
@@ -30,14 +31,18 @@ pub contract ExampleNFT: NonFungibleToken {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
+        access(self) var address : Address
 
         init () {
             self.ownedNFTs <- {}
+            self.address = 0x0
         }
 
         // withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
             let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
+
+            ExampleNFT.idToOwnerMap.remove(key: withdrawID)
 
             emit Withdraw(id: token.id, from: self.owner?.address)
 
@@ -53,6 +58,8 @@ pub contract ExampleNFT: NonFungibleToken {
 
             // add the new token to the dictionary which removes the old one
             let oldToken <- self.ownedNFTs[id] <- token
+
+            ExampleNFT.idToOwnerMap[id] = self.address
 
             emit Deposit(id: id, to: self.owner?.address)
 
@@ -75,6 +82,16 @@ pub contract ExampleNFT: NonFungibleToken {
         // so that the caller can read its metadata and call its methods
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
             return &self.ownedNFTs[id] as &NonFungibleToken.NFT
+        }
+
+        pub fun getAddress(): Address {
+            return self.address
+        }
+        pub fun setAddress(account: AuthAccount) {
+            self.address = account.address
+            for id in self.ownedNFTs.keys {
+                ExampleNFT.idToOwnerMap[id] = account.address
+            }
         }
 
         destroy() {
@@ -137,6 +154,7 @@ pub contract ExampleNFT: NonFungibleToken {
         self.totalSupply = 0
         self.hashToIdMap = {}
         self.idToHashMap = {}
+        self.idToOwnerMap = {}
         self.idToMetadata = {}
 
         // Create a Collection resource and save it to storage
