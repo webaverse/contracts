@@ -6,6 +6,6 @@ pub fun main() : [String?] {
 
     return [
       ExampleNFT.idToHashMap[id],
-      ExampleNFT.getMetadata(id, "filename")
+      ExampleNFT.getMetadata(id: id, key: "filename")
     ]
 }
