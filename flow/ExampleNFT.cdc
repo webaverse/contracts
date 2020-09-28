@@ -159,6 +159,7 @@ pub contract ExampleNFT: NonFungibleToken {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
+        collection.setAddress(account: self.account)
         self.account.save(<-collection, to: /storage/NFTCollection)
 
         // create a public capability for the collection
