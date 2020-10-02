@@ -7,10 +7,10 @@ import NonFungibleToken from NONFUNGIBLETOKENADDRESS
 pub contract ExampleNFT: NonFungibleToken {
 
     pub var totalSupply: UInt64
-    pub var hashToIdMap: {String: UInt64}
+    pub var hashToIdMap: {String: [UInt64]}
     pub var idToHashMap: {UInt64: String}
     pub var idToOwnerMap: {UInt64: Address}
-    pub var idToMetadata : {UInt64: {String: String}}
+    pub var hashToMetadata : {String: {String: String}}
 
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
@@ -73,9 +73,10 @@ pub contract ExampleNFT: NonFungibleToken {
 
         pub fun setMetadata(id: UInt64, key: String, value: String) {
             let nft = self.borrowNFT(id: id)
-            let metadata : {String: String} = ExampleNFT.idToMetadata[id] ?? {}
+            let hash : String = ExampleNFT.idToHashMap[id]!
+            let metadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
             metadata.insert(key: key, value)
-            ExampleNFT.idToMetadata.insert(key: id, metadata)
+            ExampleNFT.hashToMetadata.insert(key: hash, metadata)
         }
 
         // borrowNFT gets a reference to an NFT in the collection
@@ -116,22 +117,31 @@ pub contract ExampleNFT: NonFungibleToken {
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
 		pub fun mintNFT(hash: String, filename: String, recipient: &{NonFungibleToken.CollectionPublic}) {
-            if (ExampleNFT.hashToIdMap[hash] == nil) {
+      let map : [UInt64]? = ExampleNFT.hashToIdMap[hash]
+      var canMint : Bool = map == nil
+      if (!canMint) {
+          let hashMetadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
+          let publicMetadata : String = hashMetadata["public"] ?? ""
+          canMint = publicMetadata == "true"
+      }
+      if (canMint) {
     			// create a new NFT
     			var newNFT <- create NFT(initID: ExampleNFT.totalSupply)
                 let metadata : {String: String} = {}
                 metadata.insert(key: "filename", filename)
-                ExampleNFT.idToMetadata.insert(key: ExampleNFT.totalSupply, metadata)
+                ExampleNFT.hashToMetadata.insert(key: hash, metadata)
 
     			// deposit it in the recipient's account using their reference
     			recipient.deposit(token: <-newNFT)
 
-                ExampleNFT.hashToIdMap[hash] = ExampleNFT.totalSupply
-                ExampleNFT.idToHashMap[ExampleNFT.totalSupply] = hash
-                ExampleNFT.totalSupply = ExampleNFT.totalSupply + UInt64(1)
-            } else {
-                panic("hash already exists")
-            }
+          let map : [UInt64] = ExampleNFT.hashToIdMap[hash] ?? []
+          map.append(ExampleNFT.totalSupply)
+          ExampleNFT.hashToIdMap[hash] = map
+          ExampleNFT.idToHashMap[ExampleNFT.totalSupply] = hash
+          ExampleNFT.totalSupply = ExampleNFT.totalSupply + UInt64(1)
+      } else {
+          panic("hash already exists and is not public")
+      }
 		}
 	}
 
@@ -141,7 +151,8 @@ pub contract ExampleNFT: NonFungibleToken {
     }
 
     pub fun getMetadata(id: UInt64, key: String) : String? {
-        let idMetadata = ExampleNFT.idToMetadata[id]
+        let hash : String = ExampleNFT.idToHashMap[id]!
+        let idMetadata = ExampleNFT.hashToMetadata[hash]
         if (idMetadata != nil) {
             return idMetadata![key]
         } else {
@@ -155,7 +166,8 @@ pub contract ExampleNFT: NonFungibleToken {
         self.hashToIdMap = {}
         self.idToHashMap = {}
         self.idToOwnerMap = {}
-        self.idToMetadata = {}
+        self.hashToMetadata = {}
+
         let oldCollection <- self.account.load<@AnyResource>(from: /storage/NFTCollection)
         destroy oldCollection
         let oldMinter <- self.account.load<@AnyResource>(from: /storage/NFTMinter)
