@@ -156,6 +156,10 @@ pub contract ExampleNFT: NonFungibleToken {
         self.idToHashMap = {}
         self.idToOwnerMap = {}
         self.idToMetadata = {}
+        let oldCollection <- self.account.load<@AnyResource>(from: /storage/NFTCollection)
+        destroy oldCollection
+        let oldMinter <- self.account.load<@AnyResource>(from: /storage/NFTMinter)
+        destroy oldMinter
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
