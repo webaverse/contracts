@@ -167,6 +167,11 @@ pub contract ExampleToken: FungibleToken {
 
     init() {
         self.totalSupply = 1000.0
+        
+        let oldVault <- self.account.load<@AnyResource>(from: /storage/exampleTokenVault)
+        destroy oldVault
+        let oldAdmin <- self.account.load<@AnyResource>(from: /storage/exampleTokenAdmin)
+        destroy oldAdmin
 
         // Create the Vault with the total supply of tokens and save it in storage
         //
