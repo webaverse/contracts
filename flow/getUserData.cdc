@@ -70,8 +70,13 @@ pub fun main() : [String?] {
     if (avatarId != nil) {
         avatarHash = ExampleNFT.idToHashMap[avatarId!]
     }
+    var avatarFileName : String? = nil
+    if (avatarId != nil) {
+        avatarFileName = ExampleNFT.getMetadata(id: avatarId!, key: "filename")
+    }
     return [
       collectionRef.keyValueMap["name"],
-      avatarHash
+      avatarHash,
+      avatarFileName
     ]
 }
