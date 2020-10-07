@@ -105,6 +105,21 @@ pub contract ExampleNFT: NonFungibleToken {
             }
         }
 
+        pub fun reMintNFT(id: UInt64, quantity: UInt64) {
+            let nft = self.borrowNFT(id: id)
+            let hash : String = ExampleNFT.idToHashMap[id]!
+            let balance : UInt64 = self.getBalance(id: id)
+            let totalSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
+            if (balance >= totalSupply) {
+                var newNFT <- create NFT(initID: ExampleNFT.totalSupply, quantity: quantity)
+                self.deposit(token: <- newNFT)
+
+                ExampleNFT.hashToTotalSupply[hash] = (ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)) + quantity
+            } else {
+                panic("cannot remint due to not owning entire supply")
+            }
+        }
+
         // borrowNFT gets a reference to an NFT in the collection
         // so that the caller can read its metadata and call its methods
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
