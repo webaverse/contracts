@@ -39,6 +39,7 @@ transaction {
 
             // create a public capability for the collection
             account.link<&{NonFungibleToken.CollectionPublic}>(/public/NFTCollection, target: /storage/NFTCollection)
+            account.link<&{ExampleNFT.CollectionPublic}>(/public/ExampleNFTCollection, target: /storage/NFTCollection)
         }
 
         // If the account doesn't already have a collection
