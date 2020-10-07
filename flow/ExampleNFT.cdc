@@ -29,7 +29,11 @@ pub contract ExampleNFT: NonFungibleToken {
         }
     }
 
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    pub resource interface CollectionPublic {
+      pub fun getBalance(id: UInt64) : UInt64
+    }
+
+    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, CollectionPublic {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
@@ -109,6 +113,16 @@ pub contract ExampleNFT: NonFungibleToken {
                 ExampleNFT.idToOwnerMap[id] = account.address
             }
         } */
+
+        pub fun getBalance(id: UInt64) : UInt64 {
+            if (self.ownedNFTs[id] != nil) {
+                let token = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
+                let token2 = token as! &ExampleNFT.NFT
+                return token2.quantity
+            } else {
+                return UInt64(0)
+            }
+        }
 
         destroy() {
             destroy self.ownedNFTs
