@@ -21,10 +21,7 @@ transaction {
 
             // Create a public capability to the Vault that only exposes
             // the balance field through the Balance interface
-            account.link<&ExampleToken.Vault{FungibleToken.Balance}>(
-                /public/exampleTokenBalance,
-                target: /storage/exampleTokenVault
-            )
+            account.link<&ExampleToken.Vault{FungibleToken.Balance}>(/public/exampleTokenBalance, target: /storage/exampleTokenVault)
         }
 
         // If the account doesn't already have a collection
