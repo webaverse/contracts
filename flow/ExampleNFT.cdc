@@ -94,9 +94,15 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun setMetadata(id: UInt64, key: String, value: String) {
             let nft = self.borrowNFT(id: id)
             let hash : String = ExampleNFT.idToHashMap[id]!
-            let metadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
-            metadata.insert(key: key, value)
-            ExampleNFT.hashToMetadata.insert(key: hash, metadata)
+            let balance : UInt64 = self.getBalance(id: id)
+            let totalSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash]!
+            if (balance >= totalSupply) {
+                let metadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
+                metadata.insert(key: key, value)
+                ExampleNFT.hashToMetadata.insert(key: hash, metadata)
+            } else {
+                panic("cannot set metadata due to not owning entire supply")
+            }
         }
 
         // borrowNFT gets a reference to an NFT in the collection
