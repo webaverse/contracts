@@ -9,7 +9,7 @@ pub struct Entry {
     pub let filename : String
     pub let balance : UInt64
 
-    init(id: UInt64, hash: String, filename: String) {
+    init(id: UInt64, hash: String, filename: String, balance: UInt64) {
         self.id = id
         self.hash = hash
         self.filename = filename
