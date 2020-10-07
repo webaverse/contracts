@@ -132,13 +132,6 @@ pub contract ExampleNFT: NonFungibleToken {
         }
 
         destroy() {
-            for id in self.ownedNFTs.keys {
-                let token = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
-                let token2 = token as! &ExampleNFT.NFT
-                let hash : String = ExampleNFT.idToHashMap[id]!
-                let oldSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
-                ExampleNFT.hashToTotalSupply[hash] = oldSupply - token2.quantity
-            }
             destroy self.ownedNFTs
         }
     }
