@@ -47,18 +47,19 @@ pub contract ExampleNFT: NonFungibleToken {
 
         // withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
-            let token <- self.ownedNFTs.remove(key: withdrawID) as! @ExampleNFT.NFT
-            if (token.quantity > UInt64(1)) {
-                let oldToken <- self.ownedNFTs[token.id] <- create NFT(initID: token.id, quantity: token.quantity - UInt64(1))
+            let balance : UInt64 = self.getBalance(id: withdrawID)
+            let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
+            destroy token
+            if (balance > UInt64(1)) {
+                let oldToken <- self.ownedNFTs[withdrawID] <- create NFT(initID: withdrawID, quantity: balance - UInt64(1))
                 destroy oldToken
             }
-            token.quantity = UInt64(1)
 
             // ExampleNFT.idToOwnerMap.remove(key: withdrawID)
 
-            emit Withdraw(id: token.id, from: self.owner?.address)
+            emit Withdraw(id: withdrawID, from: self.owner?.address)
 
-            return <-token
+            return <- create NFT(initID: withdrawID, quantity: UInt64(1))
         }
 
         // deposit takes a NFT and adds it to the collections dictionary
