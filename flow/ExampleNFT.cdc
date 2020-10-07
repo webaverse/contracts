@@ -7,7 +7,7 @@ import NonFungibleToken from NONFUNGIBLETOKENADDRESS
 pub contract ExampleNFT: NonFungibleToken {
 
     pub var totalSupply: UInt64
-    pub var hashToIdMap: {String: [UInt64]}
+    pub var hashToIdMap: {String: UInt64}
     pub var idToHashMap: {UInt64: String}
     // pub var idToOwnerMap: {UInt64: Address}
     pub var hashToMetadata : {String: {String: String}}
@@ -146,8 +146,8 @@ pub contract ExampleNFT: NonFungibleToken {
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
 		pub fun mintNFT(hash: String, filename: String, quantity: UInt64, recipient: &{NonFungibleToken.CollectionPublic}) {
-      let map : [UInt64]? = ExampleNFT.hashToIdMap[hash]
-      var canMint : Bool = map == nil
+      let id : UInt64? = ExampleNFT.hashToIdMap[hash]
+      var canMint : Bool = id == nil
       if (!canMint) {
           let hashMetadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
           let publicMetadata : String = hashMetadata["public"] ?? ""
@@ -163,9 +163,7 @@ pub contract ExampleNFT: NonFungibleToken {
     			// deposit it in the recipient's account using their reference
     			recipient.deposit(token: <-newNFT)
 
-          let map : [UInt64] = ExampleNFT.hashToIdMap[hash] ?? []
-          map.append(ExampleNFT.totalSupply)
-          ExampleNFT.hashToIdMap[hash] = map
+          ExampleNFT.hashToIdMap[hash] = ExampleNFT.totalSupply
           ExampleNFT.idToHashMap[ExampleNFT.totalSupply] = hash
           ExampleNFT.totalSupply = ExampleNFT.totalSupply + UInt64(1)
       } else {
