@@ -10,6 +10,7 @@ transaction {
     prepare(acct: AuthAccount) {
         let hash : String = "ARG0"
         let filename : String = "ARG1"
+        let quantity : UInt64 = ARG2
 
         let contractAcct = getAccount(EXAMPLENFTADDRESS)
         let minterRef = contractAcct.getCapability(/public/NFTMinter)!.borrow<&{ExampleNFT.PublicNFTMinter}>()
@@ -22,6 +23,6 @@ transaction {
             ?? panic("Could not get receiver reference to the NFT Collection")
 
         // Mint the NFT and deposit it to the recipient's collection
-        minterRef.mintNFT(hash: hash, filename: filename, recipient: receiver)
+        minterRef.mintNFT(hash: hash, filename: filename, quantity: quantity, recipient: receiver)
     }
 }
