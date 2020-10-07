@@ -32,7 +32,7 @@ transaction {
 
             // Create a new empty collection
             let collection <- ExampleNFT.createEmptyCollection() as! @ExampleNFT.Collection
-            collection.setAddress(account: account)
+            // collection.setAddress(account: account)
             
             // save it to the account
             account.save(<-collection, to: /storage/NFTCollection)
