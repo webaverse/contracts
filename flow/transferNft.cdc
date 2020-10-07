@@ -8,7 +8,8 @@ transaction {
     prepare(acct: AuthAccount) {
         let withdrawID : UInt64 = ARG0
         let recipient : Address = ARG1
-        
+        let quantity : UInt64 = ARG2
+
         // get the recipients public account object
         let acct2 = getAccount(recipient)
 
@@ -19,10 +20,15 @@ transaction {
         // borrow a public reference to the receivers collection
         let depositRef = acct2.getCapability(/public/NFTCollection)!.borrow<&{NonFungibleToken.CollectionPublic}>()!
 
-        // withdraw the NFT from the owner's collection
-        let nft <- collectionRef.withdraw(withdrawID: withdrawID)
+        var i : UInt64 = 0
+        while i < quantity {
+            // withdraw the NFT from the owner's collection
+            let nft <- collectionRef.withdraw(withdrawID: withdrawID)
 
-        // Deposit the NFT in the recipient's collection
-        depositRef.deposit(token: <-nft)
+            // Deposit the NFT in the recipient's collection
+            depositRef.deposit(token: <-nft)
+
+            i = i + UInt64(1)
+        }
     }
 }
