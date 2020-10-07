@@ -21,9 +21,9 @@ pub struct Entry {
 pub fun main() : [Entry] {
     let acct = getAccount(ARG0)
     let collectionRef = acct.getCapability(/public/NFTCollection)!.borrow<&{NonFungibleToken.CollectionPublic}>()
-        ?? panic("Could not borrow capability from public collection")
+        ?? panic("Could not borrow capability 1 from public collection")
     let collectionRef2 = acct.getCapability(/public/ExampleNFTCollection)!.borrow<&{ExampleNFT.CollectionPublic}>()
-        ?? panic("Could not borrow capability from public collection")
+        ?? panic("Could not borrow capability 2 from public collection")
     
     let ids : [UInt64] = collectionRef.getIDs()
     let res : [Entry] = []
