@@ -153,14 +153,7 @@ pub contract ExampleNFT: NonFungibleToken {
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
 		pub fun mintNFT(hash: String, filename: String, quantity: UInt64, recipient: &{NonFungibleToken.CollectionPublic}) {
-            let totalSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
-            var canMint : Bool = totalSupply == UInt64(0)
-            if (!canMint) {
-                let hashMetadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
-                let publicMetadata : String = hashMetadata["public"] ?? ""
-                canMint = publicMetadata == "true"
-            }
-            if (canMint) {
+            if (ExampleNFT.hashToIdMap[hash] == nil) {
     			// create a new NFT
                 var newNFT <- create NFT(initID: ExampleNFT.totalSupply, quantity: quantity)
                 let metadata : {String: String} = {}
@@ -180,9 +173,9 @@ pub contract ExampleNFT: NonFungibleToken {
                     ExampleNFT.hashToIdMap[hash] = id
                     ExampleNFT.idToHashMap[id] = hash
                 }
-                ExampleNFT.hashToTotalSupply[hash] = totalSupply + quantity
+                ExampleNFT.hashToTotalSupply[hash] = (ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)) + quantity
             } else {
-                panic("hash already exists and is not public")
+                panic("hash already exists")
             }
 		}
 	}
