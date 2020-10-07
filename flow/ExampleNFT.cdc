@@ -9,7 +9,7 @@ pub contract ExampleNFT: NonFungibleToken {
     pub var totalSupply: UInt64
     pub var hashToIdMap: {String: [UInt64]}
     pub var idToHashMap: {UInt64: String}
-    pub var idToOwnerMap: {UInt64: Address}
+    // pub var idToOwnerMap: {UInt64: Address}
     pub var hashToMetadata : {String: {String: String}}
 
     pub event ContractInitialized()
@@ -18,11 +18,13 @@ pub contract ExampleNFT: NonFungibleToken {
 
     pub resource NFT: NonFungibleToken.INFT {
         pub let id: UInt64
+        pub let quantity: UInt64
 
         // pub var metadata: {String: String}
 
-        init(initID: UInt64) {
+        init(initID: UInt64, quantity: UInt64) {
             self.id = initID
+            self.quantity = quantity
             // self.metadata = {}
         }
     }
@@ -31,18 +33,22 @@ pub contract ExampleNFT: NonFungibleToken {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
-        access(self) var address : Address
+        // access(self) var address : Address
 
         init () {
             self.ownedNFTs <- {}
-            self.address = 0x0
+            // self.address = 0x0
         }
 
         // withdraw removes an NFT from the collection and moves it to the caller
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
-            let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
+            let token <- self.ownedNFTs.remove(key: withdrawID) as! @ExampleNFT.NFT
+            if (token.quantity > UInt64(1)) {
+                let oldToken <- self.ownedNFTs[token.id] <- create NFT(initID: token.id, quantity: token.quantity - UInt64(1))
+                destroy oldToken
+            }
 
-            ExampleNFT.idToOwnerMap.remove(key: withdrawID)
+            // ExampleNFT.idToOwnerMap.remove(key: withdrawID)
 
             emit Withdraw(id: token.id, from: self.owner?.address)
 
@@ -53,17 +59,26 @@ pub contract ExampleNFT: NonFungibleToken {
         // and adds the ID to the id array
         pub fun deposit(token: @NonFungibleToken.NFT) {
             let token <- token as! @ExampleNFT.NFT
-
             let id: UInt64 = token.id
+            let quantity: UInt64 = token.quantity
+            destroy token
+
+            var oldQuantity = UInt64(0)
+            if (self.ownedNFTs[id] != nil) {
+                let oldToken <- self.ownedNFTs.remove(key: id) as! @ExampleNFT.NFT
+                oldQuantity = oldToken.quantity
+                destroy oldToken
+            }
+
+            let newQuantity = oldQuantity + quantity
 
             // add the new token to the dictionary which removes the old one
-            let oldToken <- self.ownedNFTs[id] <- token
+            let oldToken2 <- self.ownedNFTs[id] <- create NFT(initID: id, quantity: newQuantity)
+            destroy oldToken2
 
-            ExampleNFT.idToOwnerMap[id] = self.address
+            // ExampleNFT.idToOwnerMap[id] = self.address
 
             emit Deposit(id: id, to: self.owner?.address)
-
-            destroy oldToken
         }
 
         // getIDs returns an array of the IDs that are in the collection
@@ -85,7 +100,7 @@ pub contract ExampleNFT: NonFungibleToken {
             return &self.ownedNFTs[id] as &NonFungibleToken.NFT
         }
 
-        pub fun getAddress(): Address {
+        /* pub fun getAddress(): Address {
             return self.address
         }
         pub fun setAddress(account: AuthAccount) {
@@ -93,7 +108,7 @@ pub contract ExampleNFT: NonFungibleToken {
             for id in self.ownedNFTs.keys {
                 ExampleNFT.idToOwnerMap[id] = account.address
             }
-        }
+        } */
 
         destroy() {
             destroy self.ownedNFTs
@@ -106,7 +121,7 @@ pub contract ExampleNFT: NonFungibleToken {
     }
 
     pub resource interface PublicNFTMinter {
-        pub fun mintNFT(hash: String, filename: String, recipient: &{NonFungibleToken.CollectionPublic})
+        pub fun mintNFT(hash: String, filename: String, quantity: UInt64, recipient: &{NonFungibleToken.CollectionPublic})
     }
 
     // Resource that an admin or something similar would own to be
@@ -116,7 +131,7 @@ pub contract ExampleNFT: NonFungibleToken {
 
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
-		pub fun mintNFT(hash: String, filename: String, recipient: &{NonFungibleToken.CollectionPublic}) {
+		pub fun mintNFT(hash: String, filename: String, quantity: UInt64, recipient: &{NonFungibleToken.CollectionPublic}) {
       let map : [UInt64]? = ExampleNFT.hashToIdMap[hash]
       var canMint : Bool = map == nil
       if (!canMint) {
@@ -126,7 +141,7 @@ pub contract ExampleNFT: NonFungibleToken {
       }
       if (canMint) {
     			// create a new NFT
-    			var newNFT <- create NFT(initID: ExampleNFT.totalSupply)
+                var newNFT <- create NFT(initID: ExampleNFT.totalSupply, quantity: quantity)
                 let metadata : {String: String} = {}
                 metadata.insert(key: "filename", filename)
                 ExampleNFT.hashToMetadata.insert(key: hash, metadata)
@@ -165,7 +180,7 @@ pub contract ExampleNFT: NonFungibleToken {
         self.totalSupply = 0
         self.hashToIdMap = {}
         self.idToHashMap = {}
-        self.idToOwnerMap = {}
+        // self.idToOwnerMap = {}
         self.hashToMetadata = {}
 
         let oldCollection <- self.account.load<@AnyResource>(from: /storage/NFTCollection)
@@ -175,7 +190,7 @@ pub contract ExampleNFT: NonFungibleToken {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-        collection.setAddress(account: self.account)
+        // collection.setAddress(account: self.account)
         self.account.save(<-collection, to: /storage/NFTCollection)
 
         // create a public capability for the collection
