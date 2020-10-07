@@ -52,6 +52,7 @@ pub contract ExampleNFT: NonFungibleToken {
                 let oldToken <- self.ownedNFTs[token.id] <- create NFT(initID: token.id, quantity: token.quantity - UInt64(1))
                 destroy oldToken
             }
+            token.quantity = token.quantity - UInt64(1)
 
             // ExampleNFT.idToOwnerMap.remove(key: withdrawID)
 
