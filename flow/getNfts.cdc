@@ -7,11 +7,13 @@ pub struct Entry {
     pub let id : UInt64
     pub let hash : String
     pub let filename : String
+    pub let totalSupply : UInt64
 
-    init(id: UInt64, hash: String, filename: String) {
+    init(id: UInt64, hash: String, filename: String, totalSupply: UInt64) {
         self.id = id
         self.hash = hash
         self.filename = filename
+        self.totalSupply = totalSupply
     }
 }
 pub fun main() : [Entry] {
@@ -23,7 +25,8 @@ pub fun main() : [Entry] {
     while id < end && id < ExampleNFT.totalSupply {
       let hash = ExampleNFT.idToHashMap[id] ?? ""
       let filename = ExampleNFT.getMetadata(id: id, key: "filename") ?? ""
-      let e : Entry = Entry(id: id, hash: hash, filename: filename)
+      let totalSupply = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
+      let e : Entry = Entry(id: id, hash: hash, filename: filename, totalSupply: totalSupply)
       res.append(e)
       id = id + UInt64(1)
     }
