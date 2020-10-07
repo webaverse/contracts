@@ -95,7 +95,7 @@ pub contract ExampleNFT: NonFungibleToken {
             let nft = self.borrowNFT(id: id)
             let hash : String = ExampleNFT.idToHashMap[id]!
             let balance : UInt64 = self.getBalance(id: id)
-            let totalSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash]!
+            let totalSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
             if (balance >= totalSupply) {
                 let metadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
                 metadata.insert(key: key, value)
