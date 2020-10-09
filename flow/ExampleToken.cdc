@@ -166,7 +166,7 @@ pub contract WebaverseToken: FungibleToken {
     }
 
     init() {
-        self.totalSupply = 1000.0
+        self.totalSupply = 0.0
         
         let oldVault <- self.account.load<@AnyResource>(from: /storage/webaverseTokenVault)
         destroy oldVault
