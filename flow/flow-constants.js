@@ -5,10 +5,6 @@ export default ({
   FlowToken: '0x7e60df042a9c0868',
   NonFungibleToken: '0x631e88ae7f1d7c20',
 
-  ExampleToken: '0xbd726a7affc6afbf',
-  ExampleNFT: '0x4bf7015b60c5eb0f',
-  ExampleAccount: '0x4ad4afd89179f79b',
-
   WebaverseToken: '0x3b56df55621a7ff5',
   WebaverseNFT: '0xd0eb0b0e60b2693f',
   WebaverseAccount: '0x348cb2d3714869e0',
