@@ -170,7 +170,7 @@ pub contract WebaverseToken: FungibleToken {
         
         /* let oldVault <- self.account.load<@AnyResource>(from: /storage/webaverseTokenVault)
         destroy oldVault */
-        let oldAdmin <- self.account.load<@AnyResource>(from: /storage/webaverseTokenAdmin)
+        let oldAdmin <- self.account.load<@AnyResource>(from: /storage/tokenAdmin)
         destroy oldAdmin
 
         // Create the Vault with the total supply of tokens and save it in storage
@@ -195,7 +195,7 @@ pub contract WebaverseToken: FungibleToken {
         ) */
 
         let admin <- create Administrator()
-        self.account.save(<-admin, to: /storage/webaverseTokenAdmin)
+        self.account.save(<-admin, to: /storage/tokenAdmin)
 
         // Emit an event that shows that the contract was initialized
         emit TokensInitialized(initialSupply: self.totalSupply)
