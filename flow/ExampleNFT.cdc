@@ -73,9 +73,11 @@ pub contract ExampleNFT: NonFungibleToken {
 
             var oldQuantity = UInt64(0)
             if (self.ownedNFTs[id] != nil) {
-                let oldToken <- self.ownedNFTs.remove(key: id) as! @ExampleNFT.NFT
-                oldQuantity = oldToken.quantity
-                destroy oldToken
+                let oldToken <- self.ownedNFTs.remove(key: id)
+                  ?? panic("failed to remove owned nft during deposit")
+                let oldToken2 <- oldToken as! @ExampleNFT.NFT
+                oldQuantity = oldToken2.quantity
+                destroy oldToken2
             }
 
             let newQuantity = oldQuantity + quantity
