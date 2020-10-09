@@ -4,7 +4,7 @@
 
 import NonFungibleToken from NONFUNGIBLETOKENADDRESS
 
-pub contract ExampleNFT: NonFungibleToken {
+pub contract WebaverseNFT: NonFungibleToken {
 
     pub var totalSupply: UInt64
     pub var hashToIdMap: {String: UInt64}
@@ -56,7 +56,7 @@ pub contract ExampleNFT: NonFungibleToken {
                 destroy oldToken
             }
 
-            // ExampleNFT.idToOwnerMap.remove(key: withdrawID)
+            // WebaverseNFT.idToOwnerMap.remove(key: withdrawID)
 
             emit Withdraw(id: withdrawID, from: self.owner?.address)
 
@@ -66,7 +66,7 @@ pub contract ExampleNFT: NonFungibleToken {
         // deposit takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let token <- token as! @ExampleNFT.NFT
+            let token <- token as! @WebaverseNFT.NFT
             let id: UInt64 = token.id
             let quantity: UInt64 = token.quantity
             destroy token
@@ -75,7 +75,7 @@ pub contract ExampleNFT: NonFungibleToken {
             if (self.ownedNFTs[id] != nil) {
                 let oldToken <- self.ownedNFTs.remove(key: id)
                   ?? panic("failed to remove owned nft during deposit")
-                let oldToken2 <- oldToken as! @ExampleNFT.NFT
+                let oldToken2 <- oldToken as! @WebaverseNFT.NFT
                 oldQuantity = oldToken2.quantity
                 destroy oldToken2
             }
@@ -86,7 +86,7 @@ pub contract ExampleNFT: NonFungibleToken {
             let oldToken2 <- self.ownedNFTs[id] <- create NFT(initID: id, quantity: newQuantity)
             destroy oldToken2
 
-            // ExampleNFT.idToOwnerMap[id] = self.address
+            // WebaverseNFT.idToOwnerMap[id] = self.address
 
             emit Deposit(id: id, to: self.owner?.address)
         }
@@ -98,13 +98,13 @@ pub contract ExampleNFT: NonFungibleToken {
 
         pub fun setMetadata(id: UInt64, key: String, value: String) {
             let nft = self.borrowNFT(id: id)
-            let hash : String = ExampleNFT.idToHashMap[id]!
+            let hash : String = WebaverseNFT.idToHashMap[id]!
             let balance : UInt64 = self.getBalance(id: id)
-            let totalSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
+            let totalSupply : UInt64 = WebaverseNFT.hashToTotalSupply[hash] ?? UInt64(0)
             if (balance >= totalSupply) {
-                let metadata : {String: String} = ExampleNFT.hashToMetadata[hash] ?? {}
+                let metadata : {String: String} = WebaverseNFT.hashToMetadata[hash] ?? {}
                 metadata.insert(key: key, value)
-                ExampleNFT.hashToMetadata.insert(key: hash, metadata)
+                WebaverseNFT.hashToMetadata.insert(key: hash, metadata)
             } else {
                 panic("cannot set metadata due to not owning entire supply")
             }
@@ -112,14 +112,14 @@ pub contract ExampleNFT: NonFungibleToken {
 
         pub fun reMintNFT(id: UInt64, quantity: UInt64) {
             let nft = self.borrowNFT(id: id)
-            let hash : String = ExampleNFT.idToHashMap[id]!
+            let hash : String = WebaverseNFT.idToHashMap[id]!
             let balance : UInt64 = self.getBalance(id: id)
-            let totalSupply : UInt64 = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
+            let totalSupply : UInt64 = WebaverseNFT.hashToTotalSupply[hash] ?? UInt64(0)
             if (balance >= totalSupply) {
-                var newNFT <- create NFT(initID: ExampleNFT.totalSupply, quantity: quantity)
+                var newNFT <- create NFT(initID: WebaverseNFT.totalSupply, quantity: quantity)
                 self.deposit(token: <- newNFT)
 
-                ExampleNFT.hashToTotalSupply[hash] = (ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)) + quantity
+                WebaverseNFT.hashToTotalSupply[hash] = (WebaverseNFT.hashToTotalSupply[hash] ?? UInt64(0)) + quantity
             } else {
                 panic("cannot remint due to not owning entire supply")
             }
@@ -137,14 +137,14 @@ pub contract ExampleNFT: NonFungibleToken {
         pub fun setAddress(account: AuthAccount) {
             self.address = account.address
             for id in self.ownedNFTs.keys {
-                ExampleNFT.idToOwnerMap[id] = account.address
+                WebaverseNFT.idToOwnerMap[id] = account.address
             }
         } */
 
         pub fun getBalance(id: UInt64) : UInt64 {
             if (self.ownedNFTs[id] != nil) {
                 let token = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
-                let token2 = token as! &ExampleNFT.NFT
+                let token2 = token as! &WebaverseNFT.NFT
                 return token2.quantity
             } else {
                 return UInt64(0)
@@ -173,27 +173,27 @@ pub contract ExampleNFT: NonFungibleToken {
 		// mintNFT mints a new NFT with a new ID
 		// and deposit it in the recipients collection using their collection reference
 		pub fun mintNFT(hash: String, filename: String, quantity: UInt64, recipient: &{NonFungibleToken.CollectionPublic}) {
-            if (ExampleNFT.hashToIdMap[hash] == nil) {
+            if (WebaverseNFT.hashToIdMap[hash] == nil) {
     			// create a new NFT
-                var newNFT <- create NFT(initID: ExampleNFT.totalSupply, quantity: quantity)
+                var newNFT <- create NFT(initID: WebaverseNFT.totalSupply, quantity: quantity)
                 let metadata : {String: String} = {}
                 metadata.insert(key: "filename", filename)
-                ExampleNFT.hashToMetadata.insert(key: hash, metadata)
+                WebaverseNFT.hashToMetadata.insert(key: hash, metadata)
 
     			// deposit it in the recipient's account using their reference
     			recipient.deposit(token: <-newNFT)
 
                 var id : UInt64 = 0
-                if (ExampleNFT.hashToIdMap[hash] != nil) {
-                    id = ExampleNFT.hashToIdMap[hash]!
+                if (WebaverseNFT.hashToIdMap[hash] != nil) {
+                    id = WebaverseNFT.hashToIdMap[hash]!
                 } else {
-                    id = ExampleNFT.totalSupply
-                    ExampleNFT.totalSupply = ExampleNFT.totalSupply + UInt64(1)
+                    id = WebaverseNFT.totalSupply
+                    WebaverseNFT.totalSupply = WebaverseNFT.totalSupply + UInt64(1)
 
-                    ExampleNFT.hashToIdMap[hash] = id
-                    ExampleNFT.idToHashMap[id] = hash
+                    WebaverseNFT.hashToIdMap[hash] = id
+                    WebaverseNFT.idToHashMap[id] = hash
                 }
-                ExampleNFT.hashToTotalSupply[hash] = (ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)) + quantity
+                WebaverseNFT.hashToTotalSupply[hash] = (WebaverseNFT.hashToTotalSupply[hash] ?? UInt64(0)) + quantity
             } else {
                 panic("hash already exists")
             }
@@ -202,12 +202,12 @@ pub contract ExampleNFT: NonFungibleToken {
 
     // public function that anyone can call to create a new empty collection
     pub fun getHash(id: UInt64): String {
-        return ExampleNFT.idToHashMap[id]!
+        return WebaverseNFT.idToHashMap[id]!
     }
 
     pub fun getMetadata(id: UInt64, key: String) : String? {
-        let hash : String = ExampleNFT.idToHashMap[id]!
-        let idMetadata = ExampleNFT.hashToMetadata[hash]
+        let hash : String = WebaverseNFT.idToHashMap[id]!
+        let idMetadata = WebaverseNFT.hashToMetadata[hash]
         if (idMetadata != nil) {
             return idMetadata![key]
         } else {
