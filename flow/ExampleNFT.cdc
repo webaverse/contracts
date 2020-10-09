@@ -224,10 +224,10 @@ pub contract WebaverseNFT: NonFungibleToken {
         self.hashToMetadata = {}
         self.hashToTotalSupply = {}
 
-        /* let oldCollection <- self.account.load<@AnyResource>(from: /storage/NFTCollection)
+        let oldCollection <- self.account.load<@AnyResource>(from: /storage/NFTCollection)
         destroy oldCollection
         let oldMinter <- self.account.load<@AnyResource>(from: /storage/NFTMinter)
-        destroy oldMinter */
+        destroy oldMinter
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()

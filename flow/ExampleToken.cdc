@@ -169,13 +169,13 @@ pub contract WebaverseToken: FungibleToken {
         self.totalSupply = 0.0
         
         /* let oldVault <- self.account.load<@AnyResource>(from: /storage/webaverseTokenVault)
-        destroy oldVault
+        destroy oldVault */
         let oldAdmin <- self.account.load<@AnyResource>(from: /storage/webaverseTokenAdmin)
         destroy oldAdmin
 
         // Create the Vault with the total supply of tokens and save it in storage
         //
-        let vault <- create Vault(balance: self.totalSupply)
+        /* let vault <- create Vault(balance: self.totalSupply)
         self.account.save(<-vault, to: /storage/webaverseTokenVault)
 
         // Create a public capability to the stored Vault that only exposes
