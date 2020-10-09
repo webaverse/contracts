@@ -1,8 +1,8 @@
 import FungibleToken from FUNGIBLETOKENADDRESS
 
-pub contract ExampleToken: FungibleToken {
+pub contract WebaverseToken: FungibleToken {
 
-    // Total supply of ExampleTokens in existence
+    // Total supply of WebaverseTokens in existence
     pub var totalSupply: UFix64
 
     // Event that is emitted when the contract is created
@@ -71,7 +71,7 @@ pub contract ExampleToken: FungibleToken {
         // was a temporary holder of the tokens. The Vault's balance has
         // been consumed and therefore can be destroyed.
         pub fun deposit(from: @FungibleToken.Vault) {
-            let vault <- from as! @ExampleToken.Vault
+            let vault <- from as! @WebaverseToken.Vault
             self.balance = self.balance + vault.balance
             emit TokensDeposited(amount: vault.balance, to: self.owner?.address)
             vault.balance = 0.0
@@ -79,7 +79,7 @@ pub contract ExampleToken: FungibleToken {
         }
 
         destroy() {
-            ExampleToken.totalSupply = ExampleToken.totalSupply - self.balance
+            WebaverseToken.totalSupply = WebaverseToken.totalSupply - self.balance
         }
     }
 
@@ -128,12 +128,12 @@ pub contract ExampleToken: FungibleToken {
         // Function that mints new tokens, adds them to the total supply,
         // and returns them to the calling context.
         //
-        pub fun mintTokens(amount: UFix64): @ExampleToken.Vault {
+        pub fun mintTokens(amount: UFix64): @WebaverseToken.Vault {
             pre {
                 amount > UFix64(0): "Amount minted must be greater than zero"
                 amount <= self.allowedAmount: "Amount minted must be less than the allowed amount"
             }
-            ExampleToken.totalSupply = ExampleToken.totalSupply + amount
+            WebaverseToken.totalSupply = WebaverseToken.totalSupply + amount
             self.allowedAmount = self.allowedAmount - amount
             emit TokensMinted(amount: amount)
             return <-create Vault(balance: amount)
@@ -158,7 +158,7 @@ pub contract ExampleToken: FungibleToken {
         // total supply in the Vault destructor.
         //
         pub fun burnTokens(from: @FungibleToken.Vault) {
-            let vault <- from as! @ExampleToken.Vault
+            let vault <- from as! @WebaverseToken.Vault
             let amount = vault.balance
             destroy vault
             emit TokensBurned(amount: amount)
@@ -168,34 +168,34 @@ pub contract ExampleToken: FungibleToken {
     init() {
         self.totalSupply = 1000.0
         
-        let oldVault <- self.account.load<@AnyResource>(from: /storage/exampleTokenVault)
+        let oldVault <- self.account.load<@AnyResource>(from: /storage/webaverseTokenVault)
         destroy oldVault
-        let oldAdmin <- self.account.load<@AnyResource>(from: /storage/exampleTokenAdmin)
+        let oldAdmin <- self.account.load<@AnyResource>(from: /storage/webaverseTokenAdmin)
         destroy oldAdmin
 
         // Create the Vault with the total supply of tokens and save it in storage
         //
         let vault <- create Vault(balance: self.totalSupply)
-        self.account.save(<-vault, to: /storage/exampleTokenVault)
+        self.account.save(<-vault, to: /storage/webaverseTokenVault)
 
         // Create a public capability to the stored Vault that only exposes
         // the `deposit` method through the `Receiver` interface
         //
         self.account.link<&{FungibleToken.Receiver}>(
-            /public/exampleTokenReceiver,
-            target: /storage/exampleTokenVault
+            /public/webaverseTokenReceiver,
+            target: /storage/webaverseTokenVault
         )
 
         // Create a public capability to the stored Vault that only exposes
         // the `balance` field through the `Balance` interface
         //
-        self.account.link<&ExampleToken.Vault{FungibleToken.Balance}>(
-            /public/exampleTokenBalance,
-            target: /storage/exampleTokenVault
+        self.account.link<&WebaverseToken.Vault{FungibleToken.Balance}>(
+            /public/webaverseTokenBalance,
+            target: /storage/webaverseTokenVault
         )
 
         let admin <- create Administrator()
-        self.account.save(<-admin, to: /storage/exampleTokenAdmin)
+        self.account.save(<-admin, to: /storage/webaverseTokenAdmin)
 
         // Emit an event that shows that the contract was initialized
         emit TokensInitialized(initialSupply: self.totalSupply)
