@@ -1,5 +1,5 @@
-import ExampleAccount from EXAMPLEACCOUNTADDRESS
-import ExampleNFT from EXAMPLENFTADDRESS
+import WebaverseAccount from WEBAVERSEACCOUNTADDRESS
+import WebaverseNFT from WEBAVERSENFTADDRESS
 
 pub fun parseUInt64(s: String?) : UInt64? {
     var res : UInt64 = 0

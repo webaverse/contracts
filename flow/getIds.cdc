@@ -1,5 +1,5 @@
 import NonFungibleToken from NONFUNGIBLETOKENADDRESS
-import ExampleNFT from EXAMPLENFTADDRESS
+import WebaverseNFT from WEBAVERSENFTADDRESS
 
 // This transaction returns an array of all the nft ids in the collection
 

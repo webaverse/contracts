@@ -1,8 +1,8 @@
 import FungibleToken from FUNGIBLETOKENADDRESS
-import ExampleToken from EXAMPLETOKENADDRESS
+import WebaverseToken from WEBAVERSETOKENADDRESS
 import NonFungibleToken from NONFUNGIBLETOKENADDRESS
-import ExampleNFT from EXAMPLENFTADDRESS
-import ExampleAccount from EXAMPLEACCOUNTADDRESS
+import WebaverseNFT from WEBAVERSENFTADDRESS
+import WebaverseAccount from WEBAVERSEACCOUNTADDRESS
 
 transaction {
 

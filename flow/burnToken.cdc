@@ -1,5 +1,5 @@
 import FungibleToken from FUNGIBLETOKENADDRESS
-import ExampleToken from EXAMPLETOKENADDRESS
+import WebaverseToken from WEBAVERSETOKENADDRESS
 
 transaction {
 

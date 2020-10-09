@@ -1,5 +1,5 @@
 import NonFungibleToken from NONFUNGIBLETOKENADDRESS
-import ExampleNFT from EXAMPLENFTADDRESS
+import WebaverseNFT from WEBAVERSENFTADDRESS
 
 // This script uses the NFTMinter resource to mint a new NFT
 // It must be run with the account that has the minter resource
@@ -12,7 +12,7 @@ transaction {
         let filename : String = "ARG1"
         let quantity : UInt64 = ARG2
 
-        let contractAcct = getAccount(EXAMPLENFTADDRESS)
+        let contractAcct = getAccount(WEBAVERSENFTADDRESS)
         let minterRef = contractAcct.getCapability(/public/NFTMinter)!.borrow<&{ExampleNFT.PublicNFTMinter}>()
             ?? panic("Could not borrow nft minter capability")
 

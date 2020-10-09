@@ -1,5 +1,5 @@
 import NonFungibleToken from NONFUNGIBLETOKENADDRESS
-import ExampleNFT from EXAMPLENFTADDRESS
+import WebaverseNFT from WEBAVERSENFTADDRESS
 
 // This transaction is for transferring and NFT from 
 // one account to another

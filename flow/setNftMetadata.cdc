@@ -1,5 +1,5 @@
 import NonFungibleToken from NONFUNGIBLETOKENADDRESS
-import ExampleNFT from EXAMPLENFTADDRESS
+import WebaverseNFT from WEBAVERSENFTADDRESS
 
 transaction {
     prepare(acct: AuthAccount) {

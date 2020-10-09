@@ -1,4 +1,4 @@
-import ExampleAccount from EXAMPLEACCOUNTADDRESS
+import WebaverseAccount from WEBAVERSEACCOUNTADDRESS
 
 pub fun main() : [String?] {
     let acct = getAccount(ARG0)

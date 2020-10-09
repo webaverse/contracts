@@ -1,4 +1,4 @@
-import ExampleAccount from EXAMPLEACCOUNTADDRESS
+import WebaverseAccount from WEBAVERSEACCOUNTADDRESS
 
 transaction {
 
