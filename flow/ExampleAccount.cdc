@@ -1,10 +1,10 @@
-pub contract ExampleAccount {
+pub contract WebaverseAccount {
 
-    pub resource interface ExampleAccountStatePublic {
+    pub resource interface WebaverseAccountStatePublic {
         pub var keyValueMap: {String: String}
     }
 
-    pub resource State : ExampleAccountStatePublic {
+    pub resource State : WebaverseAccountStatePublic {
 
         pub var keyValueMap: {String: String}
 
