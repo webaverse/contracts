@@ -246,4 +246,3 @@ pub contract ExampleNFT: NonFungibleToken {
         emit ContractInitialized()
 	}
 }
-
