@@ -22,16 +22,16 @@ pub fun main() : [Entry] {
     let acct = getAccount(ARG0)
     let collectionRef = acct.getCapability(/public/NFTCollection)!.borrow<&{NonFungibleToken.CollectionPublic}>()
         ?? panic("Could not borrow capability 1 from public collection")
-    let collectionRef2 = acct.getCapability(/public/ExampleNFTCollection)!.borrow<&{ExampleNFT.CollectionPublic}>()
+    let collectionRef2 = acct.getCapability(/public/WebaverseNFTCollection)!.borrow<&{WebaverseNFT.CollectionPublic}>()
         ?? panic("Could not borrow capability 2 from public collection")
     
     let ids : [UInt64] = collectionRef.getIDs()
     let res : [Entry] = []
     for id in ids {
-      let hash = ExampleNFT.idToHashMap[id] ?? ""
-      let filename = ExampleNFT.getMetadata(id: id, key: "filename") ?? ""
+      let hash = WebaverseNFT.idToHashMap[id] ?? ""
+      let filename = WebaverseNFT.getMetadata(id: id, key: "filename") ?? ""
       let balance = collectionRef2.getBalance(id: id)
-      let totalSupply = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
+      let totalSupply = WebaverseNFT.hashToTotalSupply[hash] ?? UInt64(0)
       let e : Entry = Entry(id: id, hash: hash, filename: filename, balance: balance, totalSupply: totalSupply)
       res.append(e)
     }

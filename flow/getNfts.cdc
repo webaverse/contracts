@@ -22,10 +22,10 @@ pub fun main() : [Entry] {
 
     let res : [Entry] = []
     var id : UInt64 = start
-    while id < end && id < ExampleNFT.totalSupply {
-      let hash = ExampleNFT.idToHashMap[id] ?? ""
-      let filename = ExampleNFT.getMetadata(id: id, key: "filename") ?? ""
-      let totalSupply = ExampleNFT.hashToTotalSupply[hash] ?? UInt64(0)
+    while id < end && id < WebaverseNFT.totalSupply {
+      let hash = WebaverseNFT.idToHashMap[id] ?? ""
+      let filename = WebaverseNFT.getMetadata(id: id, key: "filename") ?? ""
+      let totalSupply = WebaverseNFT.hashToTotalSupply[hash] ?? UInt64(0)
       let e : Entry = Entry(id: id, hash: hash, filename: filename, totalSupply: totalSupply)
       res.append(e)
       id = id + UInt64(1)

@@ -8,7 +8,7 @@ transaction {
         let value : String = "ARG2"
 
         // borrow a reference to the signer's NFT collection
-        let collectionRef = acct.borrow<&ExampleNFT.Collection>(from: /storage/NFTCollection)
+        let collectionRef = acct.borrow<&WebaverseNFT.Collection>(from: /storage/NFTCollection)
             ?? panic("Could not borrow a reference to the owner's collection")
 
         collectionRef.setMetadata(id: id, key: key, value: value)

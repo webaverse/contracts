@@ -9,7 +9,7 @@ transaction {
         let withdrawID : UInt64 = 0
 
         // borrow a reference to the signer's NFT collection
-        let collectionRef = acct.borrow<&ExampleNFT.Collection>(from: /storage/NFTCollection)
+        let collectionRef = acct.borrow<&WebaverseNFT.Collection>(from: /storage/NFTCollection)
             ?? panic("Could not borrow a reference to the owner's collection")
 
         // withdraw the NFT from the owner's collection

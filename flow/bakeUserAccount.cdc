@@ -8,27 +8,27 @@ transaction {
 
     prepare(account: AuthAccount) { // begin prepare
 
-        if account.borrow<&ExampleToken.Vault>(from: /storage/exampleTokenVault) == nil {
+        if account.borrow<&WebaverseToken.Vault>(from: /storage/webaverseTokenVault) == nil {
             // Create a new exampleToken Vault and put it in storage
-            account.save(<-ExampleToken.createEmptyVault(), to: /storage/exampleTokenVault)
+            account.save(<-WebaverseToken.createEmptyVault(), to: /storage/webaverseTokenVault)
 
             // Create a public capability to the Vault that only exposes
             // the deposit function through the Receiver interface
-            account.link<&ExampleToken.Vault{FungibleToken.Receiver}>(
+            account.link<&WebaverseToken.Vault{FungibleToken.Receiver}>(
                 /public/exampleTokenReceiver,
-                target: /storage/exampleTokenVault
+                target: /storage/webaverseTokenVault
             )
 
             // Create a public capability to the Vault that only exposes
             // the balance field through the Balance interface
-            account.link<&ExampleToken.Vault{FungibleToken.Balance}>(/public/exampleTokenBalance, target: /storage/exampleTokenVault)
+            account.link<&WebaverseToken.Vault{FungibleToken.Balance}>(/public/exampleTokenBalance, target: /storage/webaverseTokenVault)
         }
 
         // If the account doesn't already have a collection
-        if account.borrow<&ExampleNFT.Collection>(from: /storage/NFTCollection) == nil {
+        if account.borrow<&WebaverseNFT.Collection>(from: /storage/NFTCollection) == nil {
 
             // Create a new empty collection
-            let collection <- ExampleNFT.createEmptyCollection() as! @ExampleNFT.Collection
+            let collection <- WebaverseNFT.createEmptyCollection() as! @WebaverseNFT.Collection
             // collection.setAddress(account: account)
             
             // save it to the account
@@ -36,20 +36,20 @@ transaction {
 
             // create a public capability for the collection
             account.link<&{NonFungibleToken.CollectionPublic}>(/public/NFTCollection, target: /storage/NFTCollection)
-            account.link<&{ExampleNFT.CollectionPublic}>(/public/ExampleNFTCollection, target: /storage/NFTCollection)
+            account.link<&{WebaverseNFT.CollectionPublic}>(/public/WebaverseNFTCollection, target: /storage/NFTCollection)
         }
 
         // If the account doesn't already have a collection
-        if account.borrow<&ExampleAccount.State>(from: /storage/AccountCollection) == nil {
+        if account.borrow<&WebaverseAccount.State>(from: /storage/AccountCollection) == nil {
 
             // Create a new empty collection
-            let state <- ExampleAccount.createState() as! @ExampleAccount.State
+            let state <- WebaverseAccount.createState() as! @WebaverseAccount.State
 
             // save it to the account
             account.save(<-state, to: /storage/AccountCollection)
 
             // create a public capability for the collection
-            account.link<&{ExampleAccount.ExampleAccountStatePublic}>(/public/AccountCollection, target: /storage/AccountCollection)
+            account.link<&{WebaverseAccount.WebaverseAccountStatePublic}>(/public/AccountCollection, target: /storage/AccountCollection)
         }
     } // end prepare
 }

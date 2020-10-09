@@ -2,14 +2,14 @@ import FungibleToken from FUNGIBLETOKENADDRESS
 import WebaverseToken from WEBAVERSETOKENADDRESS
 
 transaction {
-  let tokenAdmin: &ExampleToken.Administrator
+  let tokenAdmin: &WebaverseToken.Administrator
   let tokenReceiver: &{FungibleToken.Receiver}
 
   prepare(signer: AuthAccount) {
       let recipient : Address = ARG0
   
       self.tokenAdmin = signer
-      .borrow<&ExampleToken.Administrator>(from: /storage/tokenAdmin) 
+      .borrow<&WebaverseToken.Administrator>(from: /storage/tokenAdmin) 
       ?? panic("Signer is not the token admin")
 
       self.tokenReceiver = getAccount(recipient)

@@ -58,7 +58,7 @@ pub fun parseUInt64(s: String?) : UInt64? {
 pub fun main() : [String?] {
     let acct = getAccount(ARG0)
     
-    let collectionRef = acct.getCapability(/public/AccountCollection)!.borrow<&{ExampleAccount.ExampleAccountStatePublic}>()
+    let collectionRef = acct.getCapability(/public/AccountCollection)!.borrow<&{WebaverseAccount.WebaverseAccountStatePublic}>()
       ?? panic("Could not borrow capability from public collection")
 
     var avatarIdString : String? = collectionRef.keyValueMap["avatar"]
@@ -68,11 +68,11 @@ pub fun main() : [String?] {
     }
     var avatarHash : String? = nil
     if (avatarId != nil) {
-        avatarHash = ExampleNFT.idToHashMap[avatarId!]
+        avatarHash = WebaverseNFT.idToHashMap[avatarId!]
     }
     var avatarFileName : String? = nil
     if (avatarId != nil) {
-        avatarFileName = ExampleNFT.getMetadata(id: avatarId!, key: "filename")
+        avatarFileName = WebaverseNFT.getMetadata(id: avatarId!, key: "filename")
     }
     return [
       collectionRef.keyValueMap["name"],

@@ -13,7 +13,7 @@ transaction {
         let quantity : UInt64 = ARG2
 
         let contractAcct = getAccount(WEBAVERSENFTADDRESS)
-        let minterRef = contractAcct.getCapability(/public/NFTMinter)!.borrow<&{ExampleNFT.PublicNFTMinter}>()
+        let minterRef = contractAcct.getCapability(/public/NFTMinter)!.borrow<&{WebaverseNFT.PublicNFTMinter}>()
             ?? panic("Could not borrow nft minter capability")
 
         // Borrow the recipient's public NFT collection reference
