@@ -8,4 +8,8 @@ export default ({
   ExampleToken: '0xbd726a7affc6afbf',
   ExampleNFT: '0x4bf7015b60c5eb0f',
   ExampleAccount: '0x4ad4afd89179f79b',
+
+  WebaverseToken: '0x3b56df55621a7ff5',
+  WebaverseNFT: '0xd0eb0b0e60b2693f',
+  WebaverseAccount: '0x348cb2d3714869e0',
 })
