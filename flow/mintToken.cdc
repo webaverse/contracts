@@ -9,7 +9,7 @@ transaction {
       let recipient : Address = ARG0
   
       self.tokenAdmin = signer
-      .borrow<&ExampleToken.Administrator>(from: /storage/exampleTokenAdmin) 
+      .borrow<&ExampleToken.Administrator>(from: /storage/tokenAdmin) 
       ?? panic("Signer is not the token admin")
 
       self.tokenReceiver = getAccount(recipient)
