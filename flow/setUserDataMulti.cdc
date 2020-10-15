@@ -11,7 +11,7 @@ transaction {
 
     execute {
         let keys : [String] = ARG0
-        let values : [String] = ARG0
+        let values : [String] = ARG1
 
         var i = 0
         while i < keys.length {
