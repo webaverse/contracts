@@ -18,7 +18,7 @@ transaction {
           let key : String = keys[i]
           let value : String = values[i]
           self.state.keyValueMap[key] = value
-          i++
+          i += 1
 	    }
     }
 }
