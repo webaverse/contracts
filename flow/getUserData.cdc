@@ -74,9 +74,11 @@ pub fun main() : [String?] {
     if (avatarId != nil) {
         avatarFileName = WebaverseNFT.getMetadata(id: avatarId!, key: "filename")
     }
+    var ftu : String? = collectionRef.keyValueMap["avatar"]
     return [
       collectionRef.keyValueMap["name"],
       avatarHash,
-      avatarFileName
+      avatarFileName,
+      ftu
     ]
 }
