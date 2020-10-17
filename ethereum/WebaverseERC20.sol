@@ -11,7 +11,7 @@ contract WebaverseERC20 is ERC20Capped {
      * @dev Sets the value of the `cap`. This value is immutable, it can only be
      * set once during construction.
      */
-    constructor (string memory name, string memory symbol) public ERC20(name, symbol) ERC20Capped(1e21) {
+    constructor (string memory name, string memory symbol) public ERC20(name, symbol) ERC20Capped(1e27) {
 
     }
     
