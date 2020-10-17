@@ -134,7 +134,7 @@ pub contract WebaverseToken: FungibleToken {
                 amount <= self.allowedAmount: "Amount minted must be less than the allowed amount"
             }
             WebaverseToken.totalSupply = WebaverseToken.totalSupply + amount
-            if (WebaverseToken.totalSupply > 1000000000) {
+            if (WebaverseToken.totalSupply > 1000000000.0) {
                 panic("minting over max issue of 1B tokens")
             }
             self.allowedAmount = self.allowedAmount - amount
