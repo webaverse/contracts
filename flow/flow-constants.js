@@ -1,11 +1,11 @@
 export default ({
-  host: 'https://access-testnet.onflow.org',
+  host: 'http://flow.exokit.org:8080',
 
-  FungibleToken: '0x9a0766d93b6608b7',
-  FlowToken: '0x7e60df042a9c0868',
-  NonFungibleToken: '0x631e88ae7f1d7c20',
+  FungibleToken: '0xee82856bf20e2aa6',
+  NonFungibleToken: '0x01cf0e2f2f715450',
+  FlowToken: '0x0ae53cb6e3f42a79',
 
-  WebaverseToken: '0x3b56df55621a7ff5',
-  WebaverseNFT: '0xd0eb0b0e60b2693f',
-  WebaverseAccount: '0x348cb2d3714869e0',
+  WebaverseToken: '0xe6077d077439aa85',
+  WebaverseNFT: '0x0260c4da65c3aa5a',
+  WebaverseAccount: '0x1434a1e9fcc7a03b',
 })
