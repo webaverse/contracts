@@ -61,24 +61,10 @@ pub fun main() : [String?] {
     let collectionRef = acct.getCapability(/public/AccountCollection)!.borrow<&{WebaverseAccount.WebaverseAccountStatePublic}>()
       ?? panic("Could not borrow capability from public collection")
 
-    var avatarIdString : String? = collectionRef.keyValueMap["avatar"]
-    var avatarId : UInt64? = nil
-    if (avatarIdString != nil) {
-        avatarId = parseUInt64(s: avatarIdString!)
-    }
-    var avatarHash : String? = nil
-    if (avatarId != nil) {
-        avatarHash = WebaverseNFT.idToHashMap[avatarId!]
-    }
-    var avatarFileName : String? = nil
-    if (avatarId != nil) {
-        avatarFileName = WebaverseNFT.getMetadata(id: avatarId!, key: "filename")
-    }
-    var ftu : String? = collectionRef.keyValueMap["ftu"]
     return [
       collectionRef.keyValueMap["name"],
-      avatarHash,
-      avatarFileName,
-      ftu
+      collectionRef.keyValueMap["avatarUrl"],
+      collectionRef.keyValueMap["avatarFilename"],
+      collectionRef.keyValueMap["ftu"]
     ]
 }
