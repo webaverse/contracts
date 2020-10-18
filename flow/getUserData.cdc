@@ -11,6 +11,7 @@ pub fun main() : [String?] {
       collectionRef.keyValueMap["name"],
       collectionRef.keyValueMap["avatarUrl"],
       collectionRef.keyValueMap["avatarFilename"],
+      collectionRef.keyValueMap["avatarPreview"],
       collectionRef.keyValueMap["ftu"]
     ]
 }
