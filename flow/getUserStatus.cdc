@@ -8,6 +8,6 @@ pub fun main() : [String?] {
 
     return [
       collectionRef.keyValueMap["name"],
-      collectionRef.keyValueMap["avatar"]
+      collectionRef.keyValueMap["avatarUrl"]
     ]
 }
