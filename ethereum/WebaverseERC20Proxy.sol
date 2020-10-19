@@ -4,17 +4,16 @@ pragma experimental ABIEncoderV2;
 
 import "./WebaverseERC20.sol";
 
-/**
- * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
- */
 contract WebaverseERC20Proxy {
+    address globalOwner;
     uint256 chainId;
-    mapping (bytes32 => bool) usedWithdrawHashes;
     WebaverseERC20 parent;
+    mapping (bytes32 => bool) usedWithdrawHashes;
     
     constructor (address parentAddress, uint256 _chainId) public {
-        parent = WebaverseERC20(parentAddress);
+        globalOwner = msg.sender;
         chainId = _chainId;
+        parent = WebaverseERC20(parentAddress);
     }
 
     event Withdrew(address from, uint256 amount, uint256 timestamp);
@@ -26,7 +25,7 @@ contract WebaverseERC20Proxy {
         bytes32 messageHash = keccak256(message);
         bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
         address contractAddress = address(this);
-        require(ecrecover(prefixedHash, v, r, s) == contractAddress, "invalid signature");
+        require(ecrecover(prefixedHash, v, r, s) == globalOwner, "invalid signature");
         require(!usedWithdrawHashes[prefixedHash]);
         usedWithdrawHashes[prefixedHash] = true;
 
