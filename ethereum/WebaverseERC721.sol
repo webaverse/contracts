@@ -13,6 +13,7 @@ contract WebaverseERC721 is ERC721 {
     using EnumerableSet for EnumerableSet.UintSet;
 
     bool isPublicallyMintable;
+    mapping (address => bool) allowedMinters;
     uint256 nextTokenId = 0;
     mapping (uint256 => uint256) private tokenIdToHash;
     mapping (uint256 => uint256) private hashToTotalSupply;
@@ -21,6 +22,7 @@ contract WebaverseERC721 is ERC721 {
     constructor (string memory name, string memory symbol, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
         isPublicallyMintable = _isPublicallyMintable;
+        addAllowedMinter(msg.sender);
     }
 
     event Withdrew(address from, uint256 tokenId, uint256 timestamp);
@@ -47,7 +49,7 @@ contract WebaverseERC721 is ERC721 {
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, 1
     function mint(address to, uint256 hash, string memory filename, uint256 count) public {
-        require(isPublicallyMintable);
+        require(isAllowedMinter(msg.sender));
         require(hash != 0);
         require(count > 0);
         require(hashToTotalSupply[hash] == 0);
@@ -67,6 +69,18 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToTotalSupply[hash] = count;
         hashToMetadata[hash]["filename"] = filename;
+    }
+    
+    function isAllowedMinter(address a) public view returns (bool) {
+        return isPublicallyMintable || allowedMinters[a];
+    }
+    function addAllowedMinter(address a) public {
+        require(isAllowedMinter(msg.sender));
+        allowedMinters[a] = true;
+    }
+    function removeAllowedMinter(address a) public {
+        require(isAllowedMinter(msg.sender));
+        allowedMinters[a] = false;
     }
     
     function getHash(uint256 tokenId) public view returns (uint256) {
