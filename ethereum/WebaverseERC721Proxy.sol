@@ -8,12 +8,13 @@ import "./WebaverseERC721.sol";
  * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
  */
 contract WebaverseERC721Proxy {
-    bool isDynamic = true;
+    uint256 chainId;
     mapping (bytes32 => bool) usedWithdrawHashes;
     WebaverseERC721 parent;
     
-    constructor (address parentAddress) public {
+    constructor (address parentAddress, uint256 _chainId) public {
         parent = WebaverseERC721(parentAddress);
+        chainId = _chainId;
     }
 
     event Withdrew(address from, uint256 tokenId, uint256 timestamp);
@@ -21,7 +22,7 @@ contract WebaverseERC721Proxy {
     
     function withdraw(address to, uint256 tokenId, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
         bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-        bytes memory message = abi.encodePacked(to, tokenId, timestamp, isDynamic);
+        bytes memory message = abi.encodePacked(to, tokenId, timestamp, chainId);
         bytes32 messageHash = keccak256(message);
         bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
         address contractAddress = address(this);
