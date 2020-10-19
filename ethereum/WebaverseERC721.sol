@@ -91,11 +91,11 @@ contract WebaverseERC721 is ERC721 {
         }
         return ids;
     }
-    function getToken(uint256 tokenId) public view returns (uint256, string memory) {
+    /* function getToken(uint256 tokenId) public view returns (uint256, string memory) {
         uint256 hash = tokenIdToHash[tokenId];
         string memory filename = getMetadata(hash, "filename");
         return (hash, filename);
-    }
+    } */
     
     function getMetadata(uint256 tokenId, string memory key) public view returns (string memory) {
         return hashToMetadata[tokenId][key];
