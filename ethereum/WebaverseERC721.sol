@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
+pragma experimental ABIEncoderV2;
 
 import "./ERC721.sol";
 import "./EnumerableSet.sol";
+import "./Math.sol";
 
 /**
  * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
@@ -38,7 +40,7 @@ contract WebaverseERC721 is ERC721 {
     }
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, 1
-    function mint(address to, uint256 hash, uint256 count) public {
+    function mint(address to, uint256 hash, string memory filename, uint256 count) public {
         require(hash != 0);
         require(count > 0);
         require(hashToTotalSupply[hash] == 0);
@@ -57,6 +59,7 @@ contract WebaverseERC721 is ERC721 {
             i++;
         }
         hashToTotalSupply[hash] = count;
+        hashToMetadata[hash]["filename"] = filename;
     }
     
     function getHash(uint256 tokenId) public view returns (uint256) {
@@ -78,6 +81,20 @@ contract WebaverseERC721 is ERC721 {
     }
     function totalSupplyOfHash(uint256 hash) public view returns (uint256) {
         return hashToTotalSupply[hash];
+    }
+    
+    function getTokenIdsOf(address owner) public view returns (uint256[] memory) {
+        uint256 count = balanceOf(owner);
+        uint256[] memory ids = new uint256[](count);
+        for (uint256 i = 0; i < count; i++) {
+            ids[i] = tokenOfOwnerByIndex(owner, i);
+        }
+        return ids;
+    }
+    function getToken(uint256 tokenId) public view returns (uint256, string memory) {
+        uint256 hash = tokenIdToHash[tokenId];
+        string memory filename = getMetadata(hash, "filename");
+        return (hash, filename);
     }
     
     function getMetadata(uint256 tokenId, string memory key) public view returns (string memory) {
