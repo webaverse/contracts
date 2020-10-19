@@ -12,16 +12,15 @@ import "./Math.sol";
 contract WebaverseERC721 is ERC721 {
     using EnumerableSet for EnumerableSet.UintSet;
 
-    bool isDynamic = true;
-    mapping (bytes32 => bool) usedWithdrawHashes;
-
+    bool isPublicallyMintable;
     uint256 nextTokenId = 0;
     mapping (uint256 => uint256) private tokenIdToHash;
     mapping (uint256 => uint256) private hashToTotalSupply;
     mapping (uint256 => mapping(string => string)) private hashToMetadata;
     
-    constructor (string memory name, string memory symbol) public ERC721(name, symbol) {
+    constructor (string memory name, string memory symbol, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
+        isPublicallyMintable = _isPublicallyMintable;
     }
 
     event Withdrew(address from, uint256 tokenId, uint256 timestamp);
@@ -48,7 +47,7 @@ contract WebaverseERC721 is ERC721 {
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, 1
     function mint(address to, uint256 hash, string memory filename, uint256 count) public {
-        require(isDynamic);
+        require(isPublicallyMintable);
         require(hash != 0);
         require(count > 0);
         require(hashToTotalSupply[hash] == 0);
@@ -68,32 +67,6 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToTotalSupply[hash] = count;
         hashToMetadata[hash]["filename"] = filename;
-    }
-    
-    function withdraw(address to, uint256 tokenId, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
-        require(!isDynamic);
-
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-        bytes memory message = abi.encodePacked(to, tokenId, timestamp);
-        bytes32 messageHash = keccak256(message);
-        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
-        // bytes32 hash = block.blockhash(block.number);
-        address contractAddress = address(this);
-        require(ecrecover(prefixedHash, v, r, s) == contractAddress, "invalid signature");
-        require(!usedWithdrawHashes[prefixedHash]);
-        usedWithdrawHashes[prefixedHash] = true;
-
-        safeTransferFrom(contractAddress, to, tokenId);
-        
-        emit Withdrew(to, tokenId, timestamp);
-    }
-    function deposit(address from, uint256 tokenId, uint256 timestamp) public {
-        require(!isDynamic);
-
-        address contractAddress = address(this);
-        safeTransferFrom(from, contractAddress, tokenId);
-
-        emit Deposited(from, tokenId, timestamp);
     }
     
     function getHash(uint256 tokenId) public view returns (uint256) {
