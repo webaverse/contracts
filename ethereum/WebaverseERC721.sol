@@ -22,7 +22,7 @@ contract WebaverseERC721 is ERC721 {
     constructor (string memory name, string memory symbol, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
         isPublicallyMintable = _isPublicallyMintable;
-        addAllowedMinter(msg.sender);
+        allowedMinters[msg.sender] = true;
     }
 
     event Withdrew(address from, uint256 tokenId, uint256 timestamp);
