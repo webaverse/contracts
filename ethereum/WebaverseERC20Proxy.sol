@@ -25,7 +25,7 @@ contract WebaverseERC20Proxy {
         bytes32 messageHash = keccak256(message);
         bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
         require(ecrecover(prefixedHash, v, r, s) == globalOwner, "invalid signature");
-        require(!usedWithdrawHashes[prefixedHash]);
+        require(!usedWithdrawHashes[prefixedHash], "hash already used");
         usedWithdrawHashes[prefixedHash] = true;
 
         address contractAddress = address(this);
