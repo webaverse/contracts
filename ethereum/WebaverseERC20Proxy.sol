@@ -10,9 +10,9 @@ contract WebaverseERC20Proxy {
     WebaverseERC20 parent;
     mapping (bytes32 => bool) usedWithdrawHashes;
     
-    constructor (address parentAddress, uint256 _chainId) public {
+    constructor (address parentAddress) public {
         globalOwner = msg.sender;
-        chainId = _chainId;
+        chainId = 1;
         parent = WebaverseERC20(parentAddress);
     }
 
@@ -24,11 +24,16 @@ contract WebaverseERC20Proxy {
         bytes memory message = abi.encodePacked(to, amount, timestamp, chainId);
         bytes32 messageHash = keccak256(message);
         bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
-        address contractAddress = address(this);
         require(ecrecover(prefixedHash, v, r, s) == globalOwner, "invalid signature");
         require(!usedWithdrawHashes[prefixedHash]);
         usedWithdrawHashes[prefixedHash] = true;
 
+        address contractAddress = address(this);
+        uint256 contractBalance = parent.balanceOf(contractAddress);
+        if (contractBalance < amount) {
+            uint256 balanceNeeded = amount - contractBalance;
+            parent.mint(contractAddress, balanceNeeded);
+        }
         parent.transferFrom(contractAddress, to, amount);
         
         emit Withdrew(to, amount, timestamp);
