@@ -24,9 +24,6 @@ contract WebaverseERC721 is ERC721 {
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
     }
-
-    event Withdrew(address from, uint256 tokenId, uint256 timestamp);
-    event Deposited(address to, uint256 tokenId, uint256 timestamp);
     
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
