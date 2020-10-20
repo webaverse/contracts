@@ -14,7 +14,7 @@ contract WebaverseERC20 is ERC20Capped {
      * set once during construction.
      */
     constructor (string memory name, string memory symbol) public ERC20(name, symbol) ERC20Capped(1e27) {
-        addAllowedMinter(msg.sender);
+        allowedMinters[msg.sender] = true;
     }
     
     function mint(address account, uint256 amount) public {
