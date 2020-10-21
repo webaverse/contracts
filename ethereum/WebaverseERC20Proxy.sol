@@ -10,9 +10,9 @@ contract WebaverseERC20Proxy {
     WebaverseERC20 parent;
     mapping (bytes32 => bool) usedWithdrawHashes;
     
-    constructor (address parentAddress) public {
+    constructor (address parentAddress, uint256 _chainId) public {
         globalOwner = msg.sender;
-        chainId = 1;
+        chainId = _chainId;
         parent = WebaverseERC20(parentAddress);
     }
 
