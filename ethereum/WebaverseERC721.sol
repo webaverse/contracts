@@ -44,7 +44,7 @@ contract WebaverseERC721 is ERC721 {
         return string(bstr);
     }
     
-    // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, 1
+    // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, "lol", 1
     function mint(address to, uint256 hash, string memory filename, uint256 count) public {
         require(isAllowedMinter(msg.sender));
         require(hash != 0);
@@ -66,6 +66,26 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToTotalSupply[hash] = count;
         hashToMetadata[hash]["filename"] = filename;
+    }
+    function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename) public {
+        require(isAllowedMinter(msg.sender));
+        require(hash != 0);
+        require(hashToTotalSupply[hash] == 0);
+
+        bytes memory _data;
+        _safeMint(to, tokenId, _data);
+    
+        string memory _tokenURI = uint2str(hash);
+        _setTokenURI(tokenId, _tokenURI);
+    
+        tokenIdToHash[tokenId] = hash;
+
+        hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
+        hashToMetadata[hash]["filename"] = filename;
+    }
+    
+    function tokenExists(uint256 tokenId) public view returns (bool) {
+        return tokenIdToHash[tokenId] != 0;
     }
     
     function isAllowedMinter(address a) public view returns (bool) {
