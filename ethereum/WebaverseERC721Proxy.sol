@@ -4,7 +4,9 @@ pragma experimental ABIEncoderV2;
 
 import "./WebaverseERC721.sol";
 
-contract WebaverseERC721Proxy {
+contract WebaverseERC721Proxy is IERC721Receiver {
+    bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
+    
     address globalOwner;
     uint256 chainId;
     WebaverseERC721 parent;
@@ -30,8 +32,11 @@ contract WebaverseERC721Proxy {
 
         if (!parent.tokenExists(tokenId)) {
             parent.mintTokenId(contractAddress, tokenId, hash, filename);
-        }
-        parent.safeTransferFrom(contractAddress, to, tokenId);
+            // require(false, "fail 1.1");
+        } /* else {
+            require(false, "fail 2");
+        } */
+        parent.transferFrom(contractAddress, to, tokenId);
         
         emit Withdrew(to, tokenId, timestamp);
     }
@@ -41,4 +46,8 @@ contract WebaverseERC721Proxy {
 
         emit Deposited(from, tokenId, timestamp);
     } */
+    
+    function onERC721Received(address, address, uint256, bytes memory) public override returns (bytes4) {
+        return _ERC721_RECEIVED;
+    }
 }
