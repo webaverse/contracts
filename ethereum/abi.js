@@ -1,5 +1,5 @@
 export default {
-FT: [
+"FT": [
 	{
 		"inputs": [
 			{
@@ -363,7 +363,7 @@ FT: [
 		"type": "function"
 	}
 ],
-NFT: [
+"NFT": [
 	{
 		"inputs": [
 			{
@@ -1033,7 +1033,7 @@ NFT: [
 		"type": "function"
 	}
 ],
-Account: [
+"Account": [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -1279,7 +1279,7 @@ Account: [
 		"type": "function"
 	}
 ],
-FTProxy: [
+"FTProxy": [
 	{
 		"inputs": [
 			{
@@ -1373,7 +1373,7 @@ FTProxy: [
 		"type": "function"
 	}
 ],
-NFTProxy: [
+"NFTProxy": [
 	{
 		"inputs": [
 			{
@@ -1510,5 +1510,5 @@ NFTProxy: [
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}
-],
+]
 }
