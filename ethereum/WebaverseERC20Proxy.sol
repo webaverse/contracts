@@ -3,6 +3,7 @@ pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 
 import "./WebaverseERC20.sol";
+import './IERC721Receiver.sol';
 
 contract WebaverseERC20Proxy {
     address globalOwner;
