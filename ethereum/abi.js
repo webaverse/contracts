@@ -1325,6 +1325,19 @@ FTProxy: [
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "newSigner",
+				"type": "address"
+			}
+		],
+		"name": "setSigner",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "to",
 				"type": "address"
 			},
@@ -1433,6 +1446,19 @@ NFTProxy: [
 				"type": "bytes4"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newSigner",
+				"type": "address"
+			}
+		],
+		"name": "setSigner",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
