@@ -1,10 +1,10 @@
 export default {
   "main": {
-    "FTProxy": 1,
-    "NFTProxy": 2
+    "FT": 1,
+    "NFT": 2
   },
   "sidechain": {
-    "FTProxy": 3,
-    "NFTProxy": 4
+    "FT": 3,
+    "NFT": 4
   }
 }
