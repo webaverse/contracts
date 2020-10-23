@@ -20,8 +20,8 @@ contract WebaverseERC721Proxy is IERC721Receiver {
         parent = WebaverseERC721(parentAddress);
     }
 
-    event Withdrew(address from, uint256 tokenId, uint256 timestamp);
-    event Deposited(address to, uint256 tokenId);
+    event Withdrew(address indexed from, uint256 indexed tokenId, uint256 indexed timestamp);
+    event Deposited(address indexed to, uint256 indexed tokenId);
     
     function setSigner(address newSigner) public {
         require(msg.sender == signer, "new signer can only be set by old signer");
