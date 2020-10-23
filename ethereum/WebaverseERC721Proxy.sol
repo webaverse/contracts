@@ -10,7 +10,7 @@ contract WebaverseERC721Proxy is IERC721Receiver {
     address signer;
     uint256 chainId;
     WebaverseERC721 parent;
-    mapping (bytes32 => uint256) deposits;
+    mapping (address => mapping (uint256 => bool)) deposits;
     mapping (bytes32 => bool) usedWithdrawHashes;
     
     constructor (address parentAddress, uint256 _chainId) public {
