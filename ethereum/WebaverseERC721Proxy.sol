@@ -10,6 +10,7 @@ contract WebaverseERC721Proxy is IERC721Receiver {
     address signer;
     uint256 chainId;
     WebaverseERC721 parent;
+    mapping (bytes32 => uint256) deposits;
     mapping (bytes32 => bool) usedWithdrawHashes;
     
     constructor (address parentAddress, uint256 _chainId) public {
@@ -19,7 +20,7 @@ contract WebaverseERC721Proxy is IERC721Receiver {
     }
 
     event Withdrew(address from, uint256 tokenId, uint256 timestamp);
-    // event Deposited(address to, uint256 tokenId, uint256 timestamp);
+    event Deposited(address to, uint256 tokenId);
     
     function setSigner(address newSigner) public {
         require(msg.sender == signer, "new signer can only be set by old signer");
@@ -35,22 +36,25 @@ contract WebaverseERC721Proxy is IERC721Receiver {
         require(!usedWithdrawHashes[prefixedHash], "hash already used");
         usedWithdrawHashes[prefixedHash] = true;
 
-        if (!parent.tokenExists(tokenId)) {
+        if (!deposits[to][tokenId]) {
             parent.mintTokenId(contractAddress, tokenId, hash, filename);
-            // require(false, "fail 1.1");
-        } /* else {
-            require(false, "fail 2");
-        } */
+            deposits[to][tokenId] = true;
+        }
+
         parent.transferFrom(contractAddress, to, tokenId);
+        deposits[to][tokenId] = false;
         
         emit Withdrew(to, tokenId, timestamp);
     }
-    /* function deposit(address from, uint256 tokenId, uint256 timestamp) public {
+    function deposit(uint256 tokenId) public {
+        address from = msg.sender;
         address contractAddress = address(this);
-        parent.safeTransferFrom(from, contractAddress, tokenId);
+        parent.transferFrom(from, contractAddress, tokenId);
 
-        emit Deposited(from, tokenId, timestamp);
-    } */
+        deposits[from][tokenId] = true;
+
+        emit Deposited(from, tokenId);
+    }
     
     function onERC721Received(address, address, uint256, bytes memory) public override returns (bytes4) {
         return _ERC721_RECEIVED;

@@ -9,6 +9,7 @@ contract WebaverseERC20Proxy {
     address signer;
     uint256 chainId;
     WebaverseERC20 parent;
+    mapping (address => uint256) deposits;
     mapping (bytes32 => bool) usedWithdrawHashes;
     
     constructor (address parentAddress, uint256 _chainId) public {
@@ -18,7 +19,7 @@ contract WebaverseERC20Proxy {
     }
 
     event Withdrew(address from, uint256 amount, uint256 timestamp);
-    // event Deposited(address to, uint256 amount, uint256 timestamp);
+    event Deposited(address from, uint256 amount);
     
     function setSigner(address newSigner) public {
         require(msg.sender == signer, "new signer can only be set by old signer");
@@ -36,20 +37,25 @@ contract WebaverseERC20Proxy {
         usedWithdrawHashes[prefixedHash] = true;
 
         address contractAddress = address(this);
-        uint256 contractBalance = parent.balanceOf(contractAddress);
+        uint256 contractBalance = deposits[to];
         if (contractBalance < amount) {
             uint256 balanceNeeded = amount - contractBalance;
             parent.mint(contractAddress, balanceNeeded);
+            deposits[to] += balanceNeeded;
         }
+
         parent.transfer(to, amount);
+        deposits[to] -= amount;
         
         emit Withdrew(to, amount, timestamp);
     }
-    /* // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 1, 10
-    function deposit(address from, uint256 amount, uint256 timestamp) public {
+    function deposit(uint256 amount) public {
+        address from = msg.sender;
         address contractAddress = address(this);
         parent.transferFrom(from, contractAddress, amount);
 
-        emit Deposited(from, amount, timestamp);
-    } */
+        deposits[from] += amount;
+
+        emit Deposited(from, amount);
+    }
 }
