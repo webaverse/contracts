@@ -19,8 +19,8 @@ contract WebaverseERC20Proxy {
         parent = WebaverseERC20(parentAddress);
     }
 
-    event Withdrew(address from, uint256 amount, uint256 timestamp);
-    event Deposited(address from, uint256 amount);
+    event Withdrew(address indexed from, uint256 indexed amount, uint256 indexed timestamp);
+    event Deposited(address indexed from, uint256 indexed amount);
     
     function setSigner(address newSigner) public {
         require(msg.sender == signer, "new signer can only be set by old signer");
