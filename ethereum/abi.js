@@ -1288,6 +1288,11 @@ export default {
 				"type": "address"
 			},
 			{
+				"internalType": "address",
+				"name": "signerAddress",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "_chainId",
 				"type": "uint256"
