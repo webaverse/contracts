@@ -1348,6 +1348,11 @@ export default {
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "amount",
 				"type": "uint256"
@@ -1478,6 +1483,11 @@ export default {
 	},
 	{
 		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
 				"name": "tokenId",
