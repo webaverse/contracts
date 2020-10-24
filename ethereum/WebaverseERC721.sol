@@ -57,8 +57,8 @@ contract WebaverseERC721 is ERC721 {
 
             _mint(to, tokenId);
 
-            string memory _tokenURI = uint2str(hash);
-            _setTokenURI(tokenId, _tokenURI);
+            /* string memory _tokenURI = uint2str(hash);
+            _setTokenURI(tokenId, _tokenURI); */
 
             tokenIdToHash[tokenId] = hash;
             i++;
@@ -73,13 +73,20 @@ contract WebaverseERC721 is ERC721 {
 
         _mint(to, tokenId);
     
-        string memory _tokenURI = uint2str(hash);
-        _setTokenURI(tokenId, _tokenURI);
+        /* string memory _tokenURI = uint2str(hash);
+        _setTokenURI(tokenId, _tokenURI); */
     
         tokenIdToHash[tokenId] = hash;
 
         hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
         hashToMetadata[hash]["filename"] = filename;
+    }
+
+    function setBaseURI(string memory baseURI_) public {
+        setBaseURI(baseURI_);
+    }
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return string(abi.encodePacked(baseURI(), uint2str(tokenId)));
     }
     
     function tokenExists(uint256 tokenId) public view returns (bool) {
