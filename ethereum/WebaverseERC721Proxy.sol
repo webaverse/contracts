@@ -47,14 +47,14 @@ contract WebaverseERC721Proxy is IERC721Receiver {
         
         emit Withdrew(to, tokenId, timestamp);
     }
-    function deposit(uint256 tokenId) public {
+    function deposit(address to, uint256 tokenId) public {
         address from = msg.sender;
         address contractAddress = address(this);
         parent.transferFrom(from, contractAddress, tokenId);
 
-        deposits[from][tokenId] = true;
+        deposits[to][tokenId] = true;
 
-        emit Deposited(from, tokenId);
+        emit Deposited(to, tokenId);
     }
     
     function onERC721Received(address, address, uint256, bytes memory) public override returns (bytes4) {
