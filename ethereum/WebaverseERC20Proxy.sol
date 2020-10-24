@@ -83,13 +83,13 @@ contract WebaverseERC20Proxy {
         
         emit Withdrew(to, amount, timestamp);
     }
-    function deposit(uint256 amount) public {
+    function deposit(address to, uint256 amount) public {
         address from = msg.sender;
         address contractAddress = address(this);
         parent.transferFrom(from, contractAddress, amount);
 
-        deposits[from] += amount;
+        deposits[to] += amount;
 
-        emit Deposited(from, amount);
+        emit Deposited(to, amount);
     }
 }
