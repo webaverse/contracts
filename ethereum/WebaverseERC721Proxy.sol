@@ -10,7 +10,7 @@ contract WebaverseERC721Proxy is IERC721Receiver {
     address signer;
     uint256 chainId;
     WebaverseERC721 parent;
-    mapping (address => mapping (uint256 => bool)) deposits;
+    mapping (uint256 => bool) deposits;
     mapping (bytes32 => bool) usedWithdrawHashes;
 
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
@@ -37,13 +37,13 @@ contract WebaverseERC721Proxy is IERC721Receiver {
         require(!usedWithdrawHashes[prefixedHash], "hash already used");
         usedWithdrawHashes[prefixedHash] = true;
 
-        if (!deposits[to][tokenId]) {
+        if (!deposits[tokenId]) {
             parent.mintTokenId(contractAddress, tokenId, hash, filename);
-            deposits[to][tokenId] = true;
+            deposits[tokenId] = true;
         }
 
         parent.transferFrom(contractAddress, to, tokenId);
-        deposits[to][tokenId] = false;
+        deposits[tokenId] = false;
         
         emit Withdrew(to, tokenId, timestamp);
     }
@@ -52,7 +52,7 @@ contract WebaverseERC721Proxy is IERC721Receiver {
         address contractAddress = address(this);
         parent.transferFrom(from, contractAddress, tokenId);
 
-        deposits[to][tokenId] = true;
+        deposits[tokenId] = true;
 
         emit Deposited(to, tokenId);
     }
