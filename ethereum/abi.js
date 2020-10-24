@@ -844,6 +844,19 @@ export default {
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "baseURI_",
+				"type": "string"
+			}
+		],
+		"name": "setBaseURI",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
