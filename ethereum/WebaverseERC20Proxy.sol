@@ -9,7 +9,7 @@ contract WebaverseERC20Proxy {
     address signer;
     uint256 chainId;
     WebaverseERC20 parent;
-    mapping (address => uint256) deposits;
+    uint256 deposits;
     mapping (bytes32 => bool) usedWithdrawHashes;
     
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
@@ -70,16 +70,15 @@ contract WebaverseERC20Proxy {
         require(!usedWithdrawHashes[prefixedHash], "hash already used");
         usedWithdrawHashes[prefixedHash] = true;
 
-        address contractAddress = address(this);
-        uint256 contractBalance = deposits[to];
-        if (contractBalance < amount) {
-            uint256 balanceNeeded = amount - contractBalance;
+        if (deposits < amount) {
+            address contractAddress = address(this);
+            uint256 balanceNeeded = amount - deposits;
             parent.mint(contractAddress, balanceNeeded);
-            deposits[to] += balanceNeeded;
+            deposits += balanceNeeded;
         }
 
         parent.transfer(to, amount);
-        deposits[to] -= amount;
+        deposits -= amount;
         
         emit Withdrew(to, amount, timestamp);
     }
@@ -88,7 +87,7 @@ contract WebaverseERC20Proxy {
         address contractAddress = address(this);
         parent.transferFrom(from, contractAddress, amount);
 
-        deposits[to] += amount;
+        deposits += amount;
 
         emit Deposited(to, amount);
     }
