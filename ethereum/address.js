@@ -4,11 +4,6 @@ export default {
     "NFT": "0xa1b53520514e2ed41d38ff2546cbfdf5bc3d2f63",
     "Account": "0x2dCAa54b8Db2bDACCd259A151Fa42528122C226f"
   },
-  "matic": {
-    "FT": "0x617f2b3558604708288Ab0454c4E7771eA7c712c",
-    "NFT": "0x362e0D2494399A5252Ee855f2A47d513D1AEd6C6",
-    "Account": "0x9eEEC497D67cA101393Bc9C3a9AE2D0dEac8768d"
-  },
   "main": {
     "Account": "0x7f190c4cA34bda628c8270F588cd62003dd2751d",
     "FT": "0xeb044098A06F578aDC7d4Aaf18061373240Be9f6",
