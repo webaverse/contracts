@@ -85,6 +85,7 @@ contract WebaverseERC721 is ERC721 {
     }
 
     function setBaseURI(string memory baseURI_) public {
+        require(allowedMinters[msg.sender], "only minters can set the base uri");
         setBaseURI(baseURI_);
     }
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
