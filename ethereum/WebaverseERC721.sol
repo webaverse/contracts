@@ -16,6 +16,7 @@ contract WebaverseERC721 is ERC721 {
     mapping (address => bool) allowedMinters;
     uint256 nextTokenId = 0;
     mapping (uint256 => uint256) private tokenIdToHash;
+    mapping (uint256 => uint256) private hashToStartTokenId;
     mapping (uint256 => uint256) private hashToTotalSupply;
     mapping (uint256 => mapping(string => string)) private hashToMetadata;
     mapping (uint256 => mapping(address => bool)) private hashToCollaborators;
@@ -52,6 +53,8 @@ contract WebaverseERC721 is ERC721 {
         require(count > 0, "count must be greater than zero");
         require(hashToTotalSupply[hash] == 0, "hash already exists");
 
+        hashToStartTokenId[hash] = nextTokenId + 1;
+
         uint256 i = 0;
         while (i < count) {
             uint256 tokenId = ++nextTokenId;
@@ -79,6 +82,9 @@ contract WebaverseERC721 is ERC721 {
     
         tokenIdToHash[tokenId] = hash;
 
+        if (hashToStartTokenId[hash] == 0) {
+          hashToStartTokenId[hash] = tokenId;
+        }
         hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
         hashToMetadata[hash]["filename"] = filename;
         hashToCollaborators[hash][to] = true;
@@ -162,5 +168,26 @@ contract WebaverseERC721 is ERC721 {
         uint256 hash = tokenIdToHash[tokenId];
         require(isCollaborator(hash, msg.sender), "not a collaborator");
         hashToMetadata[tokenId][key] = value;
+    }
+    function updateHash(uint256 oldHash, uint256 newHash) public {
+        require(hashToTotalSupply[oldHash] > 0, "old hash does not exist");
+        require(hashToTotalSupply[newHash] == 0, "new hash already exists");
+        require(isCollaborator(oldHash, msg.sender), "not a collaborator");
+
+        uint256 startTokenId = hashToStartTokenId[oldHash];
+        uint256 totalSupply = hashToTotalSupply[oldHash];
+        for (uint256 i = 0; tokenId < totalSupply; i++) {
+            tokenIdToHash[tokenId] = startTokenId + i;
+        }
+
+        hashToStartTokenId[newHash] = hashToStartTokenId[oldHash];
+        hashToTotalSupply[newHash] = hashToTotalSupply[oldHash];
+        hashToMetadata[newHash] = hashToMetadata[oldHash];
+        hashToCollaborators[newHash] = hashToMetadata[oldHash];
+
+        delete hashToStartTokenId[oldHash];
+        delete hashToTotalSupply[oldHash];
+        delete hashToMetadata[oldHash];
+        delete hashToCollaborators[oldHash];
     }
 }
