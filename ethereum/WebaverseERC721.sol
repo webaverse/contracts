@@ -18,8 +18,13 @@ contract WebaverseERC721 is ERC721 {
     mapping (uint256 => uint256) private tokenIdToHash;
     mapping (uint256 => uint256) private hashToStartTokenId;
     mapping (uint256 => uint256) private hashToTotalSupply;
-    mapping (uint256 => mapping(string => string)) private hashToMetadata;
+    mapping (uint256 => Metadata[]) private hashToMetadata;
     mapping (uint256 => address[]) private hashToCollaborators;
+    
+    struct Metadata {
+        string key;
+        string value;
+    }
     
     constructor (string memory name, string memory symbol, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
@@ -68,8 +73,11 @@ contract WebaverseERC721 is ERC721 {
             i++;
         }
         hashToTotalSupply[hash] = count;
-        hashToMetadata[hash]["filename"] = filename;
+        hashToMetadata[hash].push(Metadata("filename", filename));
         hashToCollaborators[hash].push(to);
+    }
+    function streq(string memory a, string memory b) internal pure returns (bool) {
+        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
     function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
@@ -86,7 +94,17 @@ contract WebaverseERC721 is ERC721 {
           hashToStartTokenId[hash] = tokenId;
         }
         hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
-        hashToMetadata[hash]["filename"] = filename;
+        bool filenameFound = false;
+        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
+            if (streq(hashToMetadata[hash][i].key, "filename")) {
+                hashToMetadata[hash][i].value = filename;
+                filenameFound = true;
+                break;
+            }
+        }
+        if (!filenameFound) {
+            hashToMetadata[hash].push(Metadata("filename", filename));
+        }
         
         if (!isCollaborator(hash, to)) {
             hashToCollaborators[hash].push(to);
@@ -191,12 +209,29 @@ contract WebaverseERC721 is ERC721 {
     } */
     
     function getMetadata(uint256 tokenId, string memory key) public view returns (string memory) {
-        return hashToMetadata[tokenId][key];
+        uint256 hash = tokenIdToHash[tokenId];
+        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
+            if (streq(hashToMetadata[hash][i].key, key)) {
+                return hashToMetadata[hash][i].value;
+            }
+        }
+        return "";
     }
     function setMetadata(uint256 tokenId, string memory key, string memory value) public {
         uint256 hash = tokenIdToHash[tokenId];
         require(isCollaborator(hash, msg.sender), "not a collaborator");
-        hashToMetadata[tokenId][key] = value;
+        
+        bool keyFound = false;
+        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
+            if (streq(hashToMetadata[hash][i].key, key)) {
+                hashToMetadata[hash][i].value = value;
+                keyFound = true;
+                break;
+            }
+        }
+        if (!keyFound) {
+            hashToMetadata[hash].push(Metadata(key, value));
+        }
     }
     function updateHash(uint256 oldHash, uint256 newHash) public {
         require(hashToTotalSupply[oldHash] > 0, "old hash does not exist");
