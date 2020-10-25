@@ -4,8 +4,8 @@ pragma experimental ABIEncoderV2;
 
 import "./WebaverseERC721.sol";
 
-contract WebaverseERC721Proxy is IERC721Receiver {
-    bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
+contract WebaverseERC721Proxy /* is IERC721Receiver */ {
+    // bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
     
     address signer;
     uint256 chainId;
@@ -57,7 +57,7 @@ contract WebaverseERC721Proxy is IERC721Receiver {
         emit Deposited(to, tokenId);
     }
     
-    function onERC721Received(address, address, uint256, bytes memory) public override returns (bytes4) {
+    /* function onERC721Received(address, address, uint256, bytes memory) public override returns (bytes4) {
         return _ERC721_RECEIVED;
-    }
+    } */
 }
