@@ -212,7 +212,7 @@ contract WebaverseERC721 is ERC721 {
         hashToStartTokenId[newHash] = hashToStartTokenId[oldHash];
         hashToTotalSupply[newHash] = hashToTotalSupply[oldHash];
         hashToMetadata[newHash] = hashToMetadata[oldHash];
-        hashToCollaborators[newHash] = hashToMetadata[oldHash];
+        hashToCollaborators[newHash] = hashToCollaborators[oldHash];
 
         delete hashToStartTokenId[oldHash];
         delete hashToTotalSupply[oldHash];
