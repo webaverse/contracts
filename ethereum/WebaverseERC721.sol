@@ -208,8 +208,7 @@ contract WebaverseERC721 is ERC721 {
         return (hash, filename);
     } */
     
-    function getMetadata(uint256 tokenId, string memory key) public view returns (string memory) {
-        uint256 hash = tokenIdToHash[tokenId];
+    function getMetadata(uint256 hash, string memory key) public view returns (string memory) {
         for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
             if (streq(hashToMetadata[hash][i].key, key)) {
                 return hashToMetadata[hash][i].value;
@@ -217,8 +216,7 @@ contract WebaverseERC721 is ERC721 {
         }
         return "";
     }
-    function setMetadata(uint256 tokenId, string memory key, string memory value) public {
-        uint256 hash = tokenIdToHash[tokenId];
+    function setMetadata(uint256 hash, string memory key, string memory value) public {
         require(isCollaborator(hash, msg.sender), "not a collaborator");
         
         bool keyFound = false;
