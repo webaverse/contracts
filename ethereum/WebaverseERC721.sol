@@ -19,7 +19,7 @@ contract WebaverseERC721 is ERC721 {
     mapping (uint256 => uint256) private hashToStartTokenId;
     mapping (uint256 => uint256) private hashToTotalSupply;
     mapping (uint256 => mapping(string => string)) private hashToMetadata;
-    mapping (uint256 => mapping(address => bool)) private hashToCollaborators;
+    mapping (uint256 => address[]) private hashToCollaborators;
     
     constructor (string memory name, string memory symbol, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
@@ -69,7 +69,7 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToTotalSupply[hash] = count;
         hashToMetadata[hash]["filename"] = filename;
-        hashToCollaborators[hash][to] = true;
+        hashToCollaborators[hash].push(to);
     }
     function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
@@ -87,7 +87,10 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
         hashToMetadata[hash]["filename"] = filename;
-        hashToCollaborators[hash][to] = true;
+        
+        if (!isCollaborator(hash, to)) {
+            hashToCollaborators[hash].push(to);
+        }
     }
 
     function setBaseURI(string memory baseURI_) public {
@@ -115,15 +118,37 @@ contract WebaverseERC721 is ERC721 {
     }
 
     function isCollaborator(uint256 hash, address a) public view returns (bool) {
-        return hashToCollaborators[hash][a];
+        for (uint256 i = 0; i < hashToCollaborators[hash].length; i++) {
+            if (hashToCollaborators[hash][i] == a) {
+                return true;
+            }
+        }
+        return false;
     }
     function addCollaborator(uint256 hash, address a) public {
         require(isCollaborator(hash, msg.sender), "not a collaborator");
-        hashToCollaborators[hash][a] = true;
+        require(!isCollaborator(hash, a), "already a collaborator");
+        hashToCollaborators[hash].push(a);
     }
     function removeCollaborator(uint256 hash, address a) public {
         require(isCollaborator(hash, msg.sender), "not a collaborator");
-        hashToCollaborators[hash][a] = false;
+        
+        uint256 newSize = 0;
+        for (uint256 i = 0; i < hashToCollaborators[hash].length; i++) {
+            if (hashToCollaborators[hash][i] != a) {
+                newSize++;
+            }
+        }
+
+        address[] memory newCollaborators = new address[](newSize);
+        uint256 index = 0;
+        for (uint256 i = 0; i < hashToCollaborators[hash].length; i++) {
+            address oldCollaborator = hashToCollaborators[hash][i];
+            if (oldCollaborator != a) {
+                newCollaborators[index++] = oldCollaborator;
+            }
+        }
+        hashToCollaborators[hash] = newCollaborators;
     }
     function seal(uint256 hash) public {
         require(isCollaborator(hash, msg.sender), "not a collaborator");
