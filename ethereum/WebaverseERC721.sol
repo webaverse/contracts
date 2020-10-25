@@ -69,7 +69,6 @@ contract WebaverseERC721 is ERC721 {
     function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
         require(hash != 0, "hash cannot be zero");
-        require(hashToTotalSupply[hash] == 0, "hash already exists");
 
         _mint(to, tokenId);
     
