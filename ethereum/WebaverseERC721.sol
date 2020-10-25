@@ -18,6 +18,7 @@ contract WebaverseERC721 is ERC721 {
     mapping (uint256 => uint256) private tokenIdToHash;
     mapping (uint256 => uint256) private hashToTotalSupply;
     mapping (uint256 => mapping(string => string)) private hashToMetadata;
+    mapping (uint256 => mapping(address => bool)) private hashToCollaborators;
     
     constructor (string memory name, string memory symbol, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
@@ -65,6 +66,7 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToTotalSupply[hash] = count;
         hashToMetadata[hash]["filename"] = filename;
+        hashToCollaborators[hash][to] = true;
     }
     function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
@@ -79,6 +81,7 @@ contract WebaverseERC721 is ERC721 {
 
         hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
         hashToMetadata[hash]["filename"] = filename;
+        hashToCollaborators[hash][to] = true;
     }
 
     function setBaseURI(string memory baseURI_) public {
@@ -102,6 +105,18 @@ contract WebaverseERC721 is ERC721 {
     function removeAllowedMinter(address a) public {
         require(isAllowedMinter(msg.sender));
         allowedMinters[a] = false;
+    }
+
+    function isCollaborator(uint256 hash, address a) public view returns (bool) {
+        return hashToCollaborators[hash][a];
+    }
+    function addCollaborator(uint256 hash, address a) public {
+        require(isCollaborator(msg.sender));
+        hashToCollaborators[hash][a] = true;
+    }
+    function removeCollaborator(uint256 hash, address a) public {
+        require(isCollaborator(msg.sender));
+        hashToCollaborators[hash][a] = false;
     }
     
     function getHash(uint256 tokenId) public view returns (uint256) {
@@ -144,7 +159,7 @@ contract WebaverseERC721 is ERC721 {
     }
     function setMetadata(uint256 tokenId, string memory key, string memory value) public {
         uint256 hash = tokenIdToHash[tokenId];
-        require(balanceOfHash(msg.sender, hash) == totalSupplyOfHash(hash));
+        require(isCollaborator(hash, msg.sender), "not a collaborator");
         hashToMetadata[tokenId][key] = value;
     }
 }
