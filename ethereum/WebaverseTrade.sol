@@ -5,9 +5,7 @@ pragma experimental ABIEncoderV2;
 import "./WebaverseERC20.sol";
 import "./WebaverseERC721.sol";
 
-contract WebaverseTrade /* is IERC721Receiver */ {
-    // bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
-    
+contract WebaverseTrade {
     WebaverseERC20 parentERC20;
     WebaverseERC721 parentERC721;
 
@@ -33,8 +31,4 @@ contract WebaverseTrade /* is IERC721Receiver */ {
         if (a3 != 0) parentERC721.transferFrom(from, to, a3);
         if (b3 != 0) parentERC721.transferFrom(to, from, b3);
     }
-    
-    /* function onERC721Received(address, address, uint256, bytes memory) public override returns (bytes4) {
-        return _ERC721_RECEIVED;
-    } */
 }
