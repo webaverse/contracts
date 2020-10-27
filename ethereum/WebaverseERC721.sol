@@ -210,6 +210,12 @@ contract WebaverseERC721 is ERC721 {
         uint256 balance;
         uint256 totalSupply;
     }
+    function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
+        uint256 hash = tokenIdToHash[tokenId];
+        string memory filename = getMetadata(hash, "filename");
+        uint256 totalSupply = hashToTotalSupply[hash];
+        return Token(tokenId, hash, filename, 0, totalSupply);
+    }
     function tokenOfOwnerByIndexFull(address owner, uint256 index) public view returns (Token memory) {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
         uint256 hash = tokenIdToHash[tokenId];
