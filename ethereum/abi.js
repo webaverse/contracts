@@ -607,7 +607,7 @@ export default {
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "tokenId",
+				"name": "hash",
 				"type": "uint256"
 			},
 			{
@@ -931,7 +931,7 @@ export default {
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "tokenId",
+				"name": "hash",
 				"type": "uint256"
 			},
 			{
