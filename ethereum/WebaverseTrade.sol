@@ -8,11 +8,18 @@ import "./WebaverseERC721.sol";
 contract WebaverseTrade {
     WebaverseERC20 parentERC20;
     WebaverseERC721 parentERC721;
+    address signer;
 
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
-    constructor (address parentERC20Address, address parentERC721Address) public {
+    constructor (address parentERC20Address, address parentERC721Address, address signerAddress) public {
         parentERC20 = WebaverseERC20(parentERC20Address);
         parentERC721 = WebaverseERC721(parentERC721Address);
+        signer = signerAddress;
+    }
+    
+    function setSigner(address newSigner) public {
+        require(msg.sender == signer, "new signer can only be set by old signer");
+        signer = newSigner;
     }
     
     function trade(
@@ -22,6 +29,7 @@ contract WebaverseTrade {
         uint256 a2, uint256 b2,
         uint256 a3, uint256 b3
     ) public {
+        require(msg.sender == signer, "unauthorized signer");
         if (fromFt != 0) parentERC20.transferFrom(from, to, fromFt);
         if (toFt != 0) parentERC20.transferFrom(to, from, toFt);
         if (a1 != 0) parentERC721.transferFrom(from, to, a1);
