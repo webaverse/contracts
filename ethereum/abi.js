@@ -1582,10 +1582,28 @@ export default {
 				"internalType": "address",
 				"name": "parentERC721Address",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "signerAddress",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newSigner",
+				"type": "address"
+			}
+		],
+		"name": "setSigner",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
