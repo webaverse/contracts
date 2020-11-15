@@ -56,8 +56,4 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
 
         emit Deposited(to, tokenId);
     }
-    
-    /* function onERC721Received(address, address, uint256, bytes memory) public override returns (bytes4) {
-        return _ERC721_RECEIVED;
-    } */
 }
