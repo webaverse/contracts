@@ -89,7 +89,9 @@ contract WebaverseERC721 is ERC721 {
         hashToMetadata[hash].push(Metadata("filename", filename));
         hashToCollaborators[hash].push(to);
 
-        erc20Contract.transfer(treasuryAddress, mintFee);
+        if (mintFee != 0) {
+            erc20Contract.transfer(treasuryAddress, mintFee);
+        }
     }
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
