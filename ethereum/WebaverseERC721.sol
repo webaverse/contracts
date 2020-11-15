@@ -58,7 +58,7 @@ contract WebaverseERC721 is ERC721 {
         erc20Contract.transfer(contractAddress, amount);
     }
     function unpack(uint256 tokenId, uint256 amount) public {
-        require(ownerOf(tokenId), "not your token");
+        require(ownerOf(tokenId) == msg.sender, "not your token");
         require(tokenIdToBalance[tokenId] >= amount, "insufficient balance");
 
         tokenIdToBalance[tokenId] -= amount;
