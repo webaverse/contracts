@@ -66,8 +66,7 @@ contract WebaverseERC721 is ERC721 {
 
         tokenIdToBalance[tokenId] -= amount;
 
-        address contractAddress = address(this);
-        erc20Contract.transferFrom(contractAddress, to, amount);
+        erc20Contract.transfer(to, amount);
     }
 
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
