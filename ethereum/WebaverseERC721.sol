@@ -66,9 +66,6 @@ contract WebaverseERC721 is ERC721 {
 
             _mint(to, tokenId);
 
-            /* string memory _tokenURI = uint2str(hash);
-            _setTokenURI(tokenId, _tokenURI); */
-
             tokenIdToHash[tokenId] = hash;
             i++;
         }
