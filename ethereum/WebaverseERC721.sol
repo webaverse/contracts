@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import "./ERC721.sol";
 import "./EnumerableSet.sol";
 import "./Math.sol";
+import "./WebaverseERC20.sol";
 
 /**
  * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
@@ -12,6 +13,9 @@ import "./Math.sol";
 contract WebaverseERC721 is ERC721 {
     using EnumerableSet for EnumerableSet.UintSet;
 
+    WebaverseERC20 erc20Contract; // ERC20 contract for fungible tokens
+    uint256 mintFee; // ERC20 fee to mint ERC721
+    address treasuryAddress; // address to pay minting fees
     bool isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping (address => bool) allowedMinters; // whether anyone can mint tokens (should be sidechain only)
     uint256 nextTokenId = 0; // the next token id to use (increases linearly)
@@ -26,12 +30,24 @@ contract WebaverseERC721 is ERC721 {
         string value;
     }
     
-    constructor (string memory name, string memory symbol, bool _isPublicallyMintable) public ERC721(name, symbol) {
+    constructor (string memory name, string memory symbol, WebaverseERC20 _erc20Contract, uint256 _mintFee, address _treasuryAddress, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
+        erc20Contract = _erc20Contract;
+        mintFee = _mintFee;
+        treasuryAddress = _treasuryAddress;
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
     }
-    
+
+    function setMintFee(uint256 _mintFee) public {
+        require(message.sender == treasuryAddress, "must be set from treasury address");
+        mintFee = _mintFee;
+    }
+    function setTreasuryAddress(address _treasuryAddress) public {
+        require(message.sender == treasuryAddress, "must be set from treasury address");
+        treasuryAddress = _treasuryAddress;
+    }
+
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
             return "0";
@@ -72,6 +88,8 @@ contract WebaverseERC721 is ERC721 {
         hashToTotalSupply[hash] = count;
         hashToMetadata[hash].push(Metadata("filename", filename));
         hashToCollaborators[hash].push(to);
+
+        erc20Contract.transfer(treasuryAddress, mintFee);
     }
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
