@@ -377,6 +377,21 @@ export default {
 				"type": "string"
 			},
 			{
+				"internalType": "contract WebaverseERC20",
+				"name": "_erc20Contract",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_mintFee",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			},
+			{
 				"internalType": "bool",
 				"name": "_isPublicallyMintable",
 				"type": "bool"
@@ -946,6 +961,32 @@ export default {
 			}
 		],
 		"name": "setMetadata",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_mintFee",
+				"type": "uint256"
+			}
+		],
+		"name": "setMintFee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasuryAddress",
+				"type": "address"
+			}
+		],
+		"name": "setTreasuryAddress",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
