@@ -24,7 +24,8 @@ contract WebaverseERC721 is ERC721 {
     mapping (uint256 => uint256) private hashToTotalSupply; // map of hash to total number of tokens for it
     mapping (uint256 => Metadata[]) private hashToMetadata; // map of hash to metadata key-value store
     mapping (uint256 => address[]) private hashToCollaborators; // map of hash to addresses that can change metadata
-    
+    mapping (uint256 => uint256) private tokenIdToBalance; // map of tokens to packed balance
+
     struct Metadata {
         string key;
         string value;
@@ -46,6 +47,24 @@ contract WebaverseERC721 is ERC721 {
     function setTreasuryAddress(address _treasuryAddress) public {
         require(msg.sender == treasuryAddress, "must be set from treasury address");
         treasuryAddress = _treasuryAddress;
+    }
+
+    function pack(uint256 tokenId, uint256 amount) public {
+        require(_exists(tokenId), "token id does not exist");
+
+        tokenIdToBalance[tokenId] += amount;
+
+        address contractAddress = address(this);
+        erc20Contract.transfer(contractAddress, amount);
+    }
+    function unpack(uint256 tokenId, uint256 amount) public {
+        require(ownerOf(tokenId), "not your token");
+        require(tokenIdToBalance[tokenId] >= amount, "insufficient balance");
+
+        tokenIdToBalance[tokenId] -= amount;
+
+        address contractAddress = address(this);
+        erc20Contract.transferFrom(contractAddress, msg.sender, amount);
     }
 
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
