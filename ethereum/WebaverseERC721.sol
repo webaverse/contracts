@@ -49,6 +49,9 @@ contract WebaverseERC721 is ERC721 {
         treasuryAddress = _treasuryAddress;
     }
 
+    function getPackedBalance(uint256 tokenId) public view returns (uint256) {
+        return tokenIdToBalance[tokenId];
+    }
     function pack(address from, uint256 tokenId, uint256 amount) public {
         require(_exists(tokenId), "token id does not exist");
 
@@ -109,7 +112,7 @@ contract WebaverseERC721 is ERC721 {
         hashToCollaborators[hash].push(to);
 
         if (mintFee != 0) {
-            erc20Contract.transfer(treasuryAddress, mintFee);
+            erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee);
         }
     }
     function streq(string memory a, string memory b) internal pure returns (bool) {
