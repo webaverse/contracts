@@ -37,25 +37,29 @@ contract WebaverseERC20Proxy {
         require(!usedWithdrawHashes[prefixedHash], "hash already used");
         usedWithdrawHashes[prefixedHash] = true;
 
-        if (deposits < amount) {
-            address contractAddress = address(this);
-            uint256 balanceNeeded = amount - deposits;
-            parent.mint(contractAddress, balanceNeeded);
+        bool needsMint = deposits < amount;
+        uint256 balanceNeeded = amount - deposits;
+        if (needsMint) {
             deposits += balanceNeeded;
         }
-
-        parent.transfer(to, amount);
         deposits -= amount;
-        
+
         emit Withdrew(to, amount, timestamp);
+
+        if (needsMint) {
+          address contractAddress = address(this);
+          parent.mint(contractAddress, balanceNeeded);
+        }
+
+        require(parent.transfer(to, amount), "transfer failed");
     }
     function deposit(address to, uint256 amount) public {
-        address from = msg.sender;
-        address contractAddress = address(this);
-        parent.transferFrom(from, contractAddress, amount);
-
         deposits += amount;
 
         emit Deposited(to, amount);
+
+        address from = msg.sender;
+        address contractAddress = address(this);
+        require(parent.transferFrom(from, contractAddress, amount), "transfer failed");
     }
 }
