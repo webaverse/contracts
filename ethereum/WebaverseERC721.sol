@@ -12,14 +12,14 @@ import "./Math.sol";
 contract WebaverseERC721 is ERC721 {
     using EnumerableSet for EnumerableSet.UintSet;
 
-    bool isPublicallyMintable;
-    mapping (address => bool) allowedMinters;
-    uint256 nextTokenId = 0;
-    mapping (uint256 => uint256) private tokenIdToHash;
-    mapping (uint256 => uint256) private hashToStartTokenId;
-    mapping (uint256 => uint256) private hashToTotalSupply;
-    mapping (uint256 => Metadata[]) private hashToMetadata;
-    mapping (uint256 => address[]) private hashToCollaborators;
+    bool isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
+    mapping (address => bool) allowedMinters; // whether anyone can mint tokens (should be sidechain only)
+    uint256 nextTokenId = 0; // the next token id to use (increases linearly)
+    mapping (uint256 => uint256) private tokenIdToHash; // map of token id to hash it represents
+    mapping (uint256 => uint256) private hashToStartTokenId; // map of hashes to start of token ids for it
+    mapping (uint256 => uint256) private hashToTotalSupply; // map of hash to total number of tokens for it
+    mapping (uint256 => Metadata[]) private hashToMetadata; // map of hash to metadata key-value store
+    mapping (uint256 => address[]) private hashToCollaborators; // map of hash to addresses that can change metadata
     
     struct Metadata {
         string key;
