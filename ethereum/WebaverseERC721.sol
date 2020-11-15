@@ -40,11 +40,11 @@ contract WebaverseERC721 is ERC721 {
     }
 
     function setMintFee(uint256 _mintFee) public {
-        require(message.sender == treasuryAddress, "must be set from treasury address");
+        require(msg.sender == treasuryAddress, "must be set from treasury address");
         mintFee = _mintFee;
     }
     function setTreasuryAddress(address _treasuryAddress) public {
-        require(message.sender == treasuryAddress, "must be set from treasury address");
+        require(msg.sender == treasuryAddress, "must be set from treasury address");
         treasuryAddress = _treasuryAddress;
     }
 
