@@ -30,8 +30,8 @@ contract WebaverseTrade {
         uint256 a3, uint256 b3
     ) public {
         require(msg.sender == signer, "unauthorized signer");
-        if (fromFt != 0) parentERC20.transferFrom(from, to, fromFt);
-        if (toFt != 0) parentERC20.transferFrom(to, from, toFt);
+        if (fromFt != 0) require(parentERC20.transferFrom(from, to, fromFt), "transfer ft from -> to failed");
+        if (toFt != 0) require(parentERC20.transferFrom(to, from, toFt), "transfer ft from <- to failed");
         if (a1 != 0) parentERC721.transferFrom(from, to, a1);
         if (b1 != 0) parentERC721.transferFrom(to, from, b1);
         if (a2 != 0) parentERC721.transferFrom(from, to, a2);
