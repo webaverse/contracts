@@ -49,22 +49,22 @@ contract WebaverseERC721 is ERC721 {
         treasuryAddress = _treasuryAddress;
     }
 
-    function pack(uint256 tokenId, uint256 amount) public {
+    function pack(address from, uint256 tokenId, uint256 amount) public {
         require(_exists(tokenId), "token id does not exist");
 
         tokenIdToBalance[tokenId] += amount;
 
         address contractAddress = address(this);
-        erc20Contract.transfer(contractAddress, amount);
+        erc20Contract.transferFrom(from, contractAddress, amount);
     }
-    function unpack(uint256 tokenId, uint256 amount) public {
+    function unpack(address to, uint256 tokenId, uint256 amount) public {
         require(ownerOf(tokenId) == msg.sender, "not your token");
         require(tokenIdToBalance[tokenId] >= amount, "insufficient balance");
 
         tokenIdToBalance[tokenId] -= amount;
 
         address contractAddress = address(this);
-        erc20Contract.transferFrom(contractAddress, msg.sender, amount);
+        erc20Contract.transferFrom(contractAddress, to, amount);
     }
 
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
