@@ -6,11 +6,11 @@ import "./WebaverseERC20.sol";
 import './IERC721Receiver.sol';
 
 contract WebaverseERC20Proxy {
-    address signer;
-    uint256 chainId;
-    WebaverseERC20 parent;
-    uint256 deposits;
-    mapping (bytes32 => bool) usedWithdrawHashes;
+    address signer; // signer oracle address
+    uint256 chainId; // unique chain id
+    WebaverseERC20 parent; // managed ERC20 contract
+    uint256 deposits; // amount deposited in this contract
+    mapping (bytes32 => bool) usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
     
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentAddress, address signerAddress, uint256 _chainId) public {
@@ -19,8 +19,8 @@ contract WebaverseERC20Proxy {
         parent = WebaverseERC20(parentAddress);
     }
 
-    event Withdrew(address indexed from, uint256 indexed amount, uint256 indexed timestamp);
-    event Deposited(address indexed from, uint256 indexed amount);
+    event Withdrew(address indexed from, uint256 indexed amount, uint256 indexed timestamp); // logs the fact that we withdrew oracle-signed fungible tokens
+    event Deposited(address indexed from, uint256 indexed amount); // used by the oracle when signing
     
     function setSigner(address newSigner) public {
         require(msg.sender == signer, "new signer can only be set by old signer");

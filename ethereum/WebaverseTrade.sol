@@ -6,9 +6,9 @@ import "./WebaverseERC20.sol";
 import "./WebaverseERC721.sol";
 
 contract WebaverseTrade {
-    WebaverseERC20 parentERC20;
-    WebaverseERC721 parentERC721;
-    address signer;
+    WebaverseERC20 parentERC20; // managed ERC20 contract
+    WebaverseERC721 parentERC721; // managed ERC721 contract
+    address signer; // signer oracle address
 
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentERC20Address, address parentERC721Address, address signerAddress) public {

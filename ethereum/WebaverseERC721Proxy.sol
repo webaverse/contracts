@@ -7,11 +7,11 @@ import "./WebaverseERC721.sol";
 contract WebaverseERC721Proxy /* is IERC721Receiver */ {
     // bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
     
-    address signer;
-    uint256 chainId;
-    WebaverseERC721 parent;
-    mapping (uint256 => bool) deposits;
-    mapping (bytes32 => bool) usedWithdrawHashes;
+    address signer; // signer oracle address
+    uint256 chainId; // unique chain id
+    WebaverseERC721 parent; // managed ERC721 contract
+    mapping (uint256 => bool) deposits; // whether the token has been deposited in this contract
+    mapping (bytes32 => bool) usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
 
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentAddress, address signerAddress, uint256 _chainId) public {
@@ -20,8 +20,8 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         parent = WebaverseERC721(parentAddress);
     }
 
-    event Withdrew(address indexed from, uint256 indexed tokenId, uint256 indexed timestamp);
-    event Deposited(address indexed to, uint256 indexed tokenId);
+    event Withdrew(address indexed from, uint256 indexed tokenId, uint256 indexed timestamp); // logs the fact that we withdrew an oracle-signed token
+    event Deposited(address indexed to, uint256 indexed tokenId); // used by the oracle when signing
     
     function setSigner(address newSigner) public {
         require(msg.sender == signer, "new signer can only be set by old signer");
