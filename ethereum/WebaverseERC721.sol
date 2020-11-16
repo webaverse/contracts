@@ -58,7 +58,7 @@ contract WebaverseERC721 is ERC721 {
         tokenIdToBalance[tokenId] += amount;
 
         address contractAddress = address(this);
-        erc20Contract.transferFrom(from, contractAddress, amount);
+        require(erc20Contract.transferFrom(from, contractAddress, amount), "transfer failed");
     }
     function unpack(address to, uint256 tokenId, uint256 amount) public {
         require(ownerOf(tokenId) == msg.sender, "not your token");
@@ -66,7 +66,7 @@ contract WebaverseERC721 is ERC721 {
 
         tokenIdToBalance[tokenId] -= amount;
 
-        erc20Contract.transfer(to, amount);
+        require(erc20Contract.transfer(to, amount), "transfer failed");
     }
 
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
@@ -111,7 +111,7 @@ contract WebaverseERC721 is ERC721 {
         hashToCollaborators[hash].push(to);
 
         if (mintFee != 0) {
-            erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee);
+            require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "transfer failed");
         }
     }
     function streq(string memory a, string memory b) internal pure returns (bool) {
