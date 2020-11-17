@@ -25,6 +25,7 @@ contract WebaverseERC721 is ERC721 {
     mapping (uint256 => Metadata[]) private hashToMetadata; // map of hash to metadata key-value store
     mapping (uint256 => address[]) private hashToCollaborators; // map of hash to addresses that can change metadata
     mapping (uint256 => uint256) private tokenIdToBalance; // map of tokens to packed balance
+    mapping (uint256 => address) minters; // map of tokens to minters
 
     struct Metadata {
         string key;
@@ -102,6 +103,7 @@ contract WebaverseERC721 is ERC721 {
             uint256 tokenId = ++nextTokenId;
 
             _mint(to, tokenId);
+            minters[tokenId] = to;
 
             tokenIdToHash[tokenId] = hash;
             i++;
@@ -114,6 +116,9 @@ contract WebaverseERC721 is ERC721 {
             require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "transfer failed");
         }
     }
+    function getMinter(uint256 tokenId) public view returns (address) {
+        return minters[tokenId];
+    }
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
@@ -122,9 +127,7 @@ contract WebaverseERC721 is ERC721 {
         require(hash != 0, "hash cannot be zero");
 
         _mint(to, tokenId);
-    
-        /* string memory _tokenURI = uint2str(hash);
-        _setTokenURI(tokenId, _tokenURI); */
+        minters[tokenId] = to;
     
         tokenIdToHash[tokenId] = hash;
 
@@ -245,22 +248,28 @@ contract WebaverseERC721 is ERC721 {
         uint256 id;
         uint256 hash;
         string filename;
+        address minter;
+        address owner;
         uint256 balance;
         uint256 totalSupply;
     }
     function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
         uint256 hash = tokenIdToHash[tokenId];
         string memory filename = getMetadata(hash, "filename");
+        address minter = minters[tokenId];
+        address owner = ownerOf(tokenId);
         uint256 totalSupply = hashToTotalSupply[hash];
-        return Token(tokenId, hash, filename, 0, totalSupply);
+        return Token(tokenId, hash, filename, minter, owner, 0, totalSupply);
+        
     }
     function tokenOfOwnerByIndexFull(address owner, uint256 index) public view returns (Token memory) {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
         uint256 hash = tokenIdToHash[tokenId];
         string memory filename = getMetadata(hash, "filename");
+        address minter = minters[tokenId];
         uint256 balance = balanceOfHash(owner, hash);
         uint256 totalSupply = hashToTotalSupply[hash];
-        return Token(tokenId, hash, filename, balance, totalSupply);
+        return Token(tokenId, hash, filename, minter, owner, balance, totalSupply);
     }
     
     function getMetadata(uint256 hash, string memory key) public view returns (string memory) {
