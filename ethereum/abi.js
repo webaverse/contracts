@@ -650,6 +650,25 @@ export default {
 				"type": "uint256"
 			}
 		],
+		"name": "getMinter",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
 		"name": "getPackedBalance",
 		"outputs": [
 			{
@@ -1093,6 +1112,16 @@ export default {
 						"type": "string"
 					},
 					{
+						"internalType": "address",
+						"name": "minter",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "balance",
 						"type": "uint256"
@@ -1204,6 +1233,16 @@ export default {
 						"internalType": "string",
 						"name": "filename",
 						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "minter",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
 					},
 					{
 						"internalType": "uint256",
