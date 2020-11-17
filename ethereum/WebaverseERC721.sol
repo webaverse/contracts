@@ -257,7 +257,7 @@ contract WebaverseERC721 is ERC721 {
         uint256 hash = tokenIdToHash[tokenId];
         string memory filename = getMetadata(hash, "filename");
         address minter = minters[tokenId];
-        address owner = ownerOf(tokenId);
+        address owner = _exists(tokenId) ? ownerOf(tokenId) : address(0);
         uint256 totalSupply = hashToTotalSupply[hash];
         return Token(tokenId, hash, filename, minter, owner, 0, totalSupply);
         
