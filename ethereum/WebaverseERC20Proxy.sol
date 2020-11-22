@@ -12,6 +12,8 @@ contract WebaverseERC20Proxy {
     uint256 deposits; // amount deposited in this contract
     mapping (bytes32 => bool) usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
     
+    bytes prefix = "\x19Ethereum Signed Message:\n32";
+    
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentAddress, address signerAddress, uint256 _chainId) public {
         signer = signerAddress;
@@ -29,7 +31,6 @@ contract WebaverseERC20Proxy {
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 1, 10, 0xc336b0bb5cac4584d79e77b1680ab789171ebc95f44f68bb1cc0a7b1174058ad, 0x72b888e952c0c39a8054f2b6dc41df645f5d4dc3d9cc6118535d88aa34945440, 0x1c
     function withdraw(address to, uint256 amount, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes memory message = abi.encodePacked(to, amount, timestamp, chainId);
         bytes32 messageHash = keccak256(message);
         bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
@@ -64,7 +65,6 @@ contract WebaverseERC20Proxy {
     }
     
     function withdrawNonceUsed(address to, uint256 amount, uint256 timestamp) public view returns (bool) {
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes memory message = abi.encodePacked(to, amount, timestamp, chainId);
         bytes32 messageHash = keccak256(message);
         bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
