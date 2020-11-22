@@ -62,4 +62,12 @@ contract WebaverseERC20Proxy {
         address contractAddress = address(this);
         require(parent.transferFrom(from, contractAddress, amount), "transfer failed");
     }
+    
+    function withdrawNonceUsed(address to, uint256 amount, uint256 timestamp) public view returns (bool) {
+        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+        bytes memory message = abi.encodePacked(to, amount, timestamp, chainId);
+        bytes32 messageHash = keccak256(message);
+        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, messageHash));
+        return usedWithdrawHashes[prefixedHash];
+    }
 }
