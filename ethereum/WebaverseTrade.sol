@@ -6,22 +6,65 @@ import "./WebaverseERC20.sol";
 import "./WebaverseERC721.sol";
 
 contract WebaverseTrade {
+    struct Store {
+        uint256 id;
+        address seller;
+        uint256 tokenId;
+        uint256 price;
+        bool live;
+    }
+
     WebaverseERC20 parentERC20; // managed ERC20 contract
     WebaverseERC721 parentERC721; // managed ERC721 contract
     address signer; // signer oracle address
+    uint256 nextBuyId; // next buy id
+    mapping(uint256 => Store) stores;
 
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentERC20Address, address parentERC721Address, address signerAddress) public {
         parentERC20 = WebaverseERC20(parentERC20Address);
         parentERC721 = WebaverseERC721(parentERC721Address);
         signer = signerAddress;
+        nextBuyId = 0;
     }
     
     function setSigner(address newSigner) public {
         require(msg.sender == signer, "new signer can only be set by old signer");
         signer = newSigner;
     }
-    
+
+    function addStore(uint256 tokenId, uint256 price) public {
+        uint256 buyId = ++nextBuyId;
+        stores[buyId] = Store(buyId, msg.sender, tokenId, price, true);
+
+        address contractAddress = address(this);
+        parentERC721.transferFrom(msg.sender, contractAddress, tokenId);
+    }
+    function removeStore(uint256 buyId) public {
+        Store storage store = stores[buyId];
+        require(store.seller == msg.sender, "not your sale");
+        require(store.live, "sale not live");
+        store.live = false;
+
+        address contractAddress = address(this);
+        parentERC721.transferFrom(contractAddress, store.seller, store.tokenId);
+    }
+    function buy(uint256 buyId) public {
+        Store storage store = stores[buyId];
+        require(store.live, "sale not live");
+        store.live = false;
+
+        parentERC20.transferFrom(msg.sender, store.seller, store.price);
+        address contractAddress = address(this);
+        parentERC721.transferFrom(contractAddress, msg.sender, store.tokenId);
+    }
+    function numStores() public view returns (uint256) {
+        return nextBuyId;
+    }
+    function getStoreByIndex(uint256 buyId) public view returns (Store memory) {
+        return stores[buyId];
+    }
+
     function trade(
         address from, address to,
         uint256 fromFt, uint256 toFt,
