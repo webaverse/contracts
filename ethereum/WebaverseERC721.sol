@@ -90,7 +90,7 @@ contract WebaverseERC721 is ERC721 {
     }
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, "lol", 1
-    function mint(address to, uint256 hash, string memory filename, uint256 count) public {
+    function mint(address to, uint256 hash, string memory filename, string memory description, uint256 count) public {
         require(isPublicallyMintable);
         require(hash != 0, "hash cannot be zero");
         require(count > 0, "count must be greater than zero");
@@ -110,6 +110,7 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToTotalSupply[hash] = count;
         hashToMetadata[hash].push(Metadata("filename", filename));
+        hashToMetadata[hash].push(Metadata("description", description));
         hashToCollaborators[hash].push(to);
 
         if (mintFee != 0) {
@@ -122,7 +123,7 @@ contract WebaverseERC721 is ERC721 {
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
-    function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename) public {
+    function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
         require(hash != 0, "hash cannot be zero");
 
@@ -145,6 +146,17 @@ contract WebaverseERC721 is ERC721 {
         }
         if (!filenameFound) {
             hashToMetadata[hash].push(Metadata("filename", filename));
+        }
+        bool descriptionFound = false;
+        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
+            if (streq(hashToMetadata[hash][i].key, "description")) {
+                hashToMetadata[hash][i].value = description;
+                descriptionFound = true;
+                break;
+            }
+        }
+        if (!descriptionFound) {
+            hashToMetadata[hash].push(Metadata("description", description));
         }
         
         if (!isCollaborator(hash, to)) {
