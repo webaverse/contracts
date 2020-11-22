@@ -13,6 +13,8 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
     mapping (uint256 => bool) deposits; // whether the token has been deposited in this contract
     mapping (bytes32 => bool) usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
 
+    bytes prefix = "\x19Ethereum Signed Message:\n32";
+
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentAddress, address signerAddress, uint256 _chainId) public {
         signer = signerAddress;
@@ -28,10 +30,8 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         signer = newSigner;
     }
     
-    function withdraw(address to, uint256 tokenId, uint256 hash, string memory filename, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-        bytes memory message = abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), timestamp, chainId);
-        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(message)));
+    function withdraw(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
+        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), timestamp, chainId))));
         address contractAddress = address(this);
         require(ecrecover(prefixedHash, v, r, s) == signer, "invalid signature");
         require(!usedWithdrawHashes[prefixedHash], "hash already used");
@@ -44,7 +44,7 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         emit Withdrew(to, tokenId, timestamp);
 
         if (!oldDeposits) {
-            parent.mintTokenId(contractAddress, tokenId, hash, filename);
+            parent.mintTokenId(contractAddress, tokenId, hash, filename, description);
         }
 
         parent.transferFrom(contractAddress, to, tokenId);
@@ -59,10 +59,8 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         parent.transferFrom(from, contractAddress, tokenId);
     }
     
-    function withdrawNonceUsed(address to, uint256 tokenId, uint256 hash, string memory filename, uint256 timestamp) public view returns (bool) {
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-        bytes memory message = abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), timestamp, chainId);
-        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(message)));
+    function withdrawNonceUsed(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, uint256 timestamp) public view returns (bool) {
+        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), timestamp, chainId))));
         return usedWithdrawHashes[prefixedHash];
     }
 }
