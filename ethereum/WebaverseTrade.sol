@@ -33,12 +33,14 @@ contract WebaverseTrade {
         signer = newSigner;
     }
 
-    function addStore(uint256 tokenId, uint256 price) public {
+    function addStore(uint256 tokenId, uint256 price) public returns (uint256) {
         uint256 buyId = ++nextBuyId;
         stores[buyId] = Store(buyId, msg.sender, tokenId, price, true);
 
         address contractAddress = address(this);
         parentERC721.transferFrom(msg.sender, contractAddress, tokenId);
+        
+        return buyId;
     }
     function removeStore(uint256 buyId) public {
         Store storage store = stores[buyId];
