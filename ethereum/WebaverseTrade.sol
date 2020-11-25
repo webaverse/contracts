@@ -13,6 +13,12 @@ contract WebaverseTrade {
         uint256 price;
         bool live;
     }
+    event Sell(uint256 id,
+        address seller,
+        uint256 tokenId,
+        uint256 price
+    );
+    event Unsell(uint256 id);
 
     WebaverseERC20 parentERC20; // managed ERC20 contract
     WebaverseERC721 parentERC721; // managed ERC721 contract
@@ -33,20 +39,22 @@ contract WebaverseTrade {
         signer = newSigner;
     }
 
-    function addStore(uint256 tokenId, uint256 price) public returns (uint256) {
+    function addStore(uint256 tokenId, uint256 price) public {
         uint256 buyId = ++nextBuyId;
         stores[buyId] = Store(buyId, msg.sender, tokenId, price, true);
 
+        emit Sell(buyId, msg.sender, tokenId, price);
+
         address contractAddress = address(this);
         parentERC721.transferFrom(msg.sender, contractAddress, tokenId);
-        
-        return buyId;
     }
     function removeStore(uint256 buyId) public {
         Store storage store = stores[buyId];
         require(store.seller == msg.sender, "not your sale");
         require(store.live, "sale not live");
         store.live = false;
+        
+        emit Unsell(buyId);
 
         address contractAddress = address(this);
         parentERC721.transferFrom(contractAddress, store.seller, store.tokenId);
