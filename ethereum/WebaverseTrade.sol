@@ -13,12 +13,15 @@ contract WebaverseTrade {
         uint256 price;
         bool live;
     }
-    event Sell(uint256 id,
-        address seller,
-        uint256 tokenId,
+    event Sell(
+        uint256 indexed id,
+        address indexed seller,
+        uint256 indexed tokenId,
         uint256 price
     );
-    event Unsell(uint256 id);
+    event Unsell(
+        uint256 indexed id
+    );
 
     WebaverseERC20 parentERC20; // managed ERC20 contract
     WebaverseERC721 parentERC721; // managed ERC721 contract
