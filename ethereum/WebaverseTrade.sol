@@ -22,6 +22,9 @@ contract WebaverseTrade {
     event Unsell(
         uint256 indexed id
     );
+    event Buy(
+        uint256 indexed id
+    );
 
     WebaverseERC20 parentERC20; // managed ERC20 contract
     WebaverseERC721 parentERC721; // managed ERC721 contract
@@ -66,6 +69,8 @@ contract WebaverseTrade {
         Store storage store = stores[buyId];
         require(store.live, "sale not live");
         store.live = false;
+        
+        emit Buy(buyId);
 
         parentERC20.transferFrom(msg.sender, store.seller, store.price);
         address contractAddress = address(this);
