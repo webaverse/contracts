@@ -30,6 +30,11 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         signer = newSigner;
     }
     
+    function setERC721Parent(address newParent) public {
+        require(msg.sender == signer, "must be signer");
+        parent = WebaverseERC721(newParent);
+    }
+    
     function withdraw(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
         bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), timestamp, chainId))));
         address contractAddress = address(this);
