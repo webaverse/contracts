@@ -44,6 +44,16 @@ contract WebaverseTrade {
         require(msg.sender == signer, "new signer can only be set by old signer");
         signer = newSigner;
     }
+    
+    function setERC20Parent(address newParentERC20) public {
+        require(msg.sender == signer, "must be signer");
+        parentERC20 = WebaverseERC20(newParentERC20);
+    }
+    
+    function setERC721Parent(address newParentERC721Address) public {
+        require(msg.sender == signer, "must be signer");
+        parentERC721 = WebaverseERC721(newParentERC721Address);
+    }
 
     function addStore(uint256 tokenId, uint256 price) public {
         uint256 buyId = ++nextBuyId;
