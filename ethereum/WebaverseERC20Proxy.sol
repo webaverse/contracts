@@ -29,6 +29,11 @@ contract WebaverseERC20Proxy {
         signer = newSigner;
     }
     
+    function setERC20Parent(address newParent) public {
+        require(msg.sender == signer, "must be signer");
+        parent = WebaverseERC20(newParent);
+    }
+    
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 1, 10, 0xc336b0bb5cac4584d79e77b1680ab789171ebc95f44f68bb1cc0a7b1174058ad, 0x72b888e952c0c39a8054f2b6dc41df645f5d4dc3d9cc6118535d88aa34945440, 0x1c
     function withdraw(address to, uint256 amount, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
         bytes memory message = abi.encodePacked(to, amount, timestamp, chainId);
