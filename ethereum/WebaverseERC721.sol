@@ -315,7 +315,7 @@ contract WebaverseERC721 is ERC721 {
         uint256 startTokenId = hashToStartTokenId[oldHash];
         uint256 totalSupply = hashToTotalSupply[oldHash];
         for (uint256 i = 0; i < totalSupply; i++) {
-            tokenIdToHash[i] = startTokenId + i;
+            tokenIdToHash[startTokenId + i] = newHash;
         }
 
         hashToStartTokenId[newHash] = hashToStartTokenId[oldHash];
