@@ -32,7 +32,6 @@ contract WebaverseERC721 is ERC721 {
         string value;
     }
     
-    // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (string memory name, string memory symbol, WebaverseERC20 _erc20Contract, uint256 _mintFee, address _treasuryAddress, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
         erc20Contract = _erc20Contract;
