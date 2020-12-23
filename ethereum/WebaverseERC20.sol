@@ -7,7 +7,7 @@ import "./ERC20Capped.sol";
  * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
  */
 contract WebaverseERC20 is ERC20Capped {
-    mapping (address => bool) allowedMinters; // whether anyone can mint tokens (should be sidechain only)
+    mapping (address => bool) internal allowedMinters; // whether anyone can mint tokens (should be sidechain only)
     
     /**
      * @dev Sets the value of the `cap`. This value is immutable, it can only be
