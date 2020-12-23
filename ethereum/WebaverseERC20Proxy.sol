@@ -44,11 +44,11 @@ contract WebaverseERC20Proxy {
         usedWithdrawHashes[prefixedHash] = true;
 
         bool needsMint = deposits < amount;
-        uint256 balanceNeeded = amount - deposits;
+        uint256 balanceNeeded = SafeMath.sub(amount, deposits);
         if (needsMint) {
-            deposits += balanceNeeded;
+            deposits = SafeMath.add(deposits, balanceNeeded);
         }
-        deposits -= amount;
+        deposits = SafeMath.sub(deposits, amount);
 
         emit Withdrew(to, amount, timestamp);
 
