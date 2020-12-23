@@ -13,25 +13,26 @@ import "./WebaverseERC20.sol";
 contract WebaverseERC721 is ERC721 {
     using EnumerableSet for EnumerableSet.UintSet;
 
-    WebaverseERC20 erc20Contract; // ERC20 contract for fungible tokens
-    uint256 mintFee; // ERC20 fee to mint ERC721
-    address treasuryAddress; // address to pay minting fees
-    bool isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
-    mapping (address => bool) allowedMinters; // whether anyone can mint tokens (should be sidechain only)
-    uint256 nextTokenId = 0; // the next token id to use (increases linearly)
-    mapping (uint256 => uint256) private tokenIdToHash; // map of token id to hash it represents
-    mapping (uint256 => uint256) private hashToStartTokenId; // map of hashes to start of token ids for it
-    mapping (uint256 => uint256) private hashToTotalSupply; // map of hash to total number of tokens for it
-    mapping (uint256 => Metadata[]) private hashToMetadata; // map of hash to metadata key-value store
-    mapping (uint256 => address[]) private hashToCollaborators; // map of hash to addresses that can change metadata
-    mapping (uint256 => uint256) private tokenIdToBalance; // map of tokens to packed balance
-    mapping (uint256 => address) minters; // map of tokens to minters
+    WebaverseERC20 internal erc20Contract; // ERC20 contract for fungible tokens
+    uint256 internal mintFee; // ERC20 fee to mint ERC721
+    address internal treasuryAddress; // address to pay minting fees
+    bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
+    mapping (address => bool) internal allowedMinters; // whether anyone can mint tokens (should be sidechain only)
+    uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
+    mapping (uint256 => uint256) internal tokenIdToHash; // map of token id to hash it represents
+    mapping (uint256 => uint256) internal hashToStartTokenId; // map of hashes to start of token ids for it
+    mapping (uint256 => uint256) internal hashToTotalSupply; // map of hash to total number of tokens for it
+    mapping (uint256 => Metadata[]) internal hashToMetadata; // map of hash to metadata key-value store
+    mapping (uint256 => address[]) internal hashToCollaborators; // map of hash to addresses that can change metadata
+    mapping (uint256 => uint256) internal tokenIdToBalance; // map of tokens to packed balance
+    mapping (uint256 => address) internal minters; // map of tokens to minters
 
     struct Metadata {
         string key;
         string value;
     }
     
+    // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (string memory name, string memory symbol, WebaverseERC20 _erc20Contract, uint256 _mintFee, address _treasuryAddress, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI("https://tokens.webaverse.com/");
         erc20Contract = _erc20Contract;
