@@ -8,6 +8,7 @@ import "./ERC20Capped.sol";
  */
 contract WebaverseERC20 is ERC20Capped {
     mapping (address => bool) internal allowedMinters; // whether anyone can mint tokens (should be sidechain only)
+    uint256 internal numAllowedMinters;
     
     /**
      * @dev Sets the value of the `cap`. This value is immutable, it can only be
@@ -15,10 +16,11 @@ contract WebaverseERC20 is ERC20Capped {
      */
     constructor (string memory name, string memory symbol) public ERC20(name, symbol) ERC20Capped(1e27) {
         allowedMinters[msg.sender] = true;
+        numAllowedMinters = 1;
     }
     
     function mint(address account, uint256 amount) public {
-        require(isAllowedMinter(msg.sender));
+        require(isAllowedMinter(msg.sender), "sender is not a minter");
         _mint(account, amount);
     }
     
@@ -26,11 +28,16 @@ contract WebaverseERC20 is ERC20Capped {
         return allowedMinters[a];
     }
     function addAllowedMinter(address a) public {
-        require(isAllowedMinter(msg.sender));
+        require(isAllowedMinter(msg.sender), "sender is not a minter");
+        require(!isAllowedMinter(a), "target is already a minter");
         allowedMinters[a] = true;
+        numAllowedMinters = SafeMath.add(numAllowedMinters, 1);
     }
     function removeAllowedMinter(address a) public {
-        require(isAllowedMinter(msg.sender));
+        require(isAllowedMinter(msg.sender), "sender is not a minter");
+        require(isAllowedMinter(a), "target is not a minter");
+        require(numAllowedMinters > 1, "cannot remove the only minter");
         allowedMinters[a] = false;
+        numAllowedMinters = SafeMath.sub(numAllowedMinters, 1);
     }
 }
