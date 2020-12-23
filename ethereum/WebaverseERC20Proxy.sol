@@ -6,13 +6,13 @@ import "./WebaverseERC20.sol";
 import './IERC721Receiver.sol';
 
 contract WebaverseERC20Proxy {
-    address signer; // signer oracle address
-    uint256 chainId; // unique chain id
-    WebaverseERC20 parent; // managed ERC20 contract
-    uint256 deposits; // amount deposited in this contract
-    mapping (bytes32 => bool) usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
+    address internal signer; // signer oracle address
+    uint256 internal chainId; // unique chain id
+    WebaverseERC20 internal parent; // managed ERC20 contract
+    uint256 internal deposits; // amount deposited in this contract
+    mapping (bytes32 => bool) internal usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
     
-    bytes prefix = "\x19Ethereum Signed Message:\n32";
+    bytes internal prefix = "\x19Ethereum Signed Message:\n32";
     
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentAddress, address signerAddress, uint256 _chainId) public {
