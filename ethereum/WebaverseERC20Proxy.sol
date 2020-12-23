@@ -60,7 +60,7 @@ contract WebaverseERC20Proxy {
         require(parent.transfer(to, amount), "transfer failed");
     }
     function deposit(address to, uint256 amount) public {
-        deposits += amount;
+        deposits = SafeMath.add(deposits, amount);
 
         emit Deposited(to, amount);
 
