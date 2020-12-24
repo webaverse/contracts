@@ -101,7 +101,8 @@ contract WebaverseERC721 is ERC721 {
 
         uint256 i = 0;
         while (i < count) {
-            uint256 tokenId = ++nextTokenId;
+            uint256 tokenId = nextTokenId;
+            nextTokenId = SafeMath.add(nextTokenId, 1);
 
             _mint(to, tokenId);
             minters[tokenId] = to;
