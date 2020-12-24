@@ -63,9 +63,7 @@ contract WebaverseERC20Proxy {
 
         emit Deposited(to, amount);
 
-        address from = msg.sender;
-        address contractAddress = address(this);
-        require(parent.transferFrom(from, contractAddress, amount), "transfer failed");
+        require(parent.transferFrom(msg.sender, address(this), amount), "transfer failed");
     }
     
     function withdrawNonceUsed(address to, uint256 amount, uint256 timestamp) public view returns (bool) {
