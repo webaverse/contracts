@@ -19,22 +19,25 @@ contract WebaverseERC20 is ERC20Capped {
         numAllowedMinters = 1;
     }
     
-    function mint(address account, uint256 amount) public {
-        require(isAllowedMinter(msg.sender), "sender is not a minter");
-        _mint(account, amount);
-    }
-    
     function isAllowedMinter(address a) public view returns (bool) {
         return allowedMinters[a];
     }
-    function addAllowedMinter(address a) public {
+    
+    modifier onlyMinter() {
         require(isAllowedMinter(msg.sender), "sender is not a minter");
+        _;
+    }
+    
+    function mint(address account, uint256 amount) public onlyMinter() {
+        _mint(account, amount);
+    }
+    
+    function addAllowedMinter(address a) public onlyMinter() {
         require(!isAllowedMinter(a), "target is already a minter");
         allowedMinters[a] = true;
         numAllowedMinters = SafeMath.add(numAllowedMinters, 1);
     }
-    function removeAllowedMinter(address a) public {
-        require(isAllowedMinter(msg.sender), "sender is not a minter");
+    function removeAllowedMinter(address a) public onlyMinter() {
         require(isAllowedMinter(a), "target is not a minter");
         require(numAllowedMinters > 1, "cannot remove the only minter");
         allowedMinters[a] = false;
