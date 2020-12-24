@@ -6,13 +6,13 @@ import "./WebaverseERC20.sol";
 import './IERC721Receiver.sol';
 
 contract WebaverseERC20Proxy {
-    address signer; // signer oracle address
-    uint256 chainId; // unique chain id
-    WebaverseERC20 parent; // managed ERC20 contract
-    uint256 deposits; // amount deposited in this contract
-    mapping (bytes32 => bool) usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
+    address internal signer; // signer oracle address
+    uint256 internal chainId; // unique chain id
+    WebaverseERC20 internal parent; // managed ERC20 contract
+    uint256 internal deposits; // amount deposited in this contract
+    mapping (bytes32 => bool) internal usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
     
-    bytes prefix = "\x19Ethereum Signed Message:\n32";
+    bytes internal prefix = "\x19Ethereum Signed Message:\n32";
     
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentAddress, address signerAddress, uint256 _chainId) public {
@@ -44,29 +44,26 @@ contract WebaverseERC20Proxy {
         usedWithdrawHashes[prefixedHash] = true;
 
         bool needsMint = deposits < amount;
-        uint256 balanceNeeded = amount - deposits;
+        uint256 balanceNeeded = SafeMath.sub(amount, deposits);
         if (needsMint) {
-            deposits += balanceNeeded;
+            deposits = SafeMath.add(deposits, balanceNeeded);
         }
-        deposits -= amount;
+        deposits = SafeMath.sub(deposits, amount);
 
         emit Withdrew(to, amount, timestamp);
 
         if (needsMint) {
-          address contractAddress = address(this);
-          parent.mint(contractAddress, balanceNeeded);
+          parent.mint(address(this), balanceNeeded);
         }
 
         require(parent.transfer(to, amount), "transfer failed");
     }
     function deposit(address to, uint256 amount) public {
-        deposits += amount;
+        deposits = SafeMath.add(deposits, amount);
 
         emit Deposited(to, amount);
 
-        address from = msg.sender;
-        address contractAddress = address(this);
-        require(parent.transferFrom(from, contractAddress, amount), "transfer failed");
+        require(parent.transferFrom(msg.sender, address(this), amount), "transfer failed");
     }
     
     function withdrawNonceUsed(address to, uint256 amount, uint256 timestamp) public view returns (bool) {
