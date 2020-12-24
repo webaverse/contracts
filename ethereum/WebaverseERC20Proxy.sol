@@ -53,8 +53,7 @@ contract WebaverseERC20Proxy {
         emit Withdrew(to, amount, timestamp);
 
         if (needsMint) {
-          address contractAddress = address(this);
-          parent.mint(contractAddress, balanceNeeded);
+          parent.mint(address(this), balanceNeeded);
         }
 
         require(parent.transfer(to, amount), "transfer failed");
