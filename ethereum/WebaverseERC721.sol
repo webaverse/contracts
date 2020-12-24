@@ -97,7 +97,7 @@ contract WebaverseERC721 is ERC721 {
         require(count > 0, "count must be greater than zero");
         require(hashToTotalSupply[hash] == 0, "hash already exists");
 
-        hashToStartTokenId[hash] = nextTokenId;
+        hashToStartTokenId[hash] = nextTokenId + 1;
 
         uint256 i = 0;
         while (i < count) {
