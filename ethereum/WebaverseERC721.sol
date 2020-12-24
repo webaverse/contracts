@@ -57,7 +57,7 @@ contract WebaverseERC721 is ERC721 {
     function pack(address from, uint256 tokenId, uint256 amount) public {
         require(_exists(tokenId), "token id does not exist");
 
-        tokenIdToBalance[tokenId] += amount;
+        tokenIdToBalance[tokenId] = SafeMath.add(tokenIdToBalance[tokenId], amount);
 
         address contractAddress = address(this);
         require(erc20Contract.transferFrom(from, contractAddress, amount), "transfer failed");
@@ -66,7 +66,7 @@ contract WebaverseERC721 is ERC721 {
         require(ownerOf(tokenId) == msg.sender, "not your token");
         require(tokenIdToBalance[tokenId] >= amount, "insufficient balance");
 
-        tokenIdToBalance[tokenId] -= amount;
+        tokenIdToBalance[tokenId] = SafeMath.sub(tokenIdToBalance[tokenId], amount);
 
         require(erc20Contract.transfer(to, amount), "transfer failed");
     }
@@ -97,7 +97,7 @@ contract WebaverseERC721 is ERC721 {
         require(count > 0, "count must be greater than zero");
         require(hashToTotalSupply[hash] == 0, "hash already exists");
 
-        hashToStartTokenId[hash] = nextTokenId + 1;
+        hashToStartTokenId[hash] = SafeMath.add(nextTokenId, 1);
 
         uint256 i = 0;
         while (i < count) {
@@ -182,10 +182,12 @@ contract WebaverseERC721 is ERC721 {
     }
     function addAllowedMinter(address a) public {
         require(isAllowedMinter(msg.sender));
+        require(!isAllowedMinter(a), "target is already a minter");
         allowedMinters[a] = true;
     }
     function removeAllowedMinter(address a) public {
-        require(isAllowedMinter(msg.sender));
+        require(isAllowedMinter(msg.sender), "sender is not a minter");
+        require(isAllowedMinter(a), "target is not a minter");
         allowedMinters[a] = false;
     }
 
