@@ -15,7 +15,7 @@ contract WebaverseERC721 is ERC721 {
 
     WebaverseERC20 internal erc20Contract; // ERC20 contract for fungible tokens
     uint256 internal mintFee; // ERC20 fee to mint ERC721
-    address internal treasuryAddress; // address to pay minting fees
+    address internal treasuryAddress; // address into which we deposit minting fees
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping (address => bool) internal allowedMinters; // whether anyone can mint tokens (should be sidechain only)
     uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
