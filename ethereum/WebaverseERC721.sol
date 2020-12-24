@@ -31,6 +31,15 @@ contract WebaverseERC721 is ERC721 {
         string key;
         string value;
     }
+    struct Token {
+        uint256 id;
+        uint256 hash;
+        string filename;
+        address minter;
+        address owner;
+        uint256 balance;
+        uint256 totalSupply;
+    }
     
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (string memory name, string memory symbol, WebaverseERC20 _erc20Contract, uint256 _mintFee, address _treasuryAddress, bool _isPublicallyMintable) public ERC721(name, symbol) {
@@ -258,15 +267,6 @@ contract WebaverseERC721 is ERC721 {
             ids[i] = tokenOfOwnerByIndex(owner, i);
         }
         return ids;
-    }
-    struct Token {
-        uint256 id;
-        uint256 hash;
-        string filename;
-        address minter;
-        address owner;
-        uint256 balance;
-        uint256 totalSupply;
     }
     function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
         uint256 hash = tokenIdToHash[tokenId];
