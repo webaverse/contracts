@@ -1,4 +1,7 @@
 export default {
+  "mainnet": {
+    "FT": "0x070cdf3359af1889bcb243666fb735e4047bc108"
+  },
   "main": {
     "Account": "0x70140fD40d57e627BD4f5Acc1A34d5F7D6A229a3",
     "FT": "0x8a105979CfFEA42F079A3dcF2C261855FFF362e2",
