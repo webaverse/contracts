@@ -1,9 +1,4 @@
 export default {
-  "ethereum": {
-    "FT": "0x617f2b3558604708288ab0454c4e7771ea7c712c",
-    "NFT": "0xa1b53520514e2ed41d38ff2546cbfdf5bc3d2f63",
-    "Account": "0x2dCAa54b8Db2bDACCd259A151Fa42528122C226f"
-  },
   "main": {
     "Account": "0x70140fD40d57e627BD4f5Acc1A34d5F7D6A229a3",
     "FT": "0x8a105979CfFEA42F079A3dcF2C261855FFF362e2",
