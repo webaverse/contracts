@@ -134,56 +134,10 @@ contract WebaverseERC721 is ERC721 {
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
-    function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename, string memory ext, string memory description) public {
+    function mintTokenId(address to, uint256 tokenId) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
-        require(hash != 0, "hash cannot be zero");
 
         _mint(to, tokenId);
-        minters[tokenId] = to;
-    
-        tokenIdToHash[tokenId] = hash;
-
-        if (hashToStartTokenId[hash] == 0) {
-          hashToStartTokenId[hash] = tokenId;
-        }
-        hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
-        bool filenameFound = false;
-        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
-            if (streq(hashToMetadata[hash][i].key, "filename")) {
-                hashToMetadata[hash][i].value = filename;
-                filenameFound = true;
-                break;
-            }
-        }
-        if (!filenameFound) {
-            hashToMetadata[hash].push(Metadata("filename", filename));
-        }
-        bool extFound = false;
-        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
-            if (streq(hashToMetadata[hash][i].key, "ext")) {
-                hashToMetadata[hash][i].value = ext;
-                extFound = true;
-                break;
-            }
-        }
-        if (!extFound) {
-            hashToMetadata[hash].push(Metadata("ext", ext));
-        }
-        bool descriptionFound = false;
-        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
-            if (streq(hashToMetadata[hash][i].key, "description")) {
-                hashToMetadata[hash][i].value = description;
-                descriptionFound = true;
-                break;
-            }
-        }
-        if (!descriptionFound) {
-            hashToMetadata[hash].push(Metadata("description", description));
-        }
-        
-        if (!isCollaborator(hash, to)) {
-            hashToCollaborators[hash].push(to);
-        }
     }
 
     function setBaseURI(string memory baseURI_) public {
