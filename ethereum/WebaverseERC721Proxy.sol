@@ -35,8 +35,8 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         parent = WebaverseERC721(newParent);
     }
     
-    function withdraw(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
-        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), timestamp, chainId))));
+    function withdraw(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, string memory ext, uint256 timestamp, bytes32 r, bytes32 s, uint8 v) public {
+        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), keccak256(abi.encodePacked(ext)), timestamp, chainId))));
         address contractAddress = address(this);
         require(ecrecover(prefixedHash, v, r, s) == signer, "invalid signature");
         require(!usedWithdrawHashes[prefixedHash], "hash already used");
@@ -49,7 +49,7 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         emit Withdrew(to, tokenId, timestamp);
 
         if (!oldDeposits) {
-            parent.mintTokenId(contractAddress, tokenId, hash, filename, description);
+            parent.mintTokenId(contractAddress, tokenId, hash, filename, description, ext);
         }
 
         parent.transferFrom(contractAddress, to, tokenId);
@@ -64,8 +64,8 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         parent.transferFrom(from, contractAddress, tokenId);
     }
     
-    function withdrawNonceUsed(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, uint256 timestamp) public view returns (bool) {
-        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), timestamp, chainId))));
+    function withdrawNonceUsed(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, string memory ext, uint256 timestamp) public view returns (bool) {
+        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), keccak256(abi.encodePacked(ext)), timestamp, chainId))));
         return usedWithdrawHashes[prefixedHash];
     }
 }
