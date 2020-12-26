@@ -99,7 +99,7 @@ contract WebaverseERC721 is ERC721 {
     }
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, "lol", 1
-    function mint(address to, uint256 hash, string memory filename, string memory ext, string memory description, uint256 count) public {
+    function mint(address to, uint256 hash, string memory name, string memory ext, string memory description, uint256 count) public {
         require(isPublicallyMintable);
         require(hash != 0, "hash cannot be zero");
         require(count > 0, "count must be greater than zero");
@@ -119,7 +119,7 @@ contract WebaverseERC721 is ERC721 {
             i++;
         }
         hashToTotalSupply[hash] = count;
-        hashToMetadata[hash].push(Metadata("filename", filename));
+        hashToMetadata[hash].push(Metadata("name", name));
         hashToMetadata[hash].push(Metadata("ext", ext));
         hashToMetadata[hash].push(Metadata("description", description));
         hashToCollaborators[hash].push(to);
