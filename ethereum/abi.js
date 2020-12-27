@@ -496,9 +496,9 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"internalType": "address",
@@ -556,9 +556,9 @@ export default {
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "balanceOfHash",
@@ -615,9 +615,9 @@ export default {
 		"name": "getHash",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -626,9 +626,9 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -750,9 +750,9 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"internalType": "address",
@@ -779,9 +779,9 @@ export default {
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -898,9 +898,9 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"internalType": "address",
@@ -967,9 +967,9 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "seal",
@@ -1011,9 +1011,9 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -1107,9 +1107,9 @@ export default {
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "string",
 						"name": "hash",
-						"type": "uint256"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -1230,9 +1230,9 @@ export default {
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "string",
 						"name": "hash",
-						"type": "uint256"
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -1303,9 +1303,9 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "hash",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "totalSupplyOfHash",
@@ -1368,14 +1368,14 @@ export default {
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "oldHash",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "newHash",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"name": "updateHash",
