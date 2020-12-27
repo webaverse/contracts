@@ -11,6 +11,11 @@ export default {
 				"internalType": "string",
 				"name": "symbol",
 				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "cap",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -780,7 +785,12 @@ export default {
 			},
 			{
 				"internalType": "string",
-				"name": "filename",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "ext",
 				"type": "string"
 			},
 			{
@@ -810,21 +820,6 @@ export default {
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "hash",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "filename",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
 			}
 		],
 		"name": "mintTokenId",
@@ -1531,6 +1526,19 @@ export default {
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "newParent",
+				"type": "address"
+			}
+		],
+		"name": "setERC20Parent",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "newSigner",
 				"type": "address"
 			}
@@ -1696,6 +1704,19 @@ export default {
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "newParent",
+				"type": "address"
+			}
+		],
+		"name": "setERC721Parent",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "newSigner",
 				"type": "address"
 			}
@@ -1716,21 +1737,6 @@ export default {
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "hash",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "filename",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
 			},
 			{
 				"internalType": "uint256",
@@ -1786,6 +1792,11 @@ export default {
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "ext",
+				"type": "string"
+			},
+			{
 				"internalType": "uint256",
 				"name": "timestamp",
 				"type": "uint256"
@@ -1824,6 +1835,19 @@ export default {
 		],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "Buy",
+		"type": "event"
 	},
 	{
 		"anonymous": false,
@@ -1968,6 +1992,32 @@ export default {
 			}
 		],
 		"name": "removeStore",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newParentERC20",
+				"type": "address"
+			}
+		],
+		"name": "setERC20Parent",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newParentERC721Address",
+				"type": "address"
+			}
+		],
+		"name": "setERC721Parent",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
