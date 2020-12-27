@@ -34,7 +34,8 @@ contract WebaverseERC721 is ERC721 {
     struct Token {
         uint256 id;
         string hash;
-        string filename;
+        string name;
+        string ext;
         address minter;
         address owner;
         uint256 balance;
@@ -236,21 +237,23 @@ contract WebaverseERC721 is ERC721 {
     }
     function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
         string memory hash = tokenIdToHash[tokenId];
-        string memory filename = getMetadata(hash, "filename");
+        string memory name = getMetadata(hash, "name");
+        string memory ext = getMetadata(hash, "ext");
         address minter = minters[tokenId];
         address owner = _exists(tokenId) ? ownerOf(tokenId) : address(0);
         uint256 totalSupply = hashToTotalSupply[hash];
-        return Token(tokenId, hash, filename, minter, owner, 0, totalSupply);
+        return Token(tokenId, hash, name, ext, minter, owner, 0, totalSupply);
         
     }
     function tokenOfOwnerByIndexFull(address owner, uint256 index) public view returns (Token memory) {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
         string memory hash = tokenIdToHash[tokenId];
-        string memory filename = getMetadata(hash, "filename");
+        string memory name = getMetadata(hash, "name");
+        string memory ext = getMetadata(hash, "ext");
         address minter = minters[tokenId];
         uint256 balance = balanceOfHash(owner, hash);
         uint256 totalSupply = hashToTotalSupply[hash];
-        return Token(tokenId, hash, filename, minter, owner, balance, totalSupply);
+        return Token(tokenId, hash, name, ext, minter, owner, balance, totalSupply);
     }
     
     function getMetadata(string memory hash, string memory key) public view returns (string memory) {
