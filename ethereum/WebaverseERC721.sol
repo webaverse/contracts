@@ -99,7 +99,7 @@ contract WebaverseERC721 is ERC721 {
     }
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, "lol", 1
-    function mint(address to, uint256 hash, string memory filename, string memory description, uint256 count) public {
+    function mint(address to, uint256 hash, string memory name, string memory ext, string memory description, uint256 count) public {
         require(isPublicallyMintable);
         require(hash != 0, "hash cannot be zero");
         require(count > 0, "count must be greater than zero");
@@ -119,12 +119,13 @@ contract WebaverseERC721 is ERC721 {
             i++;
         }
         hashToTotalSupply[hash] = count;
-        hashToMetadata[hash].push(Metadata("filename", filename));
+        hashToMetadata[hash].push(Metadata("name", name));
+        hashToMetadata[hash].push(Metadata("ext", ext));
         hashToMetadata[hash].push(Metadata("description", description));
         hashToCollaborators[hash].push(to);
 
         if (mintFee != 0) {
-            require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "transfer failed");
+            require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "mint transfer failed");
         }
     }
     function getMinter(uint256 tokenId) public view returns (address) {
@@ -133,45 +134,10 @@ contract WebaverseERC721 is ERC721 {
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
-    function mintTokenId(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description) public {
+    function mintTokenId(address to, uint256 tokenId) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
-        require(hash != 0, "hash cannot be zero");
 
         _mint(to, tokenId);
-        minters[tokenId] = to;
-    
-        tokenIdToHash[tokenId] = hash;
-
-        if (hashToStartTokenId[hash] == 0) {
-          hashToStartTokenId[hash] = tokenId;
-        }
-        hashToTotalSupply[hash] = hashToTotalSupply[hash] + 1;
-        bool filenameFound = false;
-        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
-            if (streq(hashToMetadata[hash][i].key, "filename")) {
-                hashToMetadata[hash][i].value = filename;
-                filenameFound = true;
-                break;
-            }
-        }
-        if (!filenameFound) {
-            hashToMetadata[hash].push(Metadata("filename", filename));
-        }
-        bool descriptionFound = false;
-        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
-            if (streq(hashToMetadata[hash][i].key, "description")) {
-                hashToMetadata[hash][i].value = description;
-                descriptionFound = true;
-                break;
-            }
-        }
-        if (!descriptionFound) {
-            hashToMetadata[hash].push(Metadata("description", description));
-        }
-        
-        if (!isCollaborator(hash, to)) {
-            hashToCollaborators[hash].push(to);
-        }
     }
 
     function setBaseURI(string memory baseURI_) public {
