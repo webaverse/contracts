@@ -1113,7 +1113,12 @@ export default {
 					},
 					{
 						"internalType": "string",
-						"name": "filename",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "ext",
 						"type": "string"
 					},
 					{
@@ -1236,7 +1241,12 @@ export default {
 					},
 					{
 						"internalType": "string",
-						"name": "filename",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "ext",
 						"type": "string"
 					},
 					{
@@ -1389,6 +1399,31 @@ export default {
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "key",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "value",
+				"type": "string"
+			}
+		],
+		"name": "MetadataSet",
+		"type": "event"
 	},
 	{
 		"inputs": [
