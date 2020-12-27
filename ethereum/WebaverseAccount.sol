@@ -3,11 +3,11 @@ pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 
 contract WebaverseAccount {
-    event MetadataSet {
-      address owner;
-      string key;
-      string value;
-    };
+    event MetadataSet(
+      address owner,
+      string key,
+      string value
+    );
 
     mapping (address => mapping(string => string)) private addressToMetadata;
 
