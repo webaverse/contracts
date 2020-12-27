@@ -2,9 +2,9 @@ export default {
   "mainnet": {
     "Account": "0xACE9277dF1Ca282f6924a731389A5cA9bd91c204",
     "FT": "0x070cdf3359af1889bcb243666fb735e4047bc108",
-    "NFT": "0xaa11ca1df297840a6d0fccb264a78e355e449564",
+    "NFT": "0x59755b6276428Ef3cb8D661E0F29825f37A1aF6E ",
     "FTProxy": "0x91b3acfb92BCEf1DE4D5069e95140Ea0C9218695",
-    "NFTProxy": "0xD17360eE71B97eEd7f90aDB17801140a6fC8Ca6C",
+    "NFTProxy": "",
     "Trade": ""
   },
   "main": {
