@@ -1,6 +1,6 @@
 export default {
   "mainnet": {
-    "Account": "0x818EA83e5747258b6Bc421C9b8C2147059f42FC8",
+    "Account": "0xACE9277dF1Ca282f6924a731389A5cA9bd91c204",
     "FT": "0x070cdf3359af1889bcb243666fb735e4047bc108",
     "NFT": "0xaa11ca1df297840a6d0fccb264a78e355e449564",
     "FTProxy": "0x91b3acfb92BCEf1DE4D5069e95140Ea0C9218695",
