@@ -4,7 +4,7 @@ export default {
     "FT": "0x070cdf3359af1889bcb243666fb735e4047bc108",
     "NFT": "0x59755b6276428Ef3cb8D661E0F29825f37A1aF6E ",
     "FTProxy": "0x91b3acfb92BCEf1DE4D5069e95140Ea0C9218695",
-    "NFTProxy": "",
+    "NFTProxy": "0xA21f50ae9Ea9Fa9CA2100d9e389daeDf7290ADB6",
     "Trade": ""
   },
   "main": {
