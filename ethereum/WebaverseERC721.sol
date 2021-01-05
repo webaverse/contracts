@@ -17,7 +17,7 @@ contract WebaverseERC721 is ERC721 {
     uint256 internal mintFee; // ERC20 fee to mint ERC721
     address internal treasuryAddress; // address into which we deposit minting fees
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
-    mapping (address => bool) internal allowedMinters; // whether anyone can mint tokens (should be sidechain only)
+    mapping (address => bool) internal allowedMinters; // addresses allowed to mint in this copy of the contract
     uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
     mapping (uint256 => string) internal tokenIdToHash; // map of token id to hash it represents
     mapping (string => uint256) internal hashToStartTokenId; // map of hashes to start of token ids for it
