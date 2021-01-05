@@ -101,7 +101,7 @@ contract WebaverseERC721 is ERC721 {
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, "lol", 1
     function mint(address to, string memory hash, string memory name, string memory ext, string memory description, uint256 count) public {
-        require(isPublicallyMintable);
+        require(isPublicallyMintable || isAllowedMinter(msg.sender), "not allowed to mint");
         require(bytes(hash).length > 0, "hash cannot be empty");
         require(count > 0, "count must be greater than zero");
         require(hashToTotalSupply[hash] == 0, "hash already exists");
