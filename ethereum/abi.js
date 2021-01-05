@@ -382,6 +382,11 @@ export default {
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "baseUri",
+				"type": "string"
+			},
+			{
 				"internalType": "contract WebaverseERC20",
 				"name": "_erc20Contract",
 				"type": "address"
