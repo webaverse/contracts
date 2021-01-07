@@ -26,6 +26,8 @@ contract WebaverseERC721 is ERC721 {
     mapping (string => address[]) internal hashToCollaborators; // map of hash to addresses that can change metadata
     mapping (uint256 => uint256) internal tokenIdToBalance; // map of tokens to packed balance
     mapping (uint256 => address) internal minters; // map of tokens to minters
+    mapping (uint256 => Metadata[]) internal idToMetadata; // map of id to metadata key-value store
+    mapping (uint256 => address[]) internal idToCollaborators; // map of id to addresses that can change id metadata
 
     struct Metadata {
         string key;
@@ -117,6 +119,7 @@ contract WebaverseERC721 is ERC721 {
             minters[tokenId] = to;
 
             tokenIdToHash[tokenId] = hash;
+            idToCollaborators[tokenId].push(to);
             i++;
         }
         hashToTotalSupply[hash] = count;
@@ -201,9 +204,49 @@ contract WebaverseERC721 is ERC721 {
         }
         hashToCollaborators[hash] = newCollaborators;
     }
+
+    function isIdCollaborator(uint256 id, address a) public view returns (bool) {
+        for (uint256 i = 0; i < idToCollaborators[id].length; i++) {
+            if (idToCollaborators[id][i] == a) {
+                return true;
+            }
+        }
+        return false;
+    }
+    function addIdCollaborator(uint256 id, address a) public {
+        require(isIdCollaborator(id, msg.sender), "you are not a collaborator");
+        require(!isIdCollaborator(id, a), "they are already a collaborator");
+        idToCollaborators[id].push(a);
+    }
+    function removeIdCollaborator(uint256 id, address a) public {
+        require(isIdCollaborator(id, msg.sender), "you are not a collaborator");
+        require(isIdCollaborator(id, msg.sender), "they are not a collaborator");
+        
+        uint256 newSize = 0;
+        for (uint256 i = 0; i < idToCollaborators[id].length; i++) {
+            if (idToCollaborators[id][i] != a) {
+                newSize++;
+            }
+        }
+
+        address[] memory newIdCollaborators = new address[](newSize);
+        uint256 index = 0;
+        for (uint256 i = 0; i < idToCollaborators[id].length; i++) {
+            address oldCollaborator = idToCollaborators[id][i];
+            if (oldCollaborator != a) {
+                newIdCollaborators[index++] = oldCollaborator;
+            }
+        }
+        idToCollaborators[id] = newIdCollaborators;
+    }
+
     function seal(string memory hash) public {
         require(isCollaborator(hash, msg.sender), "not a collaborator");
         delete hashToCollaborators[hash];
+    }
+    function sealId(uint256 id) public {
+        require(isIdCollaborator(id, msg.sender), "not a collaborator");
+        delete idToCollaborators[id];
     }
 
     function getHash(uint256 tokenId) public view returns (string memory) {
@@ -279,6 +322,31 @@ contract WebaverseERC721 is ERC721 {
             hashToMetadata[hash].push(Metadata(key, value));
         }
     }
+    
+    function getIdMetadata(uint256 id, string memory key) public view returns (string memory) {
+        for (uint256 i = 0; i < idToMetadata[id].length; i++) {
+            if (streq(idToMetadata[id][i].key, key)) {
+                return idToMetadata[id][i].value;
+            }
+        }
+        return "";
+    }
+    function setIdMetadata(uint256 id, string memory key, string memory value) public {
+        require(isIdCollaborator(id, msg.sender), "not a collaborator");
+        
+        bool keyFound = false;
+        for (uint256 i = 0; i < idToMetadata[id].length; i++) {
+            if (streq(idToMetadata[id][i].key, key)) {
+                idToMetadata[id][i].value = value;
+                keyFound = true;
+                break;
+            }
+        }
+        if (!keyFound) {
+            idToMetadata[id].push(Metadata(key, value));
+        }
+    }
+    
     function updateHash(string memory oldHash, string memory newHash) public {
         require(hashToTotalSupply[oldHash] > 0, "old hash does not exist");
         require(hashToTotalSupply[newHash] == 0, "new hash already exists");
