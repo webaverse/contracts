@@ -223,7 +223,7 @@ contract WebaverseERC721 is ERC721 {
         hashToCollaborators[hash] = newCollaborators;
     }
 
-    function isTokenIdCollaborator(uint256 tokenId, address a) public view returns (bool) {
+    function isSingleCollaborator(uint256 tokenId, address a) public view returns (bool) {
         for (uint256 i = 0; i < tokenIdToCollaborators[tokenId].length; i++) {
             if (tokenIdToCollaborators[tokenId][i] == a) {
                 return true;
@@ -231,14 +231,14 @@ contract WebaverseERC721 is ERC721 {
         }
         return false;
     }
-    function addIdCollaborator(uint256 tokenId, address a) public {
-        require(isTokenIdCollaborator(tokenId, msg.sender), "you are not a collaborator");
-        require(!isTokenIdCollaborator(tokenId, a), "they are already a collaborator");
+    function addSingleCollaborator(uint256 tokenId, address a) public {
+        require(isSingleCollaborator(tokenId, msg.sender), "you are not a collaborator");
+        require(!isSingleCollaborator(tokenId, a), "they are already a collaborator");
         tokenIdToCollaborators[tokenId].push(a);
     }
-    function removeIdCollaborator(uint256 tokenId, address a) public {
-        require(isTokenIdCollaborator(tokenId, msg.sender), "you are not a collaborator");
-        require(isTokenIdCollaborator(tokenId, msg.sender), "they are not a collaborator");
+    function removeSingleCollaborator(uint256 tokenId, address a) public {
+        require(isSingleCollaborator(tokenId, msg.sender), "you are not a collaborator");
+        require(isSingleCollaborator(tokenId, msg.sender), "they are not a collaborator");
         
         uint256 newSize = 0;
         for (uint256 i = 0; i < tokenIdToCollaborators[tokenId].length; i++) {
@@ -344,10 +344,10 @@ contract WebaverseERC721 is ERC721 {
         }
     }
     
-    function getSingleMetadata(uint256 id, string memory key) public view returns (string memory) {
-        for (uint256 i = 0; i < tokenIdToMetadata[id].length; i++) {
-            if (streq(tokenIdToMetadata[id][i].key, key)) {
-                return tokenIdToMetadata[id][i].value;
+    function getSingleMetadata(uint256 tokenId, string memory key) public view returns (string memory) {
+        for (uint256 i = 0; i < tokenIdToMetadata[tokenId].length; i++) {
+            if (streq(tokenIdToMetadata[tokenId][i].key, key)) {
+                return tokenIdToMetadata[tokenId][i].value;
             }
         }
         return "";
