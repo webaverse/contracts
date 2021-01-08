@@ -27,7 +27,6 @@ contract WebaverseERC721 is ERC721 {
     mapping (string => address[]) internal hashToCollaborators; // map of hash to addresses that can change metadata
     mapping (uint256 => uint256) internal tokenIdToBalance; // map of tokens to packed balance
     mapping (uint256 => address) internal minters; // map of tokens to minters
-    mapping (uint256 => string) internal tokenIdToName; // map of token id to its unique name
     mapping (uint256 => Metadata[]) internal tokenIdToMetadata; // map of token id to metadata key-value store
     mapping (uint256 => address[]) internal tokenIdToCollaborators; // map of token id to addresses that can change metadata
 
@@ -144,7 +143,7 @@ contract WebaverseERC721 is ERC721 {
             require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "mint transfer failed");
         }
     }
-    function mintSingle(address to, string memory name) public {
+    function mintSingle(address to, string memory hash) public {
         require(isSingleIssue, "wrong mint method called");
         require(isPublicallyMintable || isAllowedMinter(msg.sender), "not allowed to mint");
 
@@ -153,7 +152,8 @@ contract WebaverseERC721 is ERC721 {
         _mint(to, tokenId);
         minters[tokenId] = to;
 
-        tokenIdToName[tokenId] = name;
+        tokenIdToHash[tokenId] = hash;
+        hashToTotalSupply[hash] = 1;
         
         if (mintFee != 0) {
             require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "mint transfer failed");
@@ -279,10 +279,7 @@ contract WebaverseERC721 is ERC721 {
     function getHash(uint256 tokenId) public view returns (string memory) {
         return tokenIdToHash[tokenId];
     }
-    function getName(uint256 tokenId) public view returns (string memory) {
-        return tokenIdToName[tokenId];
-    }
-    
+
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1
     function balanceOfHash(address owner, string memory hash) public view returns (uint256) {
         uint256 count = 0;
