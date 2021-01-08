@@ -353,7 +353,7 @@ contract WebaverseERC721 is ERC721 {
         return "";
     }
     function setSingleMetadata(uint256 tokenId, string memory key, string memory value) public {
-        require(ownerOf(tokenId) == msg.sender || isTokenIdCollaborator(tokenId, msg.sender), "not an owner or collaborator");
+        require(ownerOf(tokenId) == msg.sender || isSingleCollaborator(tokenId, msg.sender), "not an owner or collaborator");
         
         bool keyFound = false;
         for (uint256 i = 0; i < tokenIdToMetadata[tokenId].length; i++) {
