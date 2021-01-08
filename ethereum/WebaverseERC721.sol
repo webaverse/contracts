@@ -135,7 +135,7 @@ contract WebaverseERC721 is ERC721 {
             require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "mint transfer failed");
         }
     }
-    function mintId(address to, string memory name) public {
+    function mintSingle(address to, string memory name) public {
         require(isSingleIssue, "wrong mint method called");
         require(isPublicallyMintable || isAllowedMinter(msg.sender), "not allowed to mint");
 
@@ -156,7 +156,7 @@ contract WebaverseERC721 is ERC721 {
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
-    function mintTokenId(address to, uint256 tokenId) public {
+    function mintTokenSingle(address to, uint256 tokenId) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
 
         _mint(to, tokenId);
@@ -262,7 +262,7 @@ contract WebaverseERC721 is ERC721 {
         require(isCollaborator(hash, msg.sender), "not a collaborator");
         delete hashToCollaborators[hash];
     }
-    /* function sealId(uint256 tokenId) public {
+    /* function sealSingle(uint256 tokenId) public {
         require(isTokenIdCollaborator(tokenId, msg.sender), "not a collaborator");
         delete tokenIdToCollaborators[tokenId];
     } */
@@ -344,7 +344,7 @@ contract WebaverseERC721 is ERC721 {
         }
     }
     
-    function getIdMetadata(uint256 id, string memory key) public view returns (string memory) {
+    function getSingleMetadata(uint256 id, string memory key) public view returns (string memory) {
         for (uint256 i = 0; i < tokenIdToMetadata[id].length; i++) {
             if (streq(tokenIdToMetadata[id][i].key, key)) {
                 return tokenIdToMetadata[id][i].value;
@@ -352,7 +352,7 @@ contract WebaverseERC721 is ERC721 {
         }
         return "";
     }
-    function setIdMetadata(uint256 tokenId, string memory key, string memory value) public {
+    function setSingleMetadata(uint256 tokenId, string memory key, string memory value) public {
         require(ownerOf(tokenId) == msg.sender || isTokenIdCollaborator(tokenId, msg.sender), "not an owner or collaborator");
         
         bool keyFound = false;
