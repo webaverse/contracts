@@ -156,7 +156,7 @@ contract WebaverseERC721 is ERC721 {
     function streq(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
-    function mintTokenSingle(address to, uint256 tokenId) public {
+    function mintTokenId(address to, uint256 tokenId) public {
         require(isAllowedMinter(msg.sender), "minter not allowed");
 
         _mint(to, tokenId);
