@@ -16,6 +16,7 @@ contract WebaverseERC721 is ERC721 {
     WebaverseERC20 internal erc20Contract; // ERC20 contract for fungible tokens
     uint256 internal mintFee; // ERC20 fee to mint ERC721
     address internal treasuryAddress; // address into which we deposit minting fees
+    bool internal isSingleIssue; // whether the token is single issue (name based) or no (hash based)
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping (address => bool) internal allowedMinters; // addresses allowed to mint in this copy of the contract
     uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
@@ -46,11 +47,12 @@ contract WebaverseERC721 is ERC721 {
     }
     
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
-    constructor (string memory name, string memory symbol, string memory baseUri, WebaverseERC20 _erc20Contract, uint256 _mintFee, address _treasuryAddress, bool _isPublicallyMintable) public ERC721(name, symbol) {
+    constructor (string memory name, string memory symbol, string memory baseUri, WebaverseERC20 _erc20Contract, uint256 _mintFee, address _treasuryAddress, bool _isSingleIssue, bool _isPublicallyMintable) public ERC721(name, symbol) {
         _setBaseURI(baseUri);
         erc20Contract = _erc20Contract;
         mintFee = _mintFee;
         treasuryAddress = _treasuryAddress;
+        isSingleIssue = _isSingleIssue;
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
     }
@@ -104,6 +106,7 @@ contract WebaverseERC721 is ERC721 {
     
     // 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1, "lol", 1
     function mint(address to, string memory hash, string memory name, string memory ext, string memory description, uint256 count) public {
+        require(!isSingleIssue, "wrong mint method called");
         require(isPublicallyMintable || isAllowedMinter(msg.sender), "not allowed to mint");
         require(bytes(hash).length > 0, "hash cannot be empty");
         require(count > 0, "count must be greater than zero");
@@ -133,6 +136,7 @@ contract WebaverseERC721 is ERC721 {
         }
     }
     function mintId(address to, string memory name) public {
+        require(isSingleIssue, "wrong mint method called");
         require(isPublicallyMintable || isAllowedMinter(msg.sender), "not allowed to mint");
 
         nextTokenId = SafeMath.add(nextTokenId, 1);
