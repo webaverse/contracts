@@ -271,10 +271,6 @@ contract WebaverseERC721 is ERC721 {
         require(isCollaborator(hash, msg.sender), "not a collaborator");
         delete hashToCollaborators[hash];
     }
-    /* function sealSingle(uint256 tokenId) public {
-        require(isTokenIdCollaborator(tokenId, msg.sender), "not a collaborator");
-        delete tokenIdToCollaborators[tokenId];
-    } */
 
     function getHash(uint256 tokenId) public view returns (string memory) {
         return tokenIdToHash[tokenId];
