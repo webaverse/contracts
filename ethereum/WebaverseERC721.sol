@@ -302,15 +302,17 @@ contract WebaverseERC721 is ERC721 {
         return ids;
     }
     function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
-        string memory hash = tokenIdToHash[tokenId];
+        string memory hash;
         string memory name;
         string memory ext;
         if (isSingleIssue) {
-            name = getMetadata(hash, "name");
-            ext = getMetadata(hash, "ext");
-        } else {
+            hash = getSingleMetadata(tokenId, "hash");
             name = getSingleMetadata(tokenId, "name");
             ext = getSingleMetadata(tokenId, "ext");
+        } else {
+            hash = tokenIdToHash[tokenId];
+            name = getMetadata(hash, "name");
+            ext = getMetadata(hash, "ext");
         }
         address minter = minters[tokenId];
         address owner = _exists(tokenId) ? ownerOf(tokenId) : address(0);
@@ -320,15 +322,17 @@ contract WebaverseERC721 is ERC721 {
     }
     function tokenOfOwnerByIndexFull(address owner, uint256 index) public view returns (Token memory) {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
-        string memory hash = tokenIdToHash[tokenId];
+        string memory hash;
         string memory name;
         string memory ext;
         if (isSingleIssue) {
-            name = getMetadata(hash, "name");
-            ext = getMetadata(hash, "ext");
-        } else {
+            hash = getSingleMetadata(tokenId, "hash");
             name = getSingleMetadata(tokenId, "name");
             ext = getSingleMetadata(tokenId, "ext");
+        } else {
+            hash = tokenIdToHash[tokenId];
+            name = getMetadata(hash, "name");
+            ext = getMetadata(hash, "ext");
         }
         address minter = minters[tokenId];
         uint256 balance = balanceOfHash(owner, hash);
