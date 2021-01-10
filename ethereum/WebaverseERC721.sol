@@ -307,7 +307,7 @@ contract WebaverseERC721 is ERC721 {
         string memory ext;
         if (isSingleIssue) {
             hash = getSingleMetadata(tokenId, "hash");
-            name = getSingleMetadata(tokenId, "name");
+            name = tokenIdToHash[tokenId];
             ext = getSingleMetadata(tokenId, "ext");
         } else {
             hash = tokenIdToHash[tokenId];
@@ -327,7 +327,7 @@ contract WebaverseERC721 is ERC721 {
         string memory ext;
         if (isSingleIssue) {
             hash = getSingleMetadata(tokenId, "hash");
-            name = getSingleMetadata(tokenId, "name");
+            name = tokenIdToHash[tokenId];
             ext = getSingleMetadata(tokenId, "ext");
         } else {
             hash = tokenIdToHash[tokenId];
