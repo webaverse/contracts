@@ -154,6 +154,7 @@ contract WebaverseERC721 is ERC721 {
 
         tokenIdToHash[tokenId] = hash;
         hashToTotalSupply[hash] = 1;
+        hashToCollaborators[hash].push(to);
         
         if (mintFee != 0) {
             require(erc20Contract.transferFrom(msg.sender, treasuryAddress, mintFee), "mint transfer failed");
