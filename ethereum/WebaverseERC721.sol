@@ -146,6 +146,7 @@ contract WebaverseERC721 is ERC721 {
     function mintSingle(address to, string memory hash) public {
         require(isSingleIssue, "wrong mint method called");
         require(isPublicallyMintable || isAllowedMinter(msg.sender), "not allowed to mint");
+        require(hashToTotalSupply[hash] == 0, "hash already exists");
 
         nextTokenId = SafeMath.add(nextTokenId, 1);
         uint256 tokenId = nextTokenId;
