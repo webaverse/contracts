@@ -235,9 +235,6 @@ contract WebaverseERC721 is ERC721 {
     }
 
     function isSingleCollaborator(uint256 tokenId, address a) public view returns (bool) {
-        if (ownerOf(tokenId) == a) {
-          return true;
-        }
         for (uint256 i = 0; i < tokenIdToCollaborators[tokenId].length; i++) {
             if (tokenIdToCollaborators[tokenId][i] == a) {
                 return true;
@@ -246,12 +243,12 @@ contract WebaverseERC721 is ERC721 {
         return false;
     }
     function addSingleCollaborator(uint256 tokenId, address a) public {
-        require(isSingleCollaborator(tokenId, msg.sender), "you are not a collaborator");
+        require(ownerOf(tokenId) == a || isSingleCollaborator(tokenId, msg.sender), "you are not a collaborator");
         require(!isSingleCollaborator(tokenId, a), "they are already a collaborator");
         tokenIdToCollaborators[tokenId].push(a);
     }
     function removeSingleCollaborator(uint256 tokenId, address a) public {
-        require(isSingleCollaborator(tokenId, msg.sender), "you are not a collaborator");
+        require(ownerOf(tokenId) == a || isSingleCollaborator(tokenId, msg.sender), "you are not a collaborator");
         require(isSingleCollaborator(tokenId, msg.sender), "they are not a collaborator");
         
         uint256 newSize = 0;
