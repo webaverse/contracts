@@ -14,7 +14,8 @@ contract WebaverseERC20 is ERC20Capped {
      * @dev Sets the value of the `cap`. This value is immutable, it can only be
      * set once during construction.
      */
-    // 1000000000000000000000000000
+    // 2147483648000000000000000000
+    // (2**31) + '000000000000000000'
     constructor (string memory name, string memory symbol, uint256 cap) public ERC20(name, symbol) ERC20Capped(cap) {
         allowedMinters[msg.sender] = true;
         numAllowedMinters = 1;
