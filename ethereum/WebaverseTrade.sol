@@ -32,7 +32,7 @@ contract WebaverseTrade {
     uint256 nextBuyId; // next buy id
     mapping(uint256 => Store) stores;
 
-    // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
+    // 0xb8f17718fdf8d4c24e8a266adee0fff5ab13b958
     constructor (address parentERC20Address, address parentERC721Address, address signerAddress) public {
         parentERC20 = WebaverseERC20(parentERC20Address);
         parentERC721 = WebaverseERC721(parentERC721Address);
