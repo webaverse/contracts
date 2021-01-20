@@ -13,7 +13,8 @@ contract WebaverseERC20Proxy {
     mapping (bytes32 => bool) internal usedWithdrawHashes; // deposit hashes that have been used up (replay protection)
     
     bytes internal prefix = "\x19Ethereum Signed Message:\n32";
-    
+
+    // 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656
     // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
     constructor (address parentAddress, address signerAddress, uint256 _chainId) public {
         signer = signerAddress;
