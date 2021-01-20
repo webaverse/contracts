@@ -44,8 +44,7 @@ contract WebaverseERC721 is ERC721 {
         uint256 balance;
         uint256 totalSupply;
     }
-    
-    // 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
+
     constructor (
         string memory name,
         string memory symbol,
