@@ -1,19 +1,47 @@
 # contracts
 Webaverse contracts
 
+# Mainnet
+
 ## Account
 // nothing
 ## FT
 FLUX, FLUX, 2147483648000000000000000000
 ## FTProxy
-0x070cdf3359af1889bcb243666fb735e4047bc108, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 1
+${FT}, 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656, 1
 ## NFT
-ASSET, ASSET, "https://tokens.webaverse.com/", 0x070cdf3359af1889bcb243666fb735e4047bc108, 0, 0x000000000000000000000000000000000000dEaD, false, false
+ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
 ## NFTProxy
-0xaa11ca1df297840a6d0fccb264a78e355e449564, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 2
+${NFT}, 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656, 2
 ## Trade
 // XXX
 ## LAND
-LAND, LAND, "https://land.webaverse.com/", 0x070cdf3359af1889bcb243666fb735e4047bc108, 0, 0x000000000000000000000000000000000000dEaD, true, false
+LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
 ## LANDProxy
-0xaa11ca1df297840a6d0fccb264a78e355e449564, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 5
+${LAND}, 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656, 5
+
+# Mainnet
+
+## Account
+// nothing
+## FT
+FLUX, FLUX, 2147483648000000000000000000
+## FTProxy
+${FT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 1
+## NFT
+ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0x1c4a2cd3559816bdad90a7405690728f0a2ff37f, false, true
+## NFTProxy
+${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 2
+## Trade
+// XXX
+## LAND
+LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
+## LANDProxy
+${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 5
+
+# Addressess used
+
+burn: 0x000000000000000000000000000000000000dEaD
+mainnet signer: 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656
+rinkeby signer: 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
+treasury: 0x1c4a2cd3559816bdad90a7405690728f0a2ff37f
