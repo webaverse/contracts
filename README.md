@@ -1,5 +1,6 @@
 # contracts
-Webaverse contracts
+
+Webaverse contracts. Audit: https://github.com/webaverse/audit
 
 # Mainnet
 
