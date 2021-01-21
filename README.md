@@ -17,7 +17,7 @@ ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000
 ## NFTProxy
 ${NFT}, 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656, 2
 ## Trade
-// XXX
+${FT}, ${NFT}, 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656
 ## LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
 ## LANDProxy
@@ -36,7 +36,7 @@ ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0x1c4a2cd3559816bdad90
 ## NFTProxy
 ${NFT}, 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656, 4
 ## Trade
-// XXX
+${FT}, ${NFT}, 0xd7523103ba15c1dfcf0f5ea1c553bc18179ac656
 ## LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
 ## LANDProxy
