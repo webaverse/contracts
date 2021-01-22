@@ -65,8 +65,8 @@ contract WebaverseERC721Proxy /* is IERC721Receiver */ {
         parent.transferFrom(from, contractAddress, tokenId);
     }
     
-    function withdrawNonceUsed(address to, uint256 tokenId, uint256 hash, string memory filename, string memory description, string memory ext, uint256 timestamp) public view returns (bool) {
-        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, hash, keccak256(abi.encodePacked(filename)), keccak256(abi.encodePacked(description)), keccak256(abi.encodePacked(ext)), timestamp, chainId))));
+    function withdrawNonceUsed(address to, uint256 tokenId, uint256 timestamp) public view returns (bool) {
+        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, keccak256(abi.encodePacked(to, tokenId, timestamp, chainId))));
         return usedWithdrawHashes[prefixedHash];
     }
 }
