@@ -63,7 +63,7 @@ ${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 5
 
 # mainnetsidechain
 
-## rinkebysidechain
+## Account
 // nothing
 ## FT
 FLUX, FLUX, 2147483648000000000000000000
