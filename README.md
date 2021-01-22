@@ -80,6 +80,14 @@ LAND, LAND, "https://rinkebysidechain.land.webaverse.com/", ${FT}, 0, 0x00000000
 ## LANDProxy
 ${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 6
 
+# OpenSea links
+
+## mainnet
+https://opensea.io/webaverse
+
+## rinkeby
+https://testnets.opensea.io/get-listed/step-two
+
 # Addressess used
 
 burn: 0x000000000000000000000000000000000000dEaD
