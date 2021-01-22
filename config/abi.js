@@ -3145,26 +3145,6 @@ export default {
 			},
 			{
 				"internalType": "uint256",
-				"name": "hash",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "filename",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "ext",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
 				"name": "timestamp",
 				"type": "uint256"
 			}
@@ -3620,26 +3600,6 @@ export default {
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "hash",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "filename",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "ext",
-				"type": "string"
 			},
 			{
 				"internalType": "uint256",
