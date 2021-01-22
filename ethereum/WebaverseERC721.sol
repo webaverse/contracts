@@ -63,6 +63,10 @@ contract WebaverseERC721 is ERC721 {
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
     }
+    
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) external {
+        _setTokenURI(tokenId, _tokenURI);
+    }
 
     function setMintFee(uint256 _mintFee) public {
         require(msg.sender == treasuryAddress, "must be set from treasury address");
