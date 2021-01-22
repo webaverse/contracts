@@ -65,6 +65,7 @@ contract WebaverseERC721 is ERC721 {
     }
     
     function setTokenURI(uint256 tokenId, string memory _tokenURI) external {
+        require(isAllowedMinter(msg.sender), "not a minter");
         _setTokenURI(tokenId, _tokenURI);
     }
 
