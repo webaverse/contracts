@@ -44,6 +44,21 @@ contract WebaverseERC721 is ERC721 {
         uint256 balance;
         uint256 totalSupply;
     }
+    
+    event MetadataSet(
+        string hash,
+        string key,
+        string value
+    );
+    event SingleMetadataSet(
+        uint256 tokenId,
+        string key,
+        string value
+    );
+    event HashUpdate(
+        string oldHash,
+        string newHash
+    );
 
     constructor (
         string memory name,
@@ -363,6 +378,8 @@ contract WebaverseERC721 is ERC721 {
         if (!keyFound) {
             hashToMetadata[hash].push(Metadata(key, value));
         }
+        
+        emit MetadataSet(hash, key, value);
     }
     
     function getSingleMetadata(uint256 tokenId, string memory key) public view returns (string memory) {
@@ -387,6 +404,8 @@ contract WebaverseERC721 is ERC721 {
         if (!keyFound) {
             tokenIdToMetadata[tokenId].push(Metadata(key, value));
         }
+        
+        emit SingleMetadataSet(tokenId, key, value);
     }
     
     function updateHash(string memory oldHash, string memory newHash) public {
@@ -409,5 +428,7 @@ contract WebaverseERC721 is ERC721 {
         delete hashToTotalSupply[oldHash];
         delete hashToMetadata[oldHash];
         delete hashToCollaborators[oldHash];
+        
+        emit HashUpdate(oldHash, newHash);
     }
 }
