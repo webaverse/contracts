@@ -2,21 +2,21 @@ export default {
   "mainnet": {
     "FT": 1,
     "NFT": 2,
-    "LAND": 5
+    "LAND": 3
   },
   "mainnetsidechain": {
-    "FT": 3,
-    "NFT": 4,
+    "FT": 4,
+    "NFT": 5,
     "LAND": 6
   },
   "rinkeby": {
     "FT": 1,
     "NFT": 2,
-    "LAND": 5
+    "LAND": 3
   },
   "rinkebysidechain": {
-    "FT": 3,
-    "NFT": 4,
+    "FT": 4,
+    "NFT": 5,
     "LAND": 6
   }
 }
