@@ -1,13 +1,13 @@
 export default {
   "mainnet": {
-    "Account": "0x0254043F2A7C3a0c5f3034be950D0Ddda3C766A2",
-    "FT": "0xCED4D776aB868331b2589Ddb82FD9aFBd22c2a20",
-    "NFT": "0xDE40F5a68639ef6950B2eA6C39de2B07AFB5aeB8",
-    "FTProxy": "0x184fA7Ee0564b3f23C95C94D4F29dDE4F2E0b3b8",
-    "NFTProxy": "0x4CAE4d9e5642b67fD2cf672b982d7e24bFfA10a9",
-    "Trade": "0x3a80D4717bfcFA010A5508A2b2dAe29315a3Ea3E",
-    "LAND": "0xAF7421723d968aBf331Ae825C0e6F8c021c7BD91",
-    "LANDProxy": "0x02889a77d5832D8031e89Bc94E6c145ddB7E43f2"
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
   },
   "mainnetsidechain": {
     "Account": "0x9d0aA50A44B7C1CC9D668cfa09998C60e61AEB97",
