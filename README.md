@@ -55,6 +55,9 @@ https://testnets.opensea.io/get-listed/step-two
 # Addressess used
 
 burn: 0x000000000000000000000000000000000000dEaD
+
 mainnet signer: 0x6a93d2daf3b017c77d433628e690ddee0d561960
+
 rinkeby signer: 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
+
 treasury: 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68
