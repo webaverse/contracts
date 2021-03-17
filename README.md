@@ -8,8 +8,6 @@ Audit: https://github.com/webaverse/audit
 
 ## Account
 // nothing
-
-
 ## FT
 SILK, SILK, 2147483648000000000000000000
 ## FTProxy
