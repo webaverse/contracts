@@ -30,13 +30,13 @@ export default {
     "LANDProxy": "0x72A4CED2C7b972b9E2E3335acbD1f17257fe63E6"
   },
   "rinkebysidechain": {
-    "Account": "0x553650260c5457f13D8DBf0A2c8EA97595eAFcED",
-    "FT": "0x617f2b3558604708288Ab0454c4E7771eA7c712c",
-    "NFT": "0xDe4873c8eC948075a42F4e38B46254De996F47c6",
-    "FTProxy": "0x362e0D2494399A5252Ee855f2A47d513D1AEd6C6",
-    "NFTProxy": "0x0BC1Fd265BE6aE9EfE81eE99207291Dd0AfE6669",
-    "Trade": "0x9455c0289056a0Cf9B2667E3296fA9F0d28052d9",
-    "LAND": "0xD103dCf18A8e5759E119cFB03bb784F54c4c62bc",
-    "LANDProxy": "0x678F0cE7fd691f113fFAB68380e66e7da9d92f7C"
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
   }
 }
