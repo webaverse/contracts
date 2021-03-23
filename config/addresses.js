@@ -58,5 +58,15 @@ export default {
     "Trade": "",
     "LAND": "",
     "LANDProxy": ""
-  }
+  },
+  "development": {
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
+  },
 }
