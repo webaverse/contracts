@@ -19,7 +19,7 @@ export default {
     "NFT": 5,
     "LAND": 6
   },
-  "matic": {
+  "polygon": {
     "FT": 1,
     "NFT": 2,
     "LAND": 3

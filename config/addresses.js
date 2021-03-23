@@ -39,7 +39,7 @@ export default {
     "LAND": "0xFFcD9cD475b4de3155F522c43dC547eAC07260f8",
     "LANDProxy": "0xD1bED060DC858b772f52c6Fc75f7E3a7f5077C7D"
   },
-  "matic": {
+  "polygon": {
     "Account": "",
     "FT": "",
     "NFT": "",
@@ -50,15 +50,14 @@ export default {
     "LANDProxy": ""
   },
   "maticTestnet": {
-    "Account": "",
-    "FT": "",
-    "NFT": "",
-    "FTProxy": "",
-    "NFTProxy": "",
-    "Trade": "",
-    "LAND": "",
-    "LANDProxy": ""
-  },
+    "Account": "0x027f3DF3C584bbC1A883773F5730bD77503eB5B9",
+    "FT": "0x3B2EE7aeAe2000Cd05544a53C36D4c403C8De6a0",
+    "FTProxy": "0xaA6E7b2F3a823B2deeeB4F1df77A9D34fD9B8d9c",
+    "NFT": "0x76DAde7cc8bDd68d10966a0e6386c8826719484a",
+    "NFTProxy": "0x05B96Bd10b3168C0D942aA4f8b46ac9C51635C4A",
+    "LAND": "0xBe0090222315c8E72F9C71a8f23A4E7931FEBa2E",
+    "LANDProxy": "0x78fB86ACA75adcEd0B3088C1Ea6646cbdf9CB0d9",
+   },
   "development": {
     "Account": "",
     "FT": "",

@@ -10,7 +10,7 @@ First, add a signer to config/signer.js and treasuer to config/treasurer.js for 
 
 ```
 npm install
-npm run deploy-<network> // i.e. npm run deploy-matic
+npm run deploy-<network> // i.e. npm run deploy-polygon
 ```
 Consult package.json for more options
 

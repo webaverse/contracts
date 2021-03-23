@@ -19,15 +19,15 @@ module.exports = {
     "ASSET": 5,
     "LAND": 6
   },
-  "matic": {
+  "polygon": {
     "SILK": 7,
     "ASSET": 8,
     "LAND": 9
   },
   "maticTestnet": {
-    "SILK": 4,
-    "ASSET": 5,
-    "LAND": 6
+    "SILK": 7,
+    "ASSET": 8,
+    "LAND": 9
   },
   "development": {
     "SILK": 7,

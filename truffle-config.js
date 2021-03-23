@@ -16,15 +16,15 @@ module.exports = {
       // gas: 2700000,
       // gasPrice: 10000000000
     },
-    matic: {
-      provider: () => new HDWalletProvider(process.env.matic, `https://rpc-mainnet.matic.network`),
+    polygon: {
+      provider: () => new HDWalletProvider(process.env.polygon, `https://rpc-mainnet.polygon.network`),
       network_id: 137,
       confirmations: 2,
       timeoutBlocks: 200,
       skipDryRun: false
     },
     maticTestnet: {
-      provider: () => new HDWalletProvider(process.env.maticTestnet, `https://rpc-mumbai.matic.today`),
+      provider: () => new HDWalletProvider(process.env.maticTestnet, `https://rpc-mumbai.polygon.today`),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,

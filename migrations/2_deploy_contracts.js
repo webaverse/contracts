@@ -9,7 +9,6 @@ const Trade = artifacts.require("WebaverseTrade");
 
 const signer = require("../config/signer.js");
 const treasurer = require("../config/treasurer.js");
-
 const chainId = require("../config/chainIds.js");
 
 // FT
@@ -38,7 +37,7 @@ const NetworkTypes = {
   "rinkeby": "rinkeby",
   "mainnetsidechain": "mainnetsidechain",
   "maticTestnet": "maticTestnet",
-  "matic": "matic",
+  "polygon": "polygon",
   "development": "development"
 }
 
@@ -59,10 +58,10 @@ module.exports = async function (deployer) {
     return console.error("Treasury address not valid");
 
   console.log("Deploying on the " + networkType + " networkType");
-
   await deployer.deploy(Account)
   let account = await Account.deployed()
   console.log("Account address is " + account.address)
+
   await deployer.deploy(ERC20, ERC20ContractName, ERC20Symbol, 10)
   let erc20 = await ERC20.deployed()
   const ERC20Address = erc20.address;
