@@ -2,9 +2,9 @@
 
 pragma solidity ^0.6.0;
 
-import "../../math/SafeMath.sol";
-import "../../utils/Arrays.sol";
-import "../../utils/Counters.sol";
+import "./SafeMath.sol";
+import "./Arrays.sol";
+import "./Counters.sol";
 import "./ERC20.sol";
 
 /**

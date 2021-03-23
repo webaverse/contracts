@@ -263,7 +263,7 @@ contract WebaverseERC721 is ERC721 {
     /**
      * @dev Get the address for for the minter of the token
      * @param tokenId ID of the token we are querying
-     * @param return Address of the minter
+     * @return Address of the minter
      */
     function getMinter(uint256 tokenId) public view returns (address) {
         return minters[tokenId];
@@ -754,10 +754,9 @@ contract WebaverseERC721 is ERC721 {
         emit HashUpdate(oldHash, newHash);
     }
 
-    /**
-     * @dev Helper function to convert a uint to a string
+    /**@dev Helper function to convert a uint to a string
      * @param _i uint to convert
-     * @return string converted from uint
+     * @return _uintAsString string converted from uint
      */
     function uint2str(uint256 _i)
         internal
