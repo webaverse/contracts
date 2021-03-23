@@ -24,7 +24,7 @@ module.exports = {
     "ASSET": 8,
     "LAND": 9
   },
-  "maticTestnet": {
+  "polygonTestnet": {
     "SILK": 7,
     "ASSET": 8,
     "LAND": 9

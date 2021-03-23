@@ -24,7 +24,7 @@ export default {
     "NFT": 2,
     "LAND": 3
   },
-  "maticTestnet": {
+  "polygonTestnet": {
     "FT": 4,
     "NFT": 5,
     "LAND": 6

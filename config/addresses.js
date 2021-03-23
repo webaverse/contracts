@@ -49,7 +49,7 @@ export default {
     "LAND": "",
     "LANDProxy": ""
   },
-  "maticTestnet": {
+  "polygonTestnet": {
     "Account": "0x027f3DF3C584bbC1A883773F5730bD77503eB5B9",
     "FT": "0x3B2EE7aeAe2000Cd05544a53C36D4c403C8De6a0",
     "FTProxy": "0xaA6E7b2F3a823B2deeeB4F1df77A9D34fD9B8d9c",

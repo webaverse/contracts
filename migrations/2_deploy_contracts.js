@@ -36,7 +36,7 @@ const NetworkTypes = {
   "mainnetsidechain": "mainnetsidechain",
   "rinkeby": "rinkeby",
   "mainnetsidechain": "mainnetsidechain",
-  "maticTestnet": "maticTestnet",
+  "polygonTestnet": "polygonTestnet",
   "polygon": "polygon",
   "development": "development"
 }

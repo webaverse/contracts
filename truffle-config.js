@@ -9,13 +9,15 @@ module.exports = {
       port: 7545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
     },
-    rinkeby: {
-      host: "127.0.0.1",
-      port: 8545,
-      network_id: 4
-      // gas: 2700000,
-      // gasPrice: 10000000000
-    },
+    rinkeby:{
+      host: "localhost",
+      provider: function() {
+      return new HDWalletProvider( mnemonic, "https://rinkeby.infura.io/v3/" + INFURA_API_KEY);
+      },
+      network_id:4, 
+      gas : 6700000,
+      gasPrice : 10000000000
+      },
     polygon: {
       provider: () => new HDWalletProvider(process.env.polygon, `https://rpc-mainnet.polygon.network`),
       network_id: 137,
@@ -23,8 +25,8 @@ module.exports = {
       timeoutBlocks: 200,
       skipDryRun: false
     },
-    maticTestnet: {
-      provider: () => new HDWalletProvider(process.env.maticTestnet, `https://rpc-mumbai.polygon.today`),
+    polygonTestnet: {
+      provider: () => new HDWalletProvider(process.env.polygonTestnet, `https://rpc-mumbai.polygon.today`),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,
