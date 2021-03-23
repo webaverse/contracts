@@ -162,6 +162,9 @@ contract WebaverseERC721 is ERC721 {
 
     /**
      * @dev Mint one or more non-fungible tokens with this contract
+     * The count parameter is what is looped over to create the token.
+     * This means the hiegher the count, the higher the gas.
+     * This is the main reason that we can only mint so many tokens at once.
      * @param to Address of who is receiving the token on mint
      * Example: 0x08E242bB06D85073e69222aF8273af419d19E4f6
      * @param hash Hash of the file to mint
