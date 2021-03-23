@@ -11,21 +11,26 @@ const treasurer = require("../config/treasurer.js");
 
 const chainId = require("../config/chain-id.js");
 
+// Important vars
+const BaseURI = "???";
+
+// FT
+const ERC20ContractName = "FT";
 const ERC20Symbol = "SILK";
 const ERC20MarketCap = 2147483648000000000000000000;
-const ERC20ContractName = "FT";
+
+// NFTs
 const ERC721TokenContractName = "NFT";
 const ERC721TokenContractSymbol = "NFT";
 const tokenIsSingleIssue = false;
 const tokenIsPublicallyMintable = true;
+const mintFee = 10;
+
+// LAND
 const ERC721LandContractName = "LAND";
 const ERC721LandContractSymbol = "LAND";
 const landIsSingleIssue = true;
 const landIsPublicallyMintable = false;
-
-const mintFee = 10;
-
-const BaseURI = "???";
 
 const NetworkTypes = {
   "mainnet": "mainnet",
@@ -38,14 +43,18 @@ const NetworkTypes = {
 
 module.exports = function (deployer) {
   const networkType = NetworkTypes[process.argv[4]];
-  if (networkType === undefined) {
+
+  if (!networkType) 
     return console.error(process.argv[4] + " was not found in the network list");
-  }
+
+  if(!signer[networkType])
+    return console.error("Signer address not valid");
+
+  if(!treasurer[networkType])
+    return console.error("Treasury address not valid");
 
   console.log("Deploying on the " + networkType + " network. Addresses are:");
   console.log(addresses);
-
-  console.log("Signing address is ", signer[network]);
 
   deployer.deploy(Account)
     .then(() => {
