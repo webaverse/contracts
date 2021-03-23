@@ -28,16 +28,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"retrieve\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"num\",\"type\":\"uint256\"}],\"name\":\"store\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Store & retrieve value in a variable\",\"kind\":\"dev\",\"methods\":{\"retrieve()\":{\"details\":\"Return value \",\"returns\":{\"_0\":\"value of 'number'\"}},\"store(uint256)\":{\"details\":\"Store value in variable\",\"params\":{\"num\":\"value to store\"}}},\"title\":\"Storage\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/contracts/1_Storage.sol\":\"Storage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/contracts/1_Storage.sol\":{\"keccak256\":\"0x951968725f62d753a3242c33210ecfa8e01e6c3004fc0fbfe09fe7e9f501913f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5bb18349f95df2c1a99d8d21d35f44601fdeecab095f2e85a8365d0a1eb23c42\",\"dweb:/ipfs/QmR5Gdt4dMmcjs3oAt8BpzduenRfBvqwgmiPVzbtBHz8zv\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b5060c78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80632e64cec11460375780636057361d146053575b600080fd5b603d607e565b6040518082815260200191505060405180910390f35b607c60048036036020811015606757600080fd5b81019080803590602001909291905050506087565b005b60008054905090565b806000819055505056fea264697066735822122062bf72fbb45db49b1e9fe909af317cb01dd377c279039f5b728e77725f50a19364736f6c634300060c0033",
-  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80632e64cec11460375780636057361d146053575b600080fd5b603d607e565b6040518082815260200191505060405180910390f35b607c60048036036020811015606757600080fd5b81019080803590602001909291905050506087565b005b60008054905090565b806000819055505056fea264697066735822122062bf72fbb45db49b1e9fe909af317cb01dd377c279039f5b728e77725f50a19364736f6c634300060c0033",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"retrieve\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"num\",\"type\":\"uint256\"}],\"name\":\"store\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Store & retrieve value in a variable\",\"kind\":\"dev\",\"methods\":{\"retrieve()\":{\"details\":\"Return value \",\"returns\":{\"_0\":\"value of 'number'\"}},\"store(uint256)\":{\"details\":\"Store value in variable\",\"params\":{\"num\":\"value to store\"}}},\"title\":\"Storage\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/ethereum/1_Storage.sol\":\"Storage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/ethereum/1_Storage.sol\":{\"keccak256\":\"0x951968725f62d753a3242c33210ecfa8e01e6c3004fc0fbfe09fe7e9f501913f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5bb18349f95df2c1a99d8d21d35f44601fdeecab095f2e85a8365d0a1eb23c42\",\"dweb:/ipfs/QmR5Gdt4dMmcjs3oAt8BpzduenRfBvqwgmiPVzbtBHz8zv\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060c78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80632e64cec11460375780636057361d146053575b600080fd5b603d607e565b6040518082815260200191505060405180910390f35b607c60048036036020811015606757600080fd5b81019080803590602001909291905050506087565b005b60008054905090565b806000819055505056fea2646970667358221220313f1f9820fbba0c7cc1573fa811d2fab6a45917939a08c1ae94b54440e5d74364736f6c634300060c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060325760003560e01c80632e64cec11460375780636057361d146053575b600080fd5b603d607e565b6040518082815260200191505060405180910390f35b607c60048036036020811015606757600080fd5b81019080803590602001909291905050506087565b005b60008054905090565b806000819055505056fea2646970667358221220313f1f9820fbba0c7cc1573fa811d2fab6a45917939a08c1ae94b54440e5d74364736f6c634300060c0033",
   "immutableReferences": {},
   "sourceMap": "138:356:0:-:0;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "138:356:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;413:79;;;:::i;:::-;;;;;;;;;;;;;;;;;;;268:64;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;413:79;454:7;479:6;;472:13;;413:79;:::o;268:64::-;322:3;313:6;:12;;;;268:64;:::o",
   "source": "// SPDX-License-Identifier: MIT\n\npragma solidity >=0.4.22 <0.7.0;\n\n/**\n * @title Storage\n * @dev Store & retrieve value in a variable\n */\ncontract Storage {\n\n    uint256 number;\n\n    /**\n     * @dev Store value in variable\n     * @param num value to store\n     */\n    function store(uint256 num) public {\n        number = num;\n    }\n\n    /**\n     * @dev Return value \n     * @return value of 'number'\n     */\n    function retrieve() public view returns (uint256){\n        return number;\n    }\n}",
-  "sourcePath": "/home/beast/Documents/GitHub/contracts/contracts/1_Storage.sol",
+  "sourcePath": "/home/beast/Documents/GitHub/contracts/ethereum/1_Storage.sol",
   "ast": {
-    "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/1_Storage.sol",
+    "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/1_Storage.sol",
     "exportedSymbols": {
       "Storage": [
         25
@@ -320,7 +320,7 @@
   },
   "legacyAST": {
     "attributes": {
-      "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/1_Storage.sol",
+      "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/1_Storage.sol",
       "exportedSymbols": {
         "Storage": [
           25
@@ -656,7 +656,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-23T01:11:42.528Z",
+  "updatedAt": "2021-03-23T02:27:05.834Z",
   "devdoc": {
     "details": "Store & retrieve value in a variable",
     "kind": "dev",

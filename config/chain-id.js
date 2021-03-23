@@ -18,5 +18,15 @@ export default {
     "FT": 4,
     "NFT": 5,
     "LAND": 6
+  },
+  "matic": {
+    "FT": 1,
+    "NFT": 2,
+    "LAND": 3
+  },
+  "maticTestnet": {
+    "FT": 4,
+    "NFT": 5,
+    "LAND": 6
   }
 }

@@ -38,5 +38,25 @@ export default {
     "Trade": "0x7d561bE86eBCB1d8353f98c21Bef7232343598a8",
     "LAND": "0xFFcD9cD475b4de3155F522c43dC547eAC07260f8",
     "LANDProxy": "0xD1bED060DC858b772f52c6Fc75f7E3a7f5077C7D"
+  },
+  "matic": {
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
+  },
+  "maticTestnet": {
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
   }
 }

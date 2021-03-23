@@ -1,16 +1,16 @@
 {
   "contractName": "SignedSafeMath",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Signed math operations with safety checks that revert on error.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"SignedSafeMath\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/contracts/SignedSafeMath.sol\":\"SignedSafeMath\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/contracts/SignedSafeMath.sol\":{\"keccak256\":\"0x92bf2cb99019349965d5a05c407edebcc8d02d75b8a663d8a6990024ccdea2c4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d55c57e6be696c9a89eab4227087ca8d28ac15153fd3c50020821bcb46cc2c00\",\"dweb:/ipfs/Qmb7h95SMmy2ZoivpbCGqHW3qRRUHwsAo8L57X64c75B26\"]}},\"version\":1}",
-  "bytecode": "0x60566023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220e566bb9c3ee0296b43c133bb46bbb577dcc2e45ee7e85c2e032f77f84a28d76b64736f6c634300060c0033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220e566bb9c3ee0296b43c133bb46bbb577dcc2e45ee7e85c2e032f77f84a28d76b64736f6c634300060c0033",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Signed math operations with safety checks that revert on error.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"SignedSafeMath\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/ethereum/SignedSafeMath.sol\":\"SignedSafeMath\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/ethereum/SignedSafeMath.sol\":{\"keccak256\":\"0x92bf2cb99019349965d5a05c407edebcc8d02d75b8a663d8a6990024ccdea2c4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d55c57e6be696c9a89eab4227087ca8d28ac15153fd3c50020821bcb46cc2c00\",\"dweb:/ipfs/Qmb7h95SMmy2ZoivpbCGqHW3qRRUHwsAo8L57X64c75B26\"]}},\"version\":1}",
+  "bytecode": "0x60566023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220cccf63e2b52d3d3df0c80d5ca71e8f0356b3d1706a0cd8a1aa61557e2147295964736f6c634300060c0033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220cccf63e2b52d3d3df0c80d5ca71e8f0356b3d1706a0cd8a1aa61557e2147295964736f6c634300060c0033",
   "immutableReferences": {},
   "sourceMap": "163:2495:40:-:0;;;;;;;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "163:2495:40:-:0;;;;;;;;",
   "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.6.0;\n\n/**\n * @title SignedSafeMath\n * @dev Signed math operations with safety checks that revert on error.\n */\nlibrary SignedSafeMath {\n    int256 constant private _INT256_MIN = -2**255;\n\n    /**\n     * @dev Returns the multiplication of two signed integers, reverting on\n     * overflow.\n     *\n     * Counterpart to Solidity's `*` operator.\n     *\n     * Requirements:\n     *\n     * - Multiplication cannot overflow.\n     */\n    function mul(int256 a, int256 b) internal pure returns (int256) {\n        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the\n        // benefit is lost if 'b' is also tested.\n        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522\n        if (a == 0) {\n            return 0;\n        }\n\n        require(!(a == -1 && b == _INT256_MIN), \"SignedSafeMath: multiplication overflow\");\n\n        int256 c = a * b;\n        require(c / a == b, \"SignedSafeMath: multiplication overflow\");\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the integer division of two signed integers. Reverts on\n     * division by zero. The result is rounded towards zero.\n     *\n     * Counterpart to Solidity's `/` operator. Note: this function uses a\n     * `revert` opcode (which leaves remaining gas untouched) while Solidity\n     * uses an invalid opcode to revert (consuming all remaining gas).\n     *\n     * Requirements:\n     *\n     * - The divisor cannot be zero.\n     */\n    function div(int256 a, int256 b) internal pure returns (int256) {\n        require(b != 0, \"SignedSafeMath: division by zero\");\n        require(!(b == -1 && a == _INT256_MIN), \"SignedSafeMath: division overflow\");\n\n        int256 c = a / b;\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the subtraction of two signed integers, reverting on\n     * overflow.\n     *\n     * Counterpart to Solidity's `-` operator.\n     *\n     * Requirements:\n     *\n     * - Subtraction cannot overflow.\n     */\n    function sub(int256 a, int256 b) internal pure returns (int256) {\n        int256 c = a - b;\n        require((b >= 0 && c <= a) || (b < 0 && c > a), \"SignedSafeMath: subtraction overflow\");\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the addition of two signed integers, reverting on\n     * overflow.\n     *\n     * Counterpart to Solidity's `+` operator.\n     *\n     * Requirements:\n     *\n     * - Addition cannot overflow.\n     */\n    function add(int256 a, int256 b) internal pure returns (int256) {\n        int256 c = a + b;\n        require((b >= 0 && c >= a) || (b < 0 && c < a), \"SignedSafeMath: addition overflow\");\n\n        return c;\n    }\n}\n",
-  "sourcePath": "/home/beast/Documents/GitHub/contracts/contracts/SignedSafeMath.sol",
+  "sourcePath": "/home/beast/Documents/GitHub/contracts/ethereum/SignedSafeMath.sol",
   "ast": {
-    "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/SignedSafeMath.sol",
+    "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/SignedSafeMath.sol",
     "exportedSymbols": {
       "SignedSafeMath": [
         6330
@@ -2569,7 +2569,7 @@
   },
   "legacyAST": {
     "attributes": {
-      "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/SignedSafeMath.sol",
+      "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/SignedSafeMath.sol",
       "exportedSymbols": {
         "SignedSafeMath": [
           6330
@@ -5275,7 +5275,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-23T01:11:42.589Z",
+  "updatedAt": "2021-03-23T02:27:07.346Z",
   "devdoc": {
     "details": "Signed math operations with safety checks that revert on error.",
     "kind": "dev",

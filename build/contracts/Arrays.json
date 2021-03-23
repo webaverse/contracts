@@ -1,16 +1,16 @@
 {
   "contractName": "Arrays",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Collection of functions related to array types.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/contracts/Arrays.sol\":\"Arrays\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/contracts/Arrays.sol\":{\"keccak256\":\"0x0eb4cd87b8beab90269700f7d53bd56da74d7c55c98eab5eb2efe263e96122a1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3b4bf59afec37f3a112a7a472876d15532745e1ad3ce3b41b2599a3710a2d079\",\"dweb:/ipfs/QmZKaMDdLwGo16Sn7thc5th5jX6UYkpzZFQvWiX7HWmWfM\"]},\"/home/beast/Documents/GitHub/contracts/contracts/Math.sol\":{\"keccak256\":\"0x6c234834003dfb86e2c23d12dfdde7cc01e78013d71b52162cb308b4873562cb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f0e3f39b2ec26694a42c89a5d9e489d5228f1880fcf5e375c5c975ba816e5ffe\",\"dweb:/ipfs/QmUErheHopnbBUSLDQAtWsmw6HsEvqTNp1QiBEuSJhmhHn\"]}},\"version\":1}",
-  "bytecode": "0x60566023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122060af68ef103246b3ad8aa99892b54ef07efe333ea99ae6bd80c6a1bb5704a22964736f6c634300060c0033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122060af68ef103246b3ad8aa99892b54ef07efe333ea99ae6bd80c6a1bb5704a22964736f6c634300060c0033",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Collection of functions related to array types.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/ethereum/Arrays.sol\":\"Arrays\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/ethereum/Arrays.sol\":{\"keccak256\":\"0x0eb4cd87b8beab90269700f7d53bd56da74d7c55c98eab5eb2efe263e96122a1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3b4bf59afec37f3a112a7a472876d15532745e1ad3ce3b41b2599a3710a2d079\",\"dweb:/ipfs/QmZKaMDdLwGo16Sn7thc5th5jX6UYkpzZFQvWiX7HWmWfM\"]},\"/home/beast/Documents/GitHub/contracts/ethereum/Math.sol\":{\"keccak256\":\"0x6c234834003dfb86e2c23d12dfdde7cc01e78013d71b52162cb308b4873562cb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f0e3f39b2ec26694a42c89a5d9e489d5228f1880fcf5e375c5c975ba816e5ffe\",\"dweb:/ipfs/QmUErheHopnbBUSLDQAtWsmw6HsEvqTNp1QiBEuSJhmhHn\"]}},\"version\":1}",
+  "bytecode": "0x60566023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220f572ad3a14e3a13fb67394e9de61ea919be89d4d45c2d6ceae30db776914f99b64736f6c634300060c0033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220f572ad3a14e3a13fb67394e9de61ea919be89d4d45c2d6ceae30db776914f99b64736f6c634300060c0033",
   "immutableReferences": {},
   "sourceMap": "144:1326:4:-:0;;;;;;;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "144:1326:4:-:0;;;;;;;;",
   "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.6.0;\n\nimport \"./Math.sol\";\n\n/**\n * @dev Collection of functions related to array types.\n */\nlibrary Arrays {\n   /**\n     * @dev Searches a sorted `array` and returns the first index that contains\n     * a value greater or equal to `element`. If no such index exists (i.e. all\n     * values in the array are strictly less than `element`), the array length is\n     * returned. Time complexity O(log n).\n     *\n     * `array` is expected to be sorted in ascending order, and to contain no\n     * repeated elements.\n     */\n    function findUpperBound(uint256[] storage array, uint256 element) internal view returns (uint256) {\n        if (array.length == 0) {\n            return 0;\n        }\n\n        uint256 low = 0;\n        uint256 high = array.length;\n\n        while (low < high) {\n            uint256 mid = Math.average(low, high);\n\n            // Note that mid will always be strictly less than high (i.e. it will be a valid array index)\n            // because Math.average rounds down (it does integer division with truncation).\n            if (array[mid] > element) {\n                high = mid;\n            } else {\n                low = mid + 1;\n            }\n        }\n\n        // At this point `low` is the exclusive upper bound. We will return the inclusive upper bound.\n        if (low > 0 && array[low - 1] == element) {\n            return low - 1;\n        } else {\n            return low;\n        }\n    }\n}\n",
-  "sourcePath": "/home/beast/Documents/GitHub/contracts/contracts/Arrays.sol",
+  "sourcePath": "/home/beast/Documents/GitHub/contracts/ethereum/Arrays.sol",
   "ast": {
-    "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/Arrays.sol",
+    "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/Arrays.sol",
     "exportedSymbols": {
       "Arrays": [
         787
@@ -32,7 +32,7 @@
         "src": "33:23:4"
       },
       {
-        "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/Math.sol",
+        "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/Math.sol",
         "file": "./Math.sol",
         "id": 705,
         "nodeType": "ImportDirective",
@@ -1101,7 +1101,7 @@
   },
   "legacyAST": {
     "attributes": {
-      "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/Arrays.sol",
+      "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/Arrays.sol",
       "exportedSymbols": {
         "Arrays": [
           787
@@ -1126,7 +1126,7 @@
       {
         "attributes": {
           "SourceUnit": 5267,
-          "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/Math.sol",
+          "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/Math.sol",
           "file": "./Math.sol",
           "scope": 788,
           "symbolAliases": [
@@ -2284,7 +2284,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-23T01:11:42.536Z",
+  "updatedAt": "2021-03-23T02:27:05.958Z",
   "devdoc": {
     "details": "Collection of functions related to array types.",
     "kind": "dev",

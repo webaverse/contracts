@@ -47,16 +47,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"tokenURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"See https://eips.ethereum.org/EIPS/eip-721\",\"kind\":\"dev\",\"methods\":{\"name()\":{\"details\":\"Returns the token collection name.\"},\"symbol()\":{\"details\":\"Returns the token collection symbol.\"},\"tokenURI(uint256)\":{\"details\":\"Returns the Uniform Resource Identifier (URI) for `tokenId` token.\"}},\"title\":\"ERC-721 Non-Fungible Token Standard, optional metadata extension\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/contracts/IERC721Metadata.sol\":\"IERC721Metadata\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/contracts/IERC165.sol\":{\"keccak256\":\"0xfa152b6e88a1dc50780e8f1580426dc23ad2e1e2c2f086a088adf206a202f453\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5127b264994adab88fae419b1c493efc5acd07134c19ee5c0397e50018291ebf\",\"dweb:/ipfs/QmWwJZVhvdmvUCdimbb6R2Jiu59zjPqm6XTMchM6LaEHAp\"]},\"/home/beast/Documents/GitHub/contracts/contracts/IERC721.sol\":{\"keccak256\":\"0x0ec0b280743c7daeef7f97818a17eb0c4531c68f0d59e401db0fa7f440dac1de\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e70145ecb99ae891ee334cc6167fa42c2397d802f7f78956722d1b31d72fd3a9\",\"dweb:/ipfs/Qmb95SPADQ9UuVN8n5Bn3XZVdsrFkH51fLDCnet3GayCh7\"]},\"/home/beast/Documents/GitHub/contracts/contracts/IERC721Metadata.sol\":{\"keccak256\":\"0x96550b6c1fcb17a3dce0d6eca67ae002dab60e583da732bfbf6ce773e7717df4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a700b7bdbbacec77d861889f57c8752a2f2784f90c9e41dd372aab345ced7ba4\",\"dweb:/ipfs/QmUH7fksDjfZoQ61EGMxrNAYv6npyCiVYycHw58f6vRqKd\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"tokenURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"See https://eips.ethereum.org/EIPS/eip-721\",\"kind\":\"dev\",\"methods\":{\"name()\":{\"details\":\"Returns the token collection name.\"},\"symbol()\":{\"details\":\"Returns the token collection symbol.\"},\"tokenURI(uint256)\":{\"details\":\"Returns the Uniform Resource Identifier (URI) for `tokenId` token.\"}},\"title\":\"ERC-721 Non-Fungible Token Standard, optional metadata extension\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/beast/Documents/GitHub/contracts/ethereum/IERC721Metadata.sol\":\"IERC721Metadata\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/beast/Documents/GitHub/contracts/ethereum/IERC165.sol\":{\"keccak256\":\"0xfa152b6e88a1dc50780e8f1580426dc23ad2e1e2c2f086a088adf206a202f453\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5127b264994adab88fae419b1c493efc5acd07134c19ee5c0397e50018291ebf\",\"dweb:/ipfs/QmWwJZVhvdmvUCdimbb6R2Jiu59zjPqm6XTMchM6LaEHAp\"]},\"/home/beast/Documents/GitHub/contracts/ethereum/IERC721.sol\":{\"keccak256\":\"0x0ec0b280743c7daeef7f97818a17eb0c4531c68f0d59e401db0fa7f440dac1de\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e70145ecb99ae891ee334cc6167fa42c2397d802f7f78956722d1b31d72fd3a9\",\"dweb:/ipfs/Qmb95SPADQ9UuVN8n5Bn3XZVdsrFkH51fLDCnet3GayCh7\"]},\"/home/beast/Documents/GitHub/contracts/ethereum/IERC721Metadata.sol\":{\"keccak256\":\"0x96550b6c1fcb17a3dce0d6eca67ae002dab60e583da732bfbf6ce773e7717df4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a700b7bdbbacec77d861889f57c8752a2f2784f90c9e41dd372aab345ced7ba4\",\"dweb:/ipfs/QmUH7fksDjfZoQ61EGMxrNAYv6npyCiVYycHw58f6vRqKd\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.6.2;\n\nimport \"./IERC721.sol\";\n\n/**\n * @title ERC-721 Non-Fungible Token Standard, optional metadata extension\n * @dev See https://eips.ethereum.org/EIPS/eip-721\n */\ninterface IERC721Metadata {\n\n    /**\n     * @dev Returns the token collection name.\n     */\n    function name() external view returns (string memory);\n\n    /**\n     * @dev Returns the token collection symbol.\n     */\n    function symbol() external view returns (string memory);\n\n    /**\n     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.\n     */\n    function tokenURI(uint256 tokenId) external view returns (string memory);\n}\n",
-  "sourcePath": "/home/beast/Documents/GitHub/contracts/contracts/IERC721Metadata.sol",
+  "sourcePath": "/home/beast/Documents/GitHub/contracts/ethereum/IERC721Metadata.sol",
   "ast": {
-    "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/IERC721Metadata.sol",
+    "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/IERC721Metadata.sol",
     "exportedSymbols": {
       "IERC721Metadata": [
         4841
@@ -78,7 +78,7 @@
         "src": "33:23:29"
       },
       {
-        "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/IERC721.sol",
+        "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/IERC721.sol",
         "file": "./IERC721.sol",
         "id": 4819,
         "nodeType": "ImportDirective",
@@ -334,7 +334,7 @@
   },
   "legacyAST": {
     "attributes": {
-      "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/IERC721Metadata.sol",
+      "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/IERC721Metadata.sol",
       "exportedSymbols": {
         "IERC721Metadata": [
           4841
@@ -359,7 +359,7 @@
       {
         "attributes": {
           "SourceUnit": 4786,
-          "absolutePath": "/home/beast/Documents/GitHub/contracts/contracts/IERC721.sol",
+          "absolutePath": "/home/beast/Documents/GitHub/contracts/ethereum/IERC721.sol",
           "file": "./IERC721.sol",
           "scope": 4842,
           "symbolAliases": [
@@ -668,7 +668,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-23T01:11:42.577Z",
+  "updatedAt": "2021-03-23T02:27:07.183Z",
   "devdoc": {
     "details": "See https://eips.ethereum.org/EIPS/eip-721",
     "kind": "dev",
