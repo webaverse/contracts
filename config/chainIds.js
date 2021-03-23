@@ -1,32 +1,32 @@
 module.exports = {
   "mainnet": {
-    "FT": 1,
-    "NFT": 2,
+    "SILK": 1,
+    "ASSET": 2,
     "LAND": 3
   },
   "mainnetsidechain": {
-    "FT": 4,
-    "NFT": 5,
+    "SILK": 4,
+    "ASSET": 5,
     "LAND": 6
   },
   "rinkeby": {
-    "FT": 1,
-    "NFT": 2,
+    "SILK": 1,
+    "ASSET": 2,
     "LAND": 3
   },
   "rinkebysidechain": {
-    "FT": 4,
-    "NFT": 5,
+    "SILK": 4,
+    "ASSET": 5,
     "LAND": 6
   },
   "matic": {
-    "FT": 7,
-    "NFT": 8,
+    "SILK": 7,
+    "ASSET": 8,
     "LAND": 9
   },
   "maticTestnet": {
-    "FT": 4,
-    "NFT": 5,
+    "SILK": 4,
+    "ASSET": 5,
     "LAND": 6
   }
 }

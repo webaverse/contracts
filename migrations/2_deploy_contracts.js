@@ -12,7 +12,7 @@ const chainId = require("../config/chainIds.js");
 
 
 // FT
-const ERC20ContractName = "FT";
+const ERC20ContractName = "SILK";
 const ERC20Symbol = "SILK";
 const ERC20MarketCap = "2147483648000000000000000000";
 
@@ -67,17 +67,22 @@ module.exports = async function (deployer) {
   const ERC20Address = erc20.address;
   console.log("ERC20 address is " + ERC20Address);
   /** parentAddress, signerAddress, _chainId */
-  console.log("Deployed ERC20Proxy with values", ERC20Proxy, ERC20Address, signer[networkType], chainId[networkType][ERC20ContractName])
   await deployer.deploy(ERC20Proxy, ERC20Address, signer[networkType], chainId[networkType][ERC20ContractName])
   let erc20Proxy = await ERC20Proxy.deployed()
-  console.log("ERC20 address is " + erc20.address);
   const ERC20ProxyAddress = erc20Proxy.address;
   console.log("ERC20Proxy address is " + ERC20ProxyAddress);
 
   console.log("Attempting to deploy ERC721 contract with these variables")
+  console.log(ERC721TokenContractName,
+    ERC721TokenContractSymbol,
+    tokenBaseUri,
+    ERC20Address,
+    mintFee,
+    treasurer[networkType],
+    tokenIsSingleIssue,
+    tokenIsPublicallyMintable)
   /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _isSingleIssue, _isPublicallyMintable */
-  await deployer.deploy(
-    ERC721,
+  await deployer.deploy(ERC721,
     ERC721TokenContractName,
     ERC721TokenContractSymbol,
     tokenBaseUri,
@@ -118,5 +123,6 @@ module.exports = async function (deployer) {
 
   /** parentERC20Address, parentERC721Address, signerAddress */
   await deployer.deploy(Trade, ERC20Address, ERC721Address, signer[networkType])
-  console.log("Trade address is " + Trade.address);
+  let trade = await Trade.deployed()
+  console.log("Trade address is " + trade.address);
 };
