@@ -12,8 +12,6 @@ const treasurer = require("../config/treasurer.js");
 
 const chainId = require("../config/chainIds.js");
 
-// Important vars
-const baseURI = "???";
 
 // FT
 const ERC20ContractName = "FT";
@@ -21,10 +19,11 @@ const ERC20Symbol = "SILK";
 const ERC20MarketCap = "2147483648000000000000000000";
 
 // NFTs
-const ERC721TokenContractName = "NFT";
-const ERC721TokenContractSymbol = "NFT";
+const ERC721TokenContractName = "ASSET";
+const ERC721TokenContractSymbol = "ASSET";
 const tokenIsSingleIssue = false;
 const tokenIsPublicallyMintable = true;
+const tokenBaseUri = "https://tokens.webaverse.com/";
 const mintFee = 10;
 
 // LAND
@@ -32,6 +31,7 @@ const ERC721LandContractName = "LAND";
 const ERC721LandContractSymbol = "LAND";
 const landIsSingleIssue = true;
 const landIsPublicallyMintable = false;
+const landBaseUri = "https://land.webaverse.com/";
 
 const NetworkTypes = {
   "mainnet": "mainnet",
@@ -78,7 +78,7 @@ module.exports = async function (deployer) {
     ERC721,
     ERC721TokenContractName,
     ERC721TokenContractSymbol,
-    baseURI,
+    tokenBaseUri,
     ERC20Proxy.address,
     mintFee,
     treasurer[networkType],
@@ -87,7 +87,7 @@ module.exports = async function (deployer) {
   console.log("ERC721 Token address is " + ERC721.address);
 
   /** parentAddress, signerAddress, _chainId */
-  await deployer.deploy(ERC721Proxy, RC721.address, signer[networkType], chainId[networkType][ERC721TokenContractName])
+  await deployer.deploy(ERC721Proxy, ERC721.address, signer[networkType], chainId[networkType][ERC721TokenContractName])
   console.log("ERC721Proxy address is " + ERC721Proxy.address);
 
   /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _isSingleIssue, _isPublicallyMintable */
@@ -95,7 +95,7 @@ module.exports = async function (deployer) {
     ERC721LAND,
     ERC721LandContractName,
     ERC721LandContractSymbol,
-    baseURI,
+    landBaseUri,
     ERC20Proxy.address,
     mintFee,
     treasurer[networkType],
@@ -104,7 +104,7 @@ module.exports = async function (deployer) {
   console.log("ERC721 LAND address is " + ERC721LAND.address);
 
   /** parentAddress, signerAddress, _chainId */
-  await deployer.deploy(ERC721LANDProxy, RC721.address, signer[networkType], chainId[networkType][ERC721LandContractName])
+  await deployer.deploy(ERC721LANDProxy, ERC721LAND.address, signer[networkType], chainId[networkType][ERC721LandContractName])
   console.log("ERC721Proxy LAND address is " + ERC721LANDProxy.address);
 
   /** parentERC20Address, parentERC721Address, signerAddress */

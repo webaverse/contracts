@@ -20,9 +20,9 @@ module.exports = {
     "LAND": 6
   },
   "matic": {
-    "FT": 1,
-    "NFT": 2,
-    "LAND": 3
+    "FT": 7,
+    "NFT": 8,
+    "LAND": 9
   },
   "maticTestnet": {
     "FT": 4,
