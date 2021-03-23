@@ -67,5 +67,5 @@ export default {
     "Trade": "",
     "LAND": "",
     "LANDProxy": ""
-  },
+  }
 }
