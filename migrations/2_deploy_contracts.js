@@ -62,15 +62,16 @@ module.exports = async function (deployer) {
   await deployer.deploy(Account)
   let account = await Account.deployed()
   console.log("Account address is " + account.address)
-  console.log(ERC20ContractName, ERC20Symbol, ERC20MarketCap);
   await deployer.deploy(ERC20, ERC20ContractName, ERC20Symbol, 10)
   let erc20 = await ERC20.deployed()
   const ERC20Address = erc20.address;
+  
   console.log("ERC20 address is " + ERC20Address);
   /** parentAddress, signerAddress, _chainId */
   await deployer.deploy(ERC20Proxy, ERC20Address, signer[networkType], chainId[networkType][ERC20ContractName])
   let erc20Proxy = await ERC20Proxy.deployed()
   const ERC20ProxyAddress = erc20Proxy.address;
+  
   console.log("ERC20Proxy address is " + ERC20ProxyAddress);
 
   console.log("Attempting to deploy ERC721 contract with these variables")
@@ -95,6 +96,7 @@ module.exports = async function (deployer) {
 
   let erc721 = await ERC721.deployed()
   const ERC721Address = erc721.address;
+  
   console.log("ERC721 Token address is " + ERC721Address);
 
   /** parentAddress, signerAddress, _chainId */
@@ -102,6 +104,7 @@ module.exports = async function (deployer) {
   let erc721Proxy = await ERC721Proxy.deployed()
 
   const ERC721ProxyAddress = erc721Proxy.address;
+  
   console.log("ERC721Proxy address is " + ERC721ProxyAddress);
 
   /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _isSingleIssue, _isPublicallyMintable */
@@ -117,14 +120,33 @@ module.exports = async function (deployer) {
     landIsPublicallyMintable)
     
     let erc721LAND = await ERC721LAND.deployed()
+    
   console.log("ERC721 LAND address is " + erc721LAND.address);
-
+  const ERC721LANDAddress = erc721LAND.address;
   /** parentAddress, signerAddress, _chainId */
-  await deployer.deploy(ERC721LANDProxy, erc721LAND.address, signer[networkType], chainId[networkType][ERC721LandContractName])
-  console.log("ERC721Proxy LAND address is " + ERC721LANDProxy.address);
+  await deployer.deploy(ERC721LANDProxy, ERC721LANDAddress, signer[networkType], chainId[networkType][ERC721LandContractName])
+  
+  console.log("ERC721LANDProxy address is " + ERC721LANDProxy.address);
 
   /** parentERC20Address, parentERC721Address, signerAddress */
   await deployer.deploy(Trade, ERC20Address, ERC721Address, signer[networkType])
   let trade = await Trade.deployed()
   console.log("Trade address is " + trade.address);
+
+  console.log("*******************************")
+  console.log("Signer: ", signer[networkType]);
+  console.log("Treasury: ", treasurer[networkType]);
+  console.log("Deploying on the " + networkType + " networkType");
+  console.log("*******************************")
+  console.log("\"" + networkType + "\": {");
+  console.log(" \"Account\": " + "\"" + account.address + "\",")
+  console.log(" \"FT\": " + "\"" + ERC20Address + "\",");
+  console.log(" \"FTProxy\": " + "\"" + ERC20ProxyAddress + "\",");
+  console.log(" \"NFT\": " + "\"" + ERC721Address + "\",");
+  console.log(" \"NFTProxy\": " + "\"" + ERC721ProxyAddress + "\",");
+  console.log(" \"LAND\": " + "\"" + ERC721LANDAddress + "\",");
+  console.log(" \"LANDProxy\": " + "\"" + ERC721LANDProxy.address + "\",");
+  console.log("}");
+  console.log("*******************************")
+
 };
