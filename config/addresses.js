@@ -56,7 +56,7 @@ export default {
     "NFT": "0x76DAde7cc8bDd68d10966a0e6386c8826719484a",
     "NFTProxy": "0x05B96Bd10b3168C0D942aA4f8b46ac9C51635C4A",
     "LAND": "0xBe0090222315c8E72F9C71a8f23A4E7931FEBa2E",
-    "LANDProxy": "0x78fB86ACA75adcEd0B3088C1Ea6646cbdf9CB0d9",
+    "LANDProxy": "0x78fB86ACA75adcEd0B3088C1Ea6646cbdf9CB0d9"
    },
   "development": {
     "Account": "",
