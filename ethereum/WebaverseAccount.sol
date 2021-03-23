@@ -13,7 +13,7 @@ contract WebaverseAccount {
     /** @dev Constructor is empty. */
     constructor() public {}
 
-    /**  @dev Set the metadata value for a key
+    /**  @dev Read the metadata value for a key
      *  Example: 0x08E242bB06D85073e69222aF8273af419d19E4f6, "avatar"
      *  @param owner Owner of this account
      *  @param key Metadata key to retrieve
@@ -27,7 +27,7 @@ contract WebaverseAccount {
         return addressToMetadata[owner][key];
     }
 
-    /**  @dev Set the metadata value for a key
+    /**  @dev Write the metadata value for a key
      *  Example: 0x08E242bB06D85073e69222aF8273af419d19E4f6, "avatar", "<address_of_avatar_token>"
      *  @param owner Owner of this account
      *  @param key Metadata key to store
