@@ -38,7 +38,8 @@ const NetworkTypes = {
   "rinkeby": "rinkeby",
   "mainnetsidechain": "mainnetsidechain",
   "maticTestnet": "maticTestnet",
-  "matic": "matic"
+  "matic": "matic",
+  "development": "development"
 }
 
 module.exports = async function (deployer) {

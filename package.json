@@ -12,7 +12,7 @@
   },
   "scripts": {
     "deploy-dev": "truffle migrate --network development",
-    "deploy-dev-reset": "truffle migrate --network development",
+    "deploy-dev-reset": "truffle migrate --network development --reset",
     "deploy-matic-testnet": "truffle migrate --network maticTestnet",
     "deploy-matic-testnet-reset": "truffle migrate --network maticTestnet --reset",
     "deploy-matic": "truffle migrate --network matic",

@@ -28,5 +28,10 @@ module.exports = {
     "SILK": 4,
     "ASSET": 5,
     "LAND": 6
+  },
+  "development": {
+    "SILK": 7,
+    "ASSET": 8,
+    "LAND": 9
   }
 }
