@@ -9114,7 +9114,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-23T02:28:19.998Z",
+  "updatedAt": "2021-03-23T05:08:06.311Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Manages ERC20 tokens using the Webaverse signing oracle for validation and cross-chain transfer",

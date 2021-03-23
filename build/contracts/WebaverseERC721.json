@@ -56042,7 +56042,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-23T02:28:20.025Z",
+  "updatedAt": "2021-03-23T05:08:06.327Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "NFTs can be packed with fungible tokens, and can have special features I.E. collaborators and separate creatorship and ownership",

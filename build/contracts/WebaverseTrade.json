@@ -13031,7 +13031,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-23T02:28:20.043Z",
+  "updatedAt": "2021-03-23T05:08:06.349Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Trade contract to manage user to user trading of fungible and non-fungible tokens",
