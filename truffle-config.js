@@ -11,9 +11,7 @@ module.exports = {
     },
     rinkeby:{
       host: "localhost",
-      provider: function() {
-      return new HDWalletProvider(process.env.rinkeby, "https://rinkeby.infura.io/v3/" + INFURA_API_KEY);
-      },
+      provider: () => new HDWalletProvider(process.env.rinkeby, "https://rinkeby.infura.io/v3/" + INFURA_API_KEY),
       network_id:4, 
       gas : 6700000,
       gasPrice : 10000000000
