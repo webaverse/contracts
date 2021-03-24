@@ -397,7 +397,7 @@ contract WebaverseERC721 is ERC721 {
     function removeCollaborator(string memory hash, address a) public {
         require(isCollaborator(hash, msg.sender), "you are not a collaborator");
         require(
-            isCollaborator(hash, msg.sender),
+            isCollaborator(hash, a),
             "they are not a collaborator"
         );
 
