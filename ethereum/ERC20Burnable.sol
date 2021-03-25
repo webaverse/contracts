@@ -2,7 +2,7 @@
 
 pragma solidity ^0.6.0;
 
-import "../../GSN/Context.sol";
+import "./Context.sol";
 import "./ERC20.sol";
 
 /**

@@ -20,15 +20,15 @@ export default {
     "LANDProxy": "0x2dCAa54b8Db2bDACCd259A151Fa42528122C226f"
   },
   "rinkeby": {
-    "Account": "0x12be840ba6333368814672a3c3d139902634aB34",
-    "FT": "0x1F9882d2b3acfB2229508ef1428e8c152092eC8d",
-    "NFT": "0xd108E37Fe750bE366F828e6d20E1D01953b6e09E",
-    "FTProxy": "0xf393cB6e746D4CAC57C51B8b9091a8b0Cbf18Adc",
-    "NFTProxy": "0xCC6fbAB8b18dCA0B53EacEA554192220cd325468",
-    "Trade": "0x5ecA65b95155C983fEbce2654F7368298997d974",
-    "LAND": "0x9bc81993F490cB4B5703FE787381395a77826b83",
-    "LANDProxy": "0x72A4CED2C7b972b9E2E3335acbD1f17257fe63E6"
-  },
+    "Account": "0x6566266E2CFC7F334092a93C741fD5Bf3F0567ef",
+    "FT": "0xCBDCC56DC34Fe5d1fbC6D68133273C6e9e590A1F",
+    "FTProxy": "0x9e7Bb1d038f0F72D2A35a53d585C32571245A018",
+    "NFT": "0x685E58D00Af7f277b0E3DEd37605267587B2b03a",
+    "NFTProxy": "0x1871D25ad941a0890703628f9B33b14382Ccf046",
+    "LAND": "0x1d026373E53080375c708fa4D1318a33e5699c81",
+    "LANDProxy": "0x3C3ac2BA49290D8C553d098B28A2b26Da64764Ea",
+    "Trade": "0x6Dc95ff708ADe90317093FC0Dcf44eCfBE9B60Bb"
+   },
   "rinkebysidechain": {
     "Account": "0xCdaE5F0771139FeAA600Fd7405A8E030A5996bBC",
     "FT": "0xA2704977d90c4D6071E131300Ca5B119132313C1",
@@ -38,5 +38,34 @@ export default {
     "Trade": "0xE9D9f6C3E07B3099aE81D2c68cC38F669A102388",
     "LAND": "0x4467A4A81e374A6A111afBCCacd27c1A441cCBBD",
     "LANDProxy": "0x85aA5C5eC4FC9ffC1fb5daf9E261D8296605f6f6"
+  },
+  "polygon": {
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
+  },
+  "polygonTestnet": {
+    "Account": "0x027f3DF3C584bbC1A883773F5730bD77503eB5B9",
+    "FT": "0x3B2EE7aeAe2000Cd05544a53C36D4c403C8De6a0",
+    "FTProxy": "0xaA6E7b2F3a823B2deeeB4F1df77A9D34fD9B8d9c",
+    "NFT": "0x76DAde7cc8bDd68d10966a0e6386c8826719484a",
+    "NFTProxy": "0x05B96Bd10b3168C0D942aA4f8b46ac9C51635C4A",
+    "LAND": "0xBe0090222315c8E72F9C71a8f23A4E7931FEBa2E",
+    "LANDProxy": "0x78fB86ACA75adcEd0B3088C1Ea6646cbdf9CB0d9"
+   },
+  "development": {
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
   }
 }

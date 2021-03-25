@@ -4,6 +4,16 @@ Webaverse contracts.
 
 Audit: https://github.com/webaverse/audit
 
+# Setup and Deployment
+
+First, add a signer to config/signer.js and treasuer to config/treasurer.js for the network you want to deploy to.
+
+```
+npm install
+npm run deploy-<network> // i.e. npm run deploy-polygon
+```
+Consult package.json for more options
+
 # mainnet
 
 ## Account
