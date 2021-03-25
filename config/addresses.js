@@ -57,15 +57,5 @@ export default {
     "NFTProxy": "0x05B96Bd10b3168C0D942aA4f8b46ac9C51635C4A",
     "LAND": "0xBe0090222315c8E72F9C71a8f23A4E7931FEBa2E",
     "LANDProxy": "0x78fB86ACA75adcEd0B3088C1Ea6646cbdf9CB0d9"
-   },
-  "development": {
-    "Account": "",
-    "FT": "",
-    "NFT": "",
-    "FTProxy": "",
-    "NFTProxy": "",
-    "Trade": "",
-    "LAND": "",
-    "LANDProxy": ""
-  }
+   }
 }
