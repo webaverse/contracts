@@ -19,7 +19,18 @@ export default {
     "LAND": "0xa1b53520514E2ED41D38FF2546cBfDF5Bc3D2F63",
     "LANDProxy": "0x2dCAa54b8Db2bDACCd259A151Fa42528122C226f"
   },
-  "rinkeby": {
+  "polygon": {
+    // TODO: ADD ME
+    "Account": "",
+    "FT": "",
+    "NFT": "",
+    "FTProxy": "",
+    "NFTProxy": "",
+    "Trade": "",
+    "LAND": "",
+    "LANDProxy": ""
+  },
+  "testnet": {
     "Account": "0x6566266E2CFC7F334092a93C741fD5Bf3F0567ef",
     "FT": "0xCBDCC56DC34Fe5d1fbC6D68133273C6e9e590A1F",
     "FTProxy": "0x9e7Bb1d038f0F72D2A35a53d585C32571245A018",
@@ -29,7 +40,7 @@ export default {
     "LANDProxy": "0x3C3ac2BA49290D8C553d098B28A2b26Da64764Ea",
     "Trade": "0x6Dc95ff708ADe90317093FC0Dcf44eCfBE9B60Bb"
    },
-  "rinkebysidechain": {
+  "testnetsidechain": {
     "Account": "0x617f2b3558604708288Ab0454c4E7771eA7c712c",
     "FT": "0x362e0D2494399A5252Ee855f2A47d513D1AEd6C6",
     "NFT": "0x26Fa088C8C03378E06CeBAAe4991C8B804A579E6",
@@ -39,17 +50,7 @@ export default {
     "LAND": "0xFFcD9cD475b4de3155F522c43dC547eAC07260f8",
     "LANDProxy": "0xD1bED060DC858b772f52c6Fc75f7E3a7f5077C7D"
   },
-  "polygon": {
-    "Account": "",
-    "FT": "",
-    "NFT": "",
-    "FTProxy": "",
-    "NFTProxy": "",
-    "Trade": "",
-    "LAND": "",
-    "LANDProxy": ""
-  },
-  "polygonTestnet": {
+  "testnetpolygon": {
     "Account": "0x027f3DF3C584bbC1A883773F5730bD77503eB5B9",
     "FT": "0x3B2EE7aeAe2000Cd05544a53C36D4c403C8De6a0",
     "FTProxy": "0xaA6E7b2F3a823B2deeeB4F1df77A9D34fD9B8d9c",
@@ -57,15 +58,5 @@ export default {
     "NFTProxy": "0x05B96Bd10b3168C0D942aA4f8b46ac9C51635C4A",
     "LAND": "0xBe0090222315c8E72F9C71a8f23A4E7931FEBa2E",
     "LANDProxy": "0x78fB86ACA75adcEd0B3088C1Ea6646cbdf9CB0d9"
-   },
-  "development": {
-    "Account": "",
-    "FT": "",
-    "NFT": "",
-    "FTProxy": "",
-    "NFTProxy": "",
-    "Trade": "",
-    "LAND": "",
-    "LANDProxy": ""
-  }
+   }
 }

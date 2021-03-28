@@ -13,10 +13,10 @@
   "scripts": {
     "deploy-dev": "truffle migrate --network development",
     "deploy-dev-reset": "truffle migrate --network development --reset",
-    "deploy-rinkeby": "truffle migrate --network rinkeby",
-    "deploy-rinkeby-reset": "truffle migrate --network rinkeby --reset",
-    "deploy-polygon-testnet": "truffle migrate --network polygonTestnet",
-    "deploy-polygon-testnet-reset": "truffle migrate --network polygonTestnet --reset",
+    "deploy-testnet": "truffle migrate --network testnet",
+    "deploy-testnet-reset": "truffle migrate --network testnet --reset",
+    "deploy-polygon-testnet": "truffle migrate --network testnetpolygon",
+    "deploy-polygon-testnet-reset": "truffle migrate --network testnetpolygon --reset",
     "deploy-polygon": "truffle migrate --network polygon",
     "deploy-polygon-reset": "truffle migrate --network polygon --reset"
   },

@@ -7,8 +7,6 @@ const ERC721LAND = artifacts.require("WebaverseERC721");
 const ERC721LANDProxy = artifacts.require("WebaverseERC721Proxy");
 const Trade = artifacts.require("WebaverseTrade");
 
-const signer = require("../config/signer.js");
-const treasurer = require("../config/treasurer.js");
 const chainId = require("../config/chainIds.js");
 
 // FT
@@ -34,11 +32,29 @@ const landBaseUri = "https://land.webaverse.com/";
 const NetworkTypes = {
   "mainnet": "mainnet",
   "mainnetsidechain": "mainnetsidechain",
-  "rinkeby": "rinkeby",
-  "mainnetsidechain": "mainnetsidechain",
-  "polygonTestnet": "polygonTestnet",
   "polygon": "polygon",
+  "testnet": "testnet",
+  "testnetsidechain": "testnetsidechain",
+  "testnetpolygon": "testnetpolygon",
   "development": "development"
+}
+
+const treasurer = {
+  "mainnet": process.env.mainnetTreasuryMnemonic,
+  "mainnetsidechain": process.env.mainnetsidechainTreasuryMnemonic,
+  "polygon": process.env.polygonTreasuryMnemonic,
+  "testnet": process.env.testnetTreasuryMnemonic,
+  "testnetsidechain": process.env.testnetsidechainTreasuryMnemonic,
+  "testnetpolygon": process.env.testnetpolygonTreasuryMnemonic
+}
+
+const signer = {
+  "mainnet": process.env.mainnetSignerMnemonic,
+  "mainnetsidechain": process.env.mainnetsidechainSignerMnemonic,
+  "polygon": process.env.polygonSignerMnemonic,
+  "testnet": process.env.testnetSignerMnemonic,
+  "testnetsidechain": process.env.testnetsidechainSignerMnemonic,
+  "testnetpolygon": process.env.testnetpolygonSignerMnemonic
 }
 
 module.exports = async function (deployer) {
