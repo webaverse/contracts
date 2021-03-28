@@ -1,6 +1,6 @@
 export default {
-  "mainnetsidechain": 1338,
-  "rinkebysidechain": 1337,
+  "mainnetsidechain": 8545,
+  "rinkebysidechain": 8546,
   "mainnetsidechainWs": 8547,
   "rinkebysidechainWs": 8548
 }
