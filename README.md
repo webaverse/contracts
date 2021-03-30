@@ -106,6 +106,6 @@ mainnet signer: 0x6a93d2daf3b017c77d433628e690ddee0d561960
 
 testnet signer: 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
 
-polygon signer: // TODO: ADD ME
+polygon signer: 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7
 
 treasury: 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68
