@@ -51,6 +51,10 @@ contract WebaverseERC721 is ERC721 {
     event MetadataSet(string hash, string key, string value);
     event SingleMetadataSet(uint256 tokenId, string key, string value);
     event HashUpdate(string oldHash, string newHash);
+    event CollaboratorAdded(string hash, address a);
+    event CollaboratorRemoved(string hash, address a);
+    event SingleCollaboratorAdded(uint256 tokenId, address a);
+    event SingleCollaboratorRemoved(uint256 tokenId, address a);
 
     /**
      * @dev Create this ERC721 contract
@@ -377,6 +381,15 @@ contract WebaverseERC721 is ERC721 {
         }
         return false;
     }
+    
+    /**
+     * @dev List collaborators for a token
+     * @param hash Hash of the token to get collaborators for
+     */
+    function getCollaborators(string memory hash) public view returns (address[] memory) {
+        address[] memory collaborators = hashToCollaborators[hash];
+        return collaborators;
+    }
 
     /**
      * @dev Add collaborator to a token
@@ -387,6 +400,8 @@ contract WebaverseERC721 is ERC721 {
         require(isCollaborator(hash, msg.sender), "you are not a collaborator");
         require(!isCollaborator(hash, a), "they are already a collaborator");
         hashToCollaborators[hash].push(a);
+        
+        emit CollaboratorAdded(hash, a);
     }
 
     /**
@@ -417,6 +432,8 @@ contract WebaverseERC721 is ERC721 {
             }
         }
         hashToCollaborators[hash] = newCollaborators;
+        
+        emit CollaboratorRemoved(hash, a);
     }
 
     /**
@@ -437,6 +454,15 @@ contract WebaverseERC721 is ERC721 {
         }
         return false;
     }
+    
+    /**
+     * @dev List collaborators for a token
+     * @param tokenId Token ID of the token to get collaborators for
+     */
+    function getSingleCollaborators(uint256 tokenId) public view returns (address[] memory) {
+        address[] memory collaborators = tokenIdToCollaborators[tokenId];
+        return collaborators;
+    }
 
     /**
      * @dev Add a collaborator to a single token (like land)
@@ -453,6 +479,8 @@ contract WebaverseERC721 is ERC721 {
             "they are already a collaborator"
         );
         tokenIdToCollaborators[tokenId].push(a);
+        
+        emit SingleCollaboratorAdded(tokenId, a);
     }
 
     /**
@@ -486,6 +514,8 @@ contract WebaverseERC721 is ERC721 {
             }
         }
         tokenIdToCollaborators[tokenId] = newTokenIdCollaborators;
+        
+        emit SingleCollaboratorRemoved(tokenId, a);
     }
 
     /**
