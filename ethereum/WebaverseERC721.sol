@@ -560,6 +560,19 @@ contract WebaverseERC721 is ERC721 {
         }
         return count;
     }
+    
+    /**
+     * @dev Get the start token id of a hash
+     * @param hash Hash to query
+     * @return Start of token id for this hash
+     */
+    function startTokenIdOfHash(string memory hash)
+        public
+        view
+        returns (uint256)
+    {
+        return hashToStartTokenId[hash];
+    }
 
     /**
      * @dev Get the total supply of a hash
