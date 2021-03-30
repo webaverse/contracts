@@ -381,6 +381,15 @@ contract WebaverseERC721 is ERC721 {
         }
         return false;
     }
+    
+    /**
+     * @dev List collaborators for a token
+     * @param hash Hash of the token to get collaborators for
+     */
+    function getCollaborators(string memory hash) public view returns (address[] memory) {
+        address[] memory collaborators = hashToCollaborators[hash];
+        return collaborators;
+    }
 
     /**
      * @dev Add collaborator to a token
@@ -444,6 +453,15 @@ contract WebaverseERC721 is ERC721 {
             }
         }
         return false;
+    }
+    
+    /**
+     * @dev List collaborators for a token
+     * @param tokenId Token ID of the token to get collaborators for
+     */
+    function getSingleCollaborators(uint256 tokenId) public view returns (address[] memory) {
+        address[] memory collaborators = tokenIdToCollaborators[tokenId];
+        return collaborators;
     }
 
     /**
