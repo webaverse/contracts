@@ -127,4 +127,6 @@ testnet signer: 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
 
 polygon signer: 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7
 
+polygon testnet signer: 0xD2e62C19d31A987870f1582163A99702E3628D5E
+
 treasury: 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68

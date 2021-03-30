@@ -1,4 +1,4 @@
-const HDWalletProvider = require('truffle-hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 require('dotenv').config()
 
 module.exports = {
@@ -23,11 +23,11 @@ module.exports = {
       network_id: "1337",
     },
     testnetpolygon: {
-      provider: () => new HDWalletProvider(process.env.testnetpolygon, `https://rpc-mumbai.polygon.today`),
+      provider: () => new HDWalletProvider(process.env.testnetpolygon, `https://rpc-mumbai.matic.today`),
       network_id: 80001,
-      confirmations: 2,
-      timeoutBlocks: 200,
-      networkCheckTimeout: 10000,
+      confirmations: 1,
+      timeoutBlocks: 500,
+      networkCheckTimeout: 20000,
       skipDryRun: true
     },
     mainnet: {

@@ -40,21 +40,21 @@ const NetworkTypes = {
 }
 
 const treasurer = {
-  "mainnet": process.env.mainnetTreasuryMnemonic,
-  "mainnetsidechain": process.env.mainnetsidechainTreasuryMnemonic,
-  "polygon": process.env.polygonTreasuryMnemonic,
-  "testnet": process.env.testnetTreasuryMnemonic,
-  "testnetsidechain": process.env.testnetsidechainTreasuryMnemonic,
-  "testnetpolygon": process.env.testnetpolygonTreasuryMnemonic
+  "mainnet": process.env.mainnetTreasuryAddress,
+  "mainnetsidechain": process.env.mainnetsidechainTreasuryAddress,
+  "polygon": process.env.polygonTreasuryAddress,
+  "testnet": process.env.testnetTreasuryAddress,
+  "testnetsidechain": process.env.testnetsidechainTreasuryAddress,
+  "testnetpolygon": process.env.testnetpolygonTreasuryAddress
 }
 
 const signer = {
-  "mainnet": process.env.mainnetSignerMnemonic,
-  "mainnetsidechain": process.env.mainnetsidechainSignerMnemonic,
-  "polygon": process.env.polygonSignerMnemonic,
-  "testnet": process.env.testnetSignerMnemonic,
-  "testnetsidechain": process.env.testnetsidechainSignerMnemonic,
-  "testnetpolygon": process.env.testnetpolygonSignerMnemonic
+  "mainnet": process.env.mainnetSignerAddress,
+  "mainnetsidechain": process.env.mainnetsidechainSignerAddress,
+  "polygon": process.env.polygonSignerAddress,
+  "testnet": process.env.testnetSignerAddress,
+  "testnetsidechain": process.env.testnetsidechainSignerAddress,
+  "testnetpolygon": process.env.testnetpolygonSignerAddress
 }
 
 module.exports = async function (deployer) {
