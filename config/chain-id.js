@@ -9,12 +9,12 @@ export default {
     "NFT": 5,
     "LAND": 6
   },
-  "rinkeby": {
+  "testnet": {
     "FT": 1,
     "NFT": 2,
     "LAND": 3
   },
-  "rinkebysidechain": {
+  "testnetsidechain": {
     "FT": 4,
     "NFT": 5,
     "LAND": 6
@@ -24,7 +24,7 @@ export default {
     "NFT": 2,
     "LAND": 3
   },
-  "polygonTestnet": {
+  "testnetpolygon": {
     "FT": 4,
     "NFT": 5,
     "LAND": 6
