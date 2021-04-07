@@ -9,6 +9,15 @@ const Trade = artifacts.require("WebaverseTrade");
 
 const chainId = require("../config/chainIds.js");
 
+const {
+  mintFee,
+  NetworkTypes,
+  tokenBaseUri,
+  treasurer,
+  signer
+} = require('../lib/const.js');
+
+
 // FT
 const ERC20ContractName = "SILK";
 const ERC20Symbol = "SILK";
@@ -19,8 +28,6 @@ const ERC721TokenContractName = "ASSET";
 const ERC721TokenContractSymbol = "ASSET";
 const tokenIsSingleIssue = false;
 const tokenIsPublicallyMintable = true;
-const tokenBaseUri = "https://tokens.webaverse.com/";
-const mintFee = 10;
 
 // LAND
 const ERC721LandContractName = "LAND";
@@ -28,34 +35,6 @@ const ERC721LandContractSymbol = "LAND";
 const landIsSingleIssue = true;
 const landIsPublicallyMintable = false;
 const landBaseUri = "https://land.webaverse.com/";
-
-const NetworkTypes = {
-  "mainnet": "mainnet",
-  "mainnetsidechain": "mainnetsidechain",
-  "polygon": "polygon",
-  "testnet": "testnet",
-  "testnetsidechain": "testnetsidechain",
-  "testnetpolygon": "testnetpolygon",
-  "development": "development"
-}
-
-const treasurer = {
-  "mainnet": process.env.mainnetTreasuryAddress,
-  "mainnetsidechain": process.env.mainnetsidechainTreasuryAddress,
-  "polygon": process.env.polygonTreasuryAddress,
-  "testnet": process.env.testnetTreasuryAddress,
-  "testnetsidechain": process.env.testnetsidechainTreasuryAddress,
-  "testnetpolygon": process.env.testnetpolygonTreasuryAddress
-}
-
-const signer = {
-  "mainnet": process.env.mainnetSignerAddress,
-  "mainnetsidechain": process.env.mainnetsidechainSignerAddress,
-  "polygon": process.env.polygonSignerAddress,
-  "testnet": process.env.testnetSignerAddress,
-  "testnetsidechain": process.env.testnetsidechainSignerAddress,
-  "testnetpolygon": process.env.testnetpolygonSignerAddress
-}
 
 module.exports = async function (deployer) {
   const networkType = NetworkTypes[process.argv[4]];
