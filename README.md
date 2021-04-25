@@ -17,13 +17,12 @@ Consult package.json for more options
 # Deployment
 
 To deploy contracts, you will need several things:
->> A deployment wallet with enough Mainnet Ethereum, Rinkeby and/or Polygon/MATIC token to pay for the gas of deploying.
+1. A deployment wallet with enough Mainnet Ethereum, Rinkeby and/or Polygon/MATIC token to pay for the gas of deploying.
     Your best option is to download Metamask. Create a new Metamask wallet for this purpose so you can use the private keys for your signing authority.
 
->> Several BIP39 mnemonics and private keys
- -- Treasury mnemonic, for handling tokens owned by your treasury
- -- Signing mnemonic, for handling chain transfers and other transactions
- -- Encryption mnemonic, for encrypting and decrypting private NFT data on the sidechain
+2. Several BIP39 mnemonics and private keys
+ -- Treasury addresses, for handling tokens owned by your treasury
+ -- Signing addresses, for handling chain transfers and other transactions
  -- Private keys for each of the networks you want to interact with
 
  You can generate BIP39 mnemonics with Metamask (recommended) or here: 
