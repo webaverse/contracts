@@ -13,6 +13,10 @@
   "scripts": {
     "deploy-dev": "truffle migrate --network development |& tee log.txt",
     "deploy-dev-reset": "truffle migrate --network development --reset |& tee log.txt",
+    "deploy-mainnet": "truffle migrate --network mainnet |& tee log.txt",
+    "deploy-mainnet-reset": "truffle migrate --network mainnet --reset |& tee log.txt",
+    "deploy-mainnetsidechain": "truffle migrate --network mainnetsidechain |& tee log.txt",
+    "deploy-mainnetsidechain-reset": "truffle migrate --network mainnetsidechain --reset |& tee log.txt",
     "deploy-testnet": "truffle migrate --network testnet |& tee log.txt",
     "deploy-testnet-reset": "truffle migrate --network testnet --reset |& tee log.txt",
     "deploy-polygon-testnet": "truffle migrate --network testnetpolygon |& tee log.txt",
