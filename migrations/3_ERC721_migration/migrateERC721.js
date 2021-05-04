@@ -1,29 +1,34 @@
-const {getEventsRated} = require('../../lib/blockchain');
+const {runTransaction} = require('../../lib/runTransaction');
+const {getBlockchain, getPastEvents} = require('../../lib/blockchain');
 const {network} = require('../../lib/const');
-const deployERC721 = require('../../lib/deploy/WebaverseERC721');
+const {deployERC721} = require('../../lib/deploy/WebaverseERC721');
 
 const {
+  getDepositedEvents,
   getHashUpdateEvents,
   getMetadataSetEvents,
   getMintEvents,
   getSingleMetadataSetEvents,
+  getWithdrewEvents,
 } = require('../../lib/events');
 
-const {mintToken} = require('../../lib/mint');
+const {mintERC721} = require('../../lib/mint');
 const {replayEvents} = require('../../lib/replayEvents');
 const {getTokenFromEvent, getTokens} = require('../../lib/tokens');
 
-module.exports.migrateERC721 = async function(deployer, erc20) {
+module.exports.migrateERC721 = async function(deployer, {erc20}) {
+  const {signer} = await getBlockchain();
+
   console.log(':: Migrating ERC721 tokens.');
 
-  const events = await getEventsRated({
+  const events = await getPastEvents({
     network,
     contractName: 'NFT',
-    rate: 100000,
-    sleep: 0,
   });
 
   // Get events.
+  const depositedEvents = getDepositedEvents(events);
+  const withdrewEvents = getWithdrewEvents(events);
   const hashUpdateEvents = getHashUpdateEvents(events);
   const metadataSetEvents = getMetadataSetEvents(events);
   const singleMetadataSetEvents = getSingleMetadataSetEvents(events);
@@ -41,11 +46,19 @@ module.exports.migrateERC721 = async function(deployer, erc20) {
   // Deploy contract.
   const erc721 = await deployERC721(deployer, {erc20});
 
+  // Attach proxy.
+  console.log('Setting new ERC721 parent.');
+  await runTransaction(
+    'NFTProxy',
+    'setERC721Parent',
+    erc721.address,
+  );
+
   console.log('Reminting tokens...');
 
   // Remint tokens from mint events.
   const newMints = await Promise.all(
-    mintEvents.map(async event => mintToken(
+    mintEvents.map(async event => mintERC721(
       erc721,
       getTokenFromEvent(tokens, event),
     )),
@@ -78,5 +91,33 @@ module.exports.migrateERC721 = async function(deployer, erc20) {
     ['tokenId', 'key', 'value'],
   );
 
-  return {contract: erc721};
+  // Play events in order.
+  /* console.log('Replaying Deposit events...');
+  await replayEvents(
+    depositedEvents,
+    'NFTProxy',
+    'deposit',
+    ['to', 'tokenId'],
+  ); */
+
+  /* console.log('Replaying Withdrew events...');
+  await replayEvents(
+    withdrewEvents,
+    'NFTProxy',
+    'withdraw',
+    ['from', 'tokenId', 'timestamp'],
+  ); */
+
+  // Either withdraw on the other end
+
+  // Or contact API server to get deposit signature
+
+  // Check for dangling withdraw/deposits
+
+  /* Handle cross-chain events. */
+  // depositERC721;
+
+  // Deposit to contract address.
+
+  return erc721;
 };

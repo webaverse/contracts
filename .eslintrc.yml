@@ -12,6 +12,7 @@ rules:
   linebreak-style:
     - error
     - unix
+  operator-linebreak: off
   promise/param-names:
     - off
   space-before-function-paren:
