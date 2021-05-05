@@ -17,14 +17,14 @@ module.exports.migrateTrade = async function(deployer, {erc20, erc721, redeploy 
     trade = contracts[network].Trade;
 
     // Set parents.
-    console.log('Setting new ERC20 parent.');
+    console.log('Setting new ERC20 parent for Trade contract.');
     await runTransaction(
       'Trade',
       'setERC20Parent',
       erc20.address,
     );
 
-    console.log('Setting new ERC721 parent.');
+    console.log('Setting new ERC721 parent for Trade contract.');
     await runTransaction(
       'Trade',
       'setERC721Parent',

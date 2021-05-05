@@ -4,7 +4,7 @@ const {network} = require('../../lib/const');
 const {deployERC20} = require('../../lib/deploy/WebaverseERC20');
 const {getTransferEvents} = require('../../lib/events');
 const {replayEvents} = require('../../lib/replayEvents');
-const {getTokens} = require('../../lib/tokens');
+const {getTokensFromEvents} = require('../../lib/tokens');
 
 module.exports.migrateERC20 = async function(deployer) {
   console.log(':: Migrating ERC20 tokens.');
@@ -18,19 +18,11 @@ module.exports.migrateERC20 = async function(deployer) {
   const transferEvents = getTransferEvents(events);
 
   // Get tokens.
-  const tokens = await getTokens(events);
+  const tokens = await getTokensFromEvents(events);
   console.log(`Found ${tokens.length} ERC20 tokens.`);
 
   // Deploy.
   const erc20 = await deployERC20(deployer);
-
-  // Attach proxy.
-  console.log('Setting new ERC721 parent.');
-  await runTransaction(
-    'FTProxy',
-    'setERC721Parent',
-    erc20.address,
-  );
 
   // Replay events.
   /* console.log('Replaying ERC20 Transfer events...');
