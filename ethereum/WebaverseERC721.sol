@@ -167,7 +167,7 @@ contract WebaverseERC721 is ERC721 {
     /**
      * @dev Mint one or more non-fungible tokens with this contract
      * The count parameter is what is looped over to create the token.
-     * This means the hiegher the count, the higher the gas.
+     * This means the higher the count, the higher the gas.
      * This is the main reason that we can only mint so many tokens at once.
      * @param to Address of who is receiving the token on mint
      * Example: 0x08E242bB06D85073e69222aF8273af419d19E4f6
@@ -280,12 +280,12 @@ contract WebaverseERC721 is ERC721 {
      * @return Returns true if strings are equal
      */
     function streq(string memory a, string memory b)
-        internal
-        pure
-        returns (bool)
+    internal
+    pure
+    returns (bool)
     {
         return (keccak256(abi.encodePacked((a))) ==
-            keccak256(abi.encodePacked((b))));
+        keccak256(abi.encodePacked((b))));
     }
 
     /**
@@ -317,10 +317,10 @@ contract WebaverseERC721 is ERC721 {
      * @return URI of the token to retrieve
      */
     function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
+    public
+    view
+    override
+    returns (string memory)
     {
         return string(abi.encodePacked(baseURI(), uint2str(tokenId)));
     }
@@ -370,9 +370,9 @@ contract WebaverseERC721 is ERC721 {
      * @return Returns true if the address is a collaborator on this token
      */
     function isCollaborator(string memory hash, address a)
-        public
-        view
-        returns (bool)
+    public
+    view
+    returns (bool)
     {
         for (uint256 i = 0; i < hashToCollaborators[hash].length; i++) {
             if (hashToCollaborators[hash][i] == a) {
@@ -381,7 +381,7 @@ contract WebaverseERC721 is ERC721 {
         }
         return false;
     }
-    
+
     /**
      * @dev List collaborators for a token
      * @param hash Hash of the token to get collaborators for
@@ -400,7 +400,7 @@ contract WebaverseERC721 is ERC721 {
         require(isCollaborator(hash, msg.sender), "you are not a collaborator");
         require(!isCollaborator(hash, a), "they are already a collaborator");
         hashToCollaborators[hash].push(a);
-        
+
         emit CollaboratorAdded(hash, a);
     }
 
@@ -432,7 +432,7 @@ contract WebaverseERC721 is ERC721 {
             }
         }
         hashToCollaborators[hash] = newCollaborators;
-        
+
         emit CollaboratorRemoved(hash, a);
     }
 
@@ -443,9 +443,9 @@ contract WebaverseERC721 is ERC721 {
      * @return Returns true if the address is a collaborator on the token
      */
     function isSingleCollaborator(uint256 tokenId, address a)
-        public
-        view
-        returns (bool)
+    public
+    view
+    returns (bool)
     {
         for (uint256 i = 0; i < tokenIdToCollaborators[tokenId].length; i++) {
             if (tokenIdToCollaborators[tokenId][i] == a) {
@@ -454,7 +454,7 @@ contract WebaverseERC721 is ERC721 {
         }
         return false;
     }
-    
+
     /**
      * @dev List collaborators for a token
      * @param tokenId Token ID of the token to get collaborators for
@@ -479,7 +479,7 @@ contract WebaverseERC721 is ERC721 {
             "they are already a collaborator"
         );
         tokenIdToCollaborators[tokenId].push(a);
-        
+
         emit SingleCollaboratorAdded(tokenId, a);
     }
 
@@ -514,7 +514,7 @@ contract WebaverseERC721 is ERC721 {
             }
         }
         tokenIdToCollaborators[tokenId] = newTokenIdCollaborators;
-        
+
         emit SingleCollaboratorRemoved(tokenId, a);
     }
 
@@ -545,9 +545,9 @@ contract WebaverseERC721 is ERC721 {
      * Example args: 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1
      */
     function balanceOfHash(address owner, string memory hash)
-        public
-        view
-        returns (uint256)
+    public
+    view
+    returns (uint256)
     {
         uint256 count = 0;
         uint256 balance = balanceOf(owner);
@@ -560,16 +560,16 @@ contract WebaverseERC721 is ERC721 {
         }
         return count;
     }
-    
+
     /**
      * @dev Get the start token id of a hash
      * @param hash Hash to query
      * @return Start of token id for this hash
      */
     function startTokenIdOfHash(string memory hash)
-        public
-        view
-        returns (uint256)
+    public
+    view
+    returns (uint256)
     {
         return hashToStartTokenId[hash];
     }
@@ -580,9 +580,9 @@ contract WebaverseERC721 is ERC721 {
      * @return Total supply of the token
      */
     function totalSupplyOfHash(string memory hash)
-        public
-        view
-        returns (uint256)
+    public
+    view
+    returns (uint256)
     {
         return hashToTotalSupply[hash];
     }
@@ -593,9 +593,9 @@ contract WebaverseERC721 is ERC721 {
      * @return Array of token IDs
      */
     function getTokenIdsOf(address owner)
-        public
-        view
-        returns (uint256[] memory)
+    public
+    view
+    returns (uint256[] memory)
     {
         uint256 count = balanceOf(owner);
         uint256[] memory ids = new uint256[](count);
@@ -637,9 +637,9 @@ contract WebaverseERC721 is ERC721 {
      * @return Token struct containing token data
      */
     function tokenOfOwnerByIndexFull(address owner, uint256 index)
-        public
-        view
-        returns (Token memory)
+    public
+    view
+    returns (Token memory)
     {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
         string memory hash;
@@ -658,16 +658,16 @@ contract WebaverseERC721 is ERC721 {
         uint256 balance = balanceOfHash(owner, hash);
         uint256 totalSupply = hashToTotalSupply[hash];
         return
-            Token(
-                tokenId,
-                hash,
-                name,
-                ext,
-                minter,
-                owner,
-                balance,
-                totalSupply
-            );
+        Token(
+            tokenId,
+            hash,
+            name,
+            ext,
+            minter,
+            owner,
+            balance,
+            totalSupply
+        );
     }
 
     /**
@@ -677,9 +677,9 @@ contract WebaverseERC721 is ERC721 {
      * @return Value corresponding to metadata key
      */
     function getMetadata(string memory hash, string memory key)
-        public
-        view
-        returns (string memory)
+    public
+    view
+    returns (string memory)
     {
         for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
             if (streq(hashToMetadata[hash][i].key, key)) {
@@ -724,9 +724,9 @@ contract WebaverseERC721 is ERC721 {
      * @return Returns the value stored for the key
      */
     function getSingleMetadata(uint256 tokenId, string memory key)
-        public
-        view
-        returns (string memory)
+    public
+    view
+    returns (string memory)
     {
         for (uint256 i = 0; i < tokenIdToMetadata[tokenId].length; i++) {
             if (streq(tokenIdToMetadata[tokenId][i].key, key)) {
@@ -749,7 +749,7 @@ contract WebaverseERC721 is ERC721 {
     ) public {
         require(
             ownerOf(tokenId) == msg.sender ||
-                isSingleCollaborator(tokenId, msg.sender),
+            isSingleCollaborator(tokenId, msg.sender),
             "not an owner or collaborator"
         );
 
@@ -802,9 +802,9 @@ contract WebaverseERC721 is ERC721 {
      * @return _uintAsString string converted from uint
      */
     function uint2str(uint256 _i)
-        internal
-        pure
-        returns (string memory _uintAsString)
+    internal
+    pure
+    returns (string memory _uintAsString)
     {
         if (_i == 0) {
             return "0";

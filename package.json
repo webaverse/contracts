@@ -11,18 +11,18 @@
     "url": "git+https://github.com/webaverse/contracts.git"
   },
   "scripts": {
-    "deploy-dev": "truffle migrate --network development",
-    "deploy-dev-reset": "truffle migrate --network development --reset",
-    "deploy-mainnet": "truffle migrate --network mainnet",
-    "deploy-mainnet-reset": "truffle migrate --network mainnet --reset",
-    "deploy-mainnetsidechain": "truffle migrate --network mainnetsidechain",
-    "deploy-mainnetsidechain-reset": "truffle migrate --network mainnetsidechain --reset",
-    "deploy-testnet": "truffle migrate --network testnet",
-    "deploy-testnet-reset": "truffle migrate --network testnet --reset",
-    "deploy-polygon-testnet": "truffle migrate --network testnetpolygon",
-    "deploy-polygon-testnet-reset": "truffle migrate --network testnetpolygon --reset",
-    "deploy-polygon": "truffle migrate --network polygon",
-    "deploy-polygon-reset": "truffle migrate --network polygon --reset"
+    "deploy-dev": "truffle migrate --network development |& tee log.txt",
+    "deploy-dev-reset": "truffle migrate --network development --reset |& tee log.txt",
+    "deploy-mainnet": "truffle migrate --network mainnet |& tee log.txt",
+    "deploy-mainnet-reset": "truffle migrate --network mainnet --reset |& tee log.txt",
+    "deploy-mainnetsidechain": "truffle migrate --network mainnetsidechain |& tee log.txt",
+    "deploy-mainnetsidechain-reset": "truffle migrate --network mainnetsidechain --reset |& tee log.txt",
+    "deploy-testnet": "truffle migrate --network testnet |& tee log.txt",
+    "deploy-testnet-reset": "truffle migrate --network testnet --reset |& tee log.txt",
+    "deploy-polygon-testnet": "truffle migrate --network testnetpolygon |& tee log.txt",
+    "deploy-polygon-testnet-reset": "truffle migrate --network testnetpolygon --reset |& tee log.txt",
+    "deploy-polygon": "truffle migrate --network polygon |& tee log.txt",
+    "deploy-polygon-reset": "truffle migrate --network polygon --reset |& tee log.txt"
   },
   "author": "",
   "license": "ISC",
@@ -31,9 +31,21 @@
   },
   "homepage": "https://github.com/webaverse/contracts#readme",
   "dependencies": {
+    "@ethereumjs/common": "^2.2.0",
+    "@ethereumjs/tx": "^3.1.3",
     "@truffle/hdwallet-provider": "1.2.3",
     "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.1",
     "truffle": "^5.2.5",
     "web3": "^1.3.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.8.1",
+    "eslint-config-semistandard": "^15.0.1",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
   }
 }
