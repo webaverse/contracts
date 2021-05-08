@@ -45,7 +45,8 @@ module.exports = {
     polygon: {
       provider: () => new HDWalletProvider(
         process.env.polygon,
-        'https://rpc-mainnet.maticvigil.com/',
+        // 'https://rpc-mainnet.maticvigil.com/',
+        `https://rpc-mainnet.maticvigil.com/v1/${process.env.polygonVigilKey}`,
         // `https://rpc-webaverse-mainnet.maticvigil.com/v1/${process.env.polygonVigilKey}`
       ),
       network_id: 137,

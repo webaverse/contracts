@@ -22,7 +22,8 @@
     "deploy-polygon-testnet": "truffle migrate --network testnetpolygon |& tee log.txt",
     "deploy-polygon-testnet-reset": "truffle migrate --network testnetpolygon --reset |& tee log.txt",
     "deploy-polygon": "truffle migrate --network polygon |& tee log.txt",
-    "deploy-polygon-reset": "truffle migrate --network polygon --reset |& tee log.txt"
+    "deploy-polygon-reset": "truffle migrate --network polygon --reset |& tee log.txt",
+    "ganache": "ganache-cli -p 7545 -g 0 -l 8000000"
   },
   "author": "",
   "license": "ISC",
@@ -46,6 +47,8 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "ganache-cli": "^6.12.2",
+    "wscat": "^4.0.1"
   }
 }

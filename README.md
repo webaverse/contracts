@@ -1,10 +1,10 @@
-# contracts
+# Contracts
 
 Webaverse contracts.
 
 Audit: https://github.com/webaverse/audit
 
-# Setup and Installation
+## Setup and Installation
 
 First, copy .env.default and rename it to .env, then configure it for the network you want to deploy to.
 
@@ -14,7 +14,7 @@ npm run deploy-<network> // i.e. npm run deploy-polygon
 ```
 Consult package.json for more options
 
-# Deployment
+## Deployment
 
 To deploy contracts, you will need several things:
 >> A deployment wallet with enough Mainnet Ethereum, Rinkeby and/or Polygon/MATIC token to pay for the gas of deploying.
@@ -83,132 +83,139 @@ Once you've deployed to the Webaverse sidechain, you can additionally deploy to 
 
 It is suggested that you start with the polygon/matic network and make sure your infrastructure is fully working before deploying contracts to mainnet ethereum. The contracts can be deployed on Polygon/Matic for a fraction of the mainnet gas fees.
 
-# Webaverse Contracts
+## Development server
+If you want to test against a development server, you can use ganache:
+
+`npm run ganache`
+
+This will start up a local blockchain with the correct configuration.
+
+## Webaverse Contracts
 Information about the Webaverse contracts is provided below, larger for the convenience of our development team.
 
-# mainnet
+## mainnet
 
-## Account
+### Account
 // nothing
-## FT
+### FT
 SILK, SILK, 2147483648000000000000000000
-## FTProxy
+### FTProxy
 ${FT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 1
-## NFT
+### NFT
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
+### NFTProxy
 ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 2
-## Trade
+### Trade
 ${FT}, ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960
-## LAND
+### LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
+### LANDProxy
 ${LAND}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 3
 
-# mainnetsidechain
+## mainnetsidechain
 
-## Account
+### Account
 // nothing
-## FT
+### FT
 SILK, SILK, 2147483648000000000000000000
-## FTProxy
+### FTProxy
 ${FT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 4
-## NFT
+### NFT
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68, false, true
-## NFTProxy
+### NFTProxy
 ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 5
-## Trade
+### Trade
 ${FT}, ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960
-## LAND
+### LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
+### LANDProxy
 ${LAND}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 6
 
-# testnet / rinkeby
+## testnet / rinkeby
 
-## Account
+### Account
 // nothing
-## FT
+### FT
 SILK, SILK, 2147483648000000000000000000
-## FTProxy
+### FTProxy
 ${FT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 1
-## NFT
+### NFT
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
+### NFTProxy
 ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 2
-## Trade
+### Trade
 ${FT}, ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
-## LAND
+### LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
+### LANDProxy
 ${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 3
 
-# testnetsidechain
+## testnetsidechain
 
-## Account
+### Account
 // nothing
-## FT
+### FT
 SILK, SILK, 2147483648000000000000000000
-## FTProxy
+### FTProxy
 ${FT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 4
-## NFT
+### NFT
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68, false, true
-## NFTProxy
+### NFTProxy
 ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 5
-## Trade
+### Trade
 ${FT}, ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
-## LAND
+### LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
 ## LANDProxy
 ${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 6
 
-# polygon
+## polygon
 
-## Account
+### Account
 // nothing
-## FT
+### FT
 SILK, SILK, 2147483648000000000000000000
-## FTProxy
+### FTProxy
 ${FT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 1
-## NFT
+### NFT
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
+### NFTProxy
 ${NFT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 2
-## Trade
+### Trade
 ${FT}, ${NFT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7
-## LAND
+### LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
+### LANDProxy
 ${LAND}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 3
 
-# testpolygon
+## testpolygon
 
-## Account
+### Account
 // nothing
-## FT
+### FT
 SILK, SILK, 2147483648000000000000000000
-## FTProxy
+### FTProxy
 ${FT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 4
-## NFT
+### NFT
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
+### NFTProxy
 ${NFT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 5
-## Trade
+### Trade
 ${FT}, ${NFT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E
-## LAND
+### LAND
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
+### LANDProxy
 ${LAND}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 6
 
-# OpenSea links
+## OpenSea links
 
-## mainnet
+### mainnet
 https://opensea.io/webaverse
 
-## testnet (rinkeby)
+### testnet (rinkeby)
 https://testnets.opensea.io/get-listed/step-two
 
-# Addressess used
+## Addresses used
 
 burn: 0x000000000000000000000000000000000000dEaD
 

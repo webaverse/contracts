@@ -1,16 +1,13 @@
 const {getStuckTokens} = require('../../lib/tokens');
-const {runTransaction} = require('../../lib/runTransaction');
-const {getBlockchain, getPastEvents} = require('../../lib/blockchain');
+const {getPastEvents} = require('../../lib/blockchain');
 const {network} = require('../../lib/const');
 const {deployERC721} = require('../../lib/deploy/WebaverseERC721');
 
 const {
-  getDepositedEvents,
   getHashUpdateEvents,
   getMetadataSetEvents,
   getMintEvents,
   getSingleMetadataSetEvents,
-  getWithdrewEvents,
 } = require('../../lib/events');
 
 const {mintERC721} = require('../../lib/mint');
@@ -18,8 +15,6 @@ const {replayEvents} = require('../../lib/replayEvents');
 const {getTokenFromEvent, getTokensFromEvents} = require('../../lib/tokens');
 
 module.exports.migrateERC721 = async function(deployer, {erc20}) {
-  const {signer} = await getBlockchain();
-
   console.log(':: Migrating ERC721 tokens.');
 
   const events = await getPastEvents({
@@ -48,39 +43,39 @@ module.exports.migrateERC721 = async function(deployer, {erc20}) {
   console.log('Reminting tokens...');
 
   // Remint tokens from mint events.
-  // const newMints = await Promise.all(
-  //   mintEvents.map(async event => mintERC721(
-  //     erc721,
-  //     getTokenFromEvent(tokens, event),
-  //   )),
-  // );
+  const newMints = await Promise.all(
+    mintEvents.map(async event => mintERC721(
+      erc721,
+      getTokenFromEvent(tokens, event),
+    )),
+  );
 
-  // console.log('New mints:', newMints.length);
+  console.log('New mints:', newMints.length);
 
   // Replay events.
-  // console.log('Replaying HashUpdate events...');
-  // await replayEvents(
-  //   hashUpdateEvents,
-  //   'NFT',
-  //   'updateHash',
-  //   ['oldHash', 'newHash'],
-  // );
-  //
-  // console.log('Replaying MetaDataSet events...');
-  // await replayEvents(
-  //   metadataSetEvents,
-  //   'NFT',
-  //   'setMetadata',
-  //   ['hash', 'key', 'value'],
-  // );
-  //
-  // console.log('Replaying SingleMetadataSet events...');
-  // await replayEvents(
-  //   singleMetadataSetEvents,
-  //   'NFT',
-  //   'setSingleMetadata',
-  //   ['tokenId', 'key', 'value'],
-  // );
+  console.log('Replaying HashUpdate events...');
+  await replayEvents(
+    hashUpdateEvents,
+    'NFT',
+    'updateHash',
+    ['oldHash', 'newHash'],
+  );
+
+  console.log('Replaying MetaDataSet events...');
+  await replayEvents(
+    metadataSetEvents,
+    'NFT',
+    'setMetadata',
+    ['hash', 'key', 'value'],
+  );
+
+  console.log('Replaying SingleMetadataSet events...');
+  await replayEvents(
+    singleMetadataSetEvents,
+    'NFT',
+    'setSingleMetadata',
+    ['tokenId', 'key', 'value'],
+  );
 
   // Play events in order.
   /* console.log('Replaying Deposit events...');
@@ -107,12 +102,14 @@ module.exports.migrateERC721 = async function(deployer, {erc20}) {
 
   console.log('Getting stuck ERC721 tokens.');
 
-  const stuckTokens = await getStuckTokens('NFT', network);
+  const stuckTokens = await getStuckTokens('NFT', network, events);
 
   /* Handle cross-chain events. */
   // depositERC721;
 
   // Deposit to contract address.
+
+  // Transfer to correct owner.
 
   return erc721;
 };
