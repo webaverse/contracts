@@ -37,7 +37,6 @@ const landBaseUri = 'https://land.webaverse.com/';
 
 module.exports = async function(deployer) {
   if (!network) { return console.error(process.argv[4] + ' was not found in the network list'); }
-
   if (!signer) { return console.error('Signer address not valid'); }
 
   console.log('Treasury is', treasurer);

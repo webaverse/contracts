@@ -1,4 +1,4 @@
-const {getStuckTokens} = require('../../lib/tokens');
+const {getStuckTokenEntries, resubmitEntries} = require('../../lib/tokens');
 const {getPastEvents} = require('../../lib/blockchain');
 const {network} = require('../../lib/const');
 const {deployERC721} = require('../../lib/deploy/WebaverseERC721');
@@ -43,16 +43,16 @@ module.exports.migrateERC721 = async function(deployer, {erc20}) {
   console.log('Reminting tokens...');
 
   // Remint tokens from mint events.
-  const newMints = await Promise.all(
+  /*const newMints = await Promise.all(
     mintEvents.map(async event => mintERC721(
       erc721,
       getTokenFromEvent(tokens, event),
     )),
   );
 
-  console.log('New mints:', newMints.length);
+  console.log('New mints:', newMints.length);*/
 
-  // Replay events.
+  /* // Replay events.
   console.log('Replaying HashUpdate events...');
   await replayEvents(
     hashUpdateEvents,
@@ -75,7 +75,7 @@ module.exports.migrateERC721 = async function(deployer, {erc20}) {
     'NFT',
     'setSingleMetadata',
     ['tokenId', 'key', 'value'],
-  );
+  ); */
 
   // Play events in order.
   /* console.log('Replaying Deposit events...');
@@ -102,7 +102,7 @@ module.exports.migrateERC721 = async function(deployer, {erc20}) {
 
   console.log('Getting stuck ERC721 tokens.');
 
-  const stuckTokens = await getStuckTokens('NFT', network, events);
+  await resubmitEntries(await getStuckTokenEntries('NFT'));
 
   /* Handle cross-chain events. */
   // depositERC721;

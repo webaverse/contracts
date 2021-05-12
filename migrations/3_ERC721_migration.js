@@ -22,19 +22,21 @@ module.exports = async function(deployer) {
   await checkEnvironment();
 
   const erc20 = await migrateERC20(deployer);
-  const erc20Proxy = await migrateERC20Proxy(erc20);
+  const erc20Proxy = await migrateERC20Proxy(deployer, {erc20});
 
   const erc721 = await migrateERC721(deployer, {erc20});
-  const erc721Proxy = await migrateERC721Proxy(erc721);
+  const erc721Proxy = await migrateERC721Proxy(deployer, {erc721});
 
   const trade = await migrateTrade(deployer, {erc20, erc721});
 
   console.log('*******************************');
   console.log('Deployed on ' + network);
   console.log('*******************************');
-  console.log(`"${network}": {`);
-  console.log(`"FT": "${erc20.address}",`);
-  console.log(`"NFT": "${erc721.address}",`);
-  console.log('}');
+  console.log(`:: ${network} ::`);
+  console.log(`FT: ${erc20.address},`);
+  console.log(`FT Proxy: ${erc20Proxy.address || erc20Proxy._address},`);
+  console.log(`NFT: ${erc721.address},`);
+  console.log(`NFT Proxy: ${erc721Proxy.address || erc721Proxy._address},`);
+  console.log(`Trade: ${trade.address || trade._address},`);
   console.log('*******************************');
 };
