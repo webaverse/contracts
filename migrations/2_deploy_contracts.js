@@ -45,7 +45,8 @@ const treasurer = {
   "polygon": process.env.polygonTreasuryAddress,
   "testnet": process.env.testnetTreasuryAddress,
   "testnetsidechain": process.env.testnetsidechainTreasuryAddress,
-  "testnetpolygon": process.env.testnetpolygonTreasuryAddress
+  "testnetpolygon": process.env.testnetpolygonTreasuryAddress,
+  "development": process.env.devTreasuryAddress
 }
 
 const signer = {
@@ -54,7 +55,8 @@ const signer = {
   "polygon": process.env.polygonSignerAddress,
   "testnet": process.env.testnetSignerAddress,
   "testnetsidechain": process.env.testnetsidechainSignerAddress,
-  "testnetpolygon": process.env.testnetpolygonSignerAddress
+  "testnetpolygon": process.env.testnetpolygonSignerAddress,
+  "development": process.env.developmentSignerAddress
 }
 
 module.exports = async function (deployer) {

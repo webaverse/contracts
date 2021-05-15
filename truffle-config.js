@@ -31,8 +31,12 @@ module.exports = {
       skipDryRun: true
     },
     mainnet: {
-      // TODO: ADD ME
-    },
+      host: "", // TODO: Add me
+      provider: () => new HDWalletProvider(process.env.mainnet, ""),
+      port: 8485,
+      network_id: "1338",
+      networkCheckTimeout: 10000,
+        },
     mainnetsidechain: {
       host: "mainnetsidechain.exokit.org",
       provider: () => new HDWalletProvider(process.env.mainnetsidechain, "http://mainnetsidechain.exokit.org"),

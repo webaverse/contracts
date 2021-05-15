@@ -10,7 +10,7 @@ First, copy .env.default and rename it to .env, then configure it for the networ
 
 ```
 npm install
-npm run deploy-<network> // i.e. npm run deploy-polygon
+npm run deploy-<netwogrk> // i.e. npm run deploy-polygon
 ```
 Consult package.json for more options
 
