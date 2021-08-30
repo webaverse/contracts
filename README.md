@@ -166,14 +166,6 @@ ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 2
 
 ${FT}, ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
 
-## LAND
-
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-
-## LANDProxy
-
-${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 3
-
 # testnetsidechain
 
 ## Account
