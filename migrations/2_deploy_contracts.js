@@ -15,7 +15,6 @@ const ERC20MarketCap = "2147483648000000000000000000";
 // NFTs
 const ERC721TokenContractName = "ASSET";
 const ERC721TokenContractSymbol = "ASSET";
-const tokenIsSingleIssue = false;
 const tokenIsPublicallyMintable = true;
 const tokenBaseUri = "https://tokens.webaverse.com/";
 const mintFee = 10;
@@ -90,9 +89,8 @@ module.exports = async function (deployer) {
     ERC20Address,
     mintFee,
     treasurer[networkType],
-    tokenIsSingleIssue,
     tokenIsPublicallyMintable)
-  /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _isSingleIssue, _isPublicallyMintable */
+  /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _isPublicallyMintable */
   await deployer.deploy(ERC721,
     ERC721TokenContractName,
     ERC721TokenContractSymbol,
@@ -100,7 +98,6 @@ module.exports = async function (deployer) {
     ERC20Address,
     mintFee,
     treasurer[networkType],
-    tokenIsSingleIssue,
     tokenIsPublicallyMintable)
 
   let erc721 = await ERC721.deployed()
