@@ -21,7 +21,6 @@ contract WebaverseERC721 is ERC721 {
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping(address => bool) internal allowedMinters; // addresses allowed to mint in this copy of the contract
     uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
-    mapping(uint256 => string) internal tokenIdToHash; // map of token id to hash it represents
     mapping(uint256 => uint256) internal tokenIdToBalance; // map of tokens to packed balance
     mapping(uint256 => address) internal minters; // map of tokens to minters
     mapping(uint256 => Metadata[]) internal tokenIdToMetadata; // map of token id to metadata key-value store
@@ -34,7 +33,6 @@ contract WebaverseERC721 is ERC721 {
 
     struct Token {
         uint256 id;
-        string hash;
         string name;
         string ext;
         address minter;
@@ -390,71 +388,11 @@ contract WebaverseERC721 is ERC721 {
 
     /**
      * @dev Seal the token forever and remove collaborators so that it can't be altered
-     * @param hash Hash of the collaborative token
+     * @param token id of the collaborative token
      */
-    function seal(string memory hash) public {
-        require(isCollaborator(hash, msg.sender), "not a collaborator");
-        delete hashToCollaborators[hash];
-    }
-
-    /**
-     * @dev Get the hash of a token by ID
-     * @param tokenId Token to get the hash from
-     * @return Returns a string containing the token hash
-     */
-    function getHash(uint256 tokenId) public view returns (string memory) {
-        return tokenIdToHash[tokenId];
-    }
-
-    /**
-     * @dev Get the number of tokens associated with a specific hash held by the token owner
-     * For example, if collaborators are working on a token series, this would return all of them for one collaborator
-     * @param owner Address of the owner of the token
-     * @param hash Hash to query
-     * @return Return the balance as a number of tokens
-     * Example args: 0x08E242bB06D85073e69222aF8273af419d19E4f6, 0x1
-     */
-    function balanceOfHash(address owner, string memory hash)
-        public
-        view
-        returns (uint256)
-    {
-        uint256 count = 0;
-        uint256 balance = balanceOf(owner);
-        for (uint256 i = 0; i < balance; i++) {
-            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
-            string memory h = tokenIdToHash[tokenId];
-            if (streq(h, hash)) {
-                count++;
-            }
-        }
-        return count;
-    }
-    
-    /**
-     * @dev Get the start token id of a hash
-     * @param hash Hash to query
-     * @return Start of token id for this hash
-     */
-    function startTokenIdOfHash(string memory hash)
-        public
-        view
-        returns (uint256)
-    {
-        return hashToStartTokenId[hash];
-    }
-
-    /**
-     * @dev Get the total supply of a hash
-     * @param hash Hash to query
-     * @return Total supply of the token
-     */
-    function totalSupplyOfHash(string memory hash)
-        public
-        view
-        returns (uint256)
-    {
-        return hashToTotalSupply[hash];
+    function seal(uint256 tokenId) public {
+        require(isCollaborator(tokenId, msg.sender), "not a collaborator");
+        delete tokenIdToCollaborators[tokenid];
     }
 
     /**
@@ -481,18 +419,15 @@ contract WebaverseERC721 is ERC721 {
      * @return Token struct containing token data
      */
     function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
-        string memory hash;
         string memory name;
         string memory ext;
 
-        hash = getMetadata(tokenId, "hash");
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
 
         address minter = minters[tokenId];
         address owner = _exists(tokenId) ? ownerOf(tokenId) : address(0);
-        uint256 totalSupply = hashToTotalSupply[hash];
-        return Token(tokenId, hash, name, ext, minter, owner, 0, totalSupply);
+        return Token(tokenId, name, ext, minter, owner, 0);
     }
 
     /**
@@ -507,61 +442,26 @@ contract WebaverseERC721 is ERC721 {
         returns (Token memory)
     {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
-        string memory hash;
         string memory name;
         string memory ext;
 
-        hash = getMetadata(tokenId, "hash");
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
 
         address minter = minters[tokenId];
-        uint256 balance = balanceOfHash(owner, hash);
-        uint256 totalSupply = hashToTotalSupply[hash];
         return
             Token(
                 tokenId,
-                hash,
                 name,
                 ext,
                 minter,
                 owner,
-                balance,
-                totalSupply
             );
     }
 
     /**
-     * @dev Set metadata for the token. Metadata is a key-value store that can be set by owners and collaborators
-     * @param hash Token hash to add metadata to
-     * @param key Key to store value at
-     * @param value Value to store
-     */
-    function setMetadata(
-        string memory hash,
-        string memory key,
-        string memory value
-    ) public {
-        require(isCollaborator(hash, msg.sender), "not a collaborator");
-
-        bool keyFound = false;
-        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
-            if (streq(hashToMetadata[hash][i].key, key)) {
-                hashToMetadata[hash][i].value = value;
-                keyFound = true;
-                break;
-            }
-        }
-        if (!keyFound) {
-            hashToMetadata[hash].push(Metadata(key, value));
-        }
-
-        emit MetadataSet(hash, key, value);
-    }
-
-    /**
      * @dev Get metadata for a token
-     * @param tokenId Token hash to add metadata to
+     * @param tokenId Token id to add metadata to
      * @param key Key to retrieve value for
      * @return Returns the value stored for the key
      */
@@ -580,7 +480,7 @@ contract WebaverseERC721 is ERC721 {
 
     /**
      * @dev Set metadata for a token
-     * @param tokenId Token hash to add metadata to
+     * @param tokenId Token id to add metadata to
      * @param key Key to store value at
      * @param value Value to store
      */
@@ -608,35 +508,6 @@ contract WebaverseERC721 is ERC721 {
         }
 
         emit MetadataSet(tokenId, key, value);
-    }
-
-    /**
-     * @dev Update token hash with a new hash
-     * @param oldHash Old hash to query
-     * @param newHash New hash to set
-     */
-    function updateHash(string memory oldHash, string memory newHash) public {
-        require(hashToTotalSupply[oldHash] > 0, "old hash does not exist");
-        require(hashToTotalSupply[newHash] == 0, "new hash already exists");
-        require(isCollaborator(oldHash, msg.sender), "not a collaborator");
-
-        uint256 startTokenId = hashToStartTokenId[oldHash];
-        uint256 totalSupply = hashToTotalSupply[oldHash];
-        for (uint256 i = 0; i < totalSupply; i++) {
-            tokenIdToHash[startTokenId + i] = newHash;
-        }
-
-        hashToStartTokenId[newHash] = hashToStartTokenId[oldHash];
-        hashToTotalSupply[newHash] = hashToTotalSupply[oldHash];
-        hashToMetadata[newHash] = hashToMetadata[oldHash];
-        hashToCollaborators[newHash] = hashToCollaborators[oldHash];
-
-        delete hashToStartTokenId[oldHash];
-        delete hashToTotalSupply[oldHash];
-        delete hashToMetadata[oldHash];
-        delete hashToCollaborators[oldHash];
-
-        emit HashUpdate(oldHash, newHash);
     }
 
     /**@dev Helper function to convert a uint to a string
