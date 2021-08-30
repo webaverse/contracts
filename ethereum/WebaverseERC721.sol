@@ -151,17 +151,13 @@ contract WebaverseERC721 is ERC721 {
     }
 
     /**
-     * @dev Mint one or more non-fungible tokens with this contract
-     * The count parameter is what is looped over to create the token.
-     * This means the hiegher the count, the higher the gas.
-     * This is the main reason that we can only mint so many tokens at once.
+     * @dev Mint one non-fungible token with this contract
      * @param to Address of who is receiving the token on mint
      * Example: 0x08E242bB06D85073e69222aF8273af419d19E4f6
      * @param name Name of the token
      * @param ext File extension of the token
      * Example: "png"
      * @param description Description of the token (set by user)
-     * @param count Number of tokens to mint (ie: 1)
      */
     function mint(
         address to,
@@ -173,24 +169,17 @@ contract WebaverseERC721 is ERC721 {
             isPublicallyMintable || isAllowedMinter(msg.sender),
             "not allowed to mint"
         ); // Only allowed minters can mint
-        require(count > 0, "count must be greater than zero"); // Count must be 1 or more (cannot mint no items)
 
-        uint256 i = 0;
-        while (i < count) {
-            // Each token gets a new token ID, even if minted in a set
-            nextTokenId = SafeMath.add(nextTokenId, 1);
-            uint256 tokenId = nextTokenId;
+        nextTokenId = SafeMath.add(nextTokenId, 1);
+        uint256 tokenId = nextTokenId;
 
-            _mint(to, tokenId);
-            minters[tokenId] = to;
+        _mint(to, tokenId);
+        minters[tokenId] = to;
 
-            tokenIdToMetadata[tokenId].push(Metadata("name", name));
-            tokenIdToMetadata[tokenId].push(Metadata("ext", ext));
-            tokenIdToMetadata[tokenId].push(Metadata("description", description));
-            tokenIdToCollaborators[tokenId].push(to);
-
-            i++;
-        }
+        tokenIdToMetadata[tokenId].push(Metadata("name", name));
+        tokenIdToMetadata[tokenId].push(Metadata("ext", ext));
+        tokenIdToMetadata[tokenId].push(Metadata("description", description));
+        tokenIdToCollaborators[tokenId].push(to);
 
         // Unless the mint free, transfer fungible tokens and attempt to pay the fee
         if (mintFee != 0) {
