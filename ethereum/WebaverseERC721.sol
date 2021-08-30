@@ -18,15 +18,10 @@ contract WebaverseERC721 is ERC721 {
     WebaverseERC20 internal erc20Contract; // ERC20 contract for fungible tokens
     uint256 internal mintFee; // ERC20 fee to mint ERC721
     address internal treasuryAddress; // address into which we deposit minting fees
-    bool internal isSingleIssue; // whether the token is single issue (name based) or no (hash based)
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping(address => bool) internal allowedMinters; // addresses allowed to mint in this copy of the contract
     uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
     mapping(uint256 => string) internal tokenIdToHash; // map of token id to hash it represents
-    mapping(string => uint256) internal hashToStartTokenId; // map of hashes to start of token ids for it
-    mapping(string => uint256) internal hashToTotalSupply; // map of hash to total number of tokens for it
-    mapping(string => Metadata[]) internal hashToMetadata; // map of hash to metadata key-value store
-    mapping(string => address[]) internal hashToCollaborators; // map of hash to addresses that can change metadata
     mapping(uint256 => uint256) internal tokenIdToBalance; // map of tokens to packed balance
     mapping(uint256 => address) internal minters; // map of tokens to minters
     mapping(uint256 => Metadata[]) internal tokenIdToMetadata; // map of token id to metadata key-value store
@@ -48,13 +43,9 @@ contract WebaverseERC721 is ERC721 {
         uint256 totalSupply;
     }
 
-    event MetadataSet(string hash, string key, string value);
-    event SingleMetadataSet(uint256 tokenId, string key, string value);
-    event HashUpdate(string oldHash, string newHash);
-    event CollaboratorAdded(string hash, address a);
-    event CollaboratorRemoved(string hash, address a);
-    event SingleCollaboratorAdded(uint256 tokenId, address a);
-    event SingleCollaboratorRemoved(uint256 tokenId, address a);
+    event MetadataSet(uint256 tokenId, string key, string value);
+    event CollaboratorAdded(uint256 tokenId, address a);
+    event CollaboratorRemoved(uint256 tokenId, address a);
 
     /**
      * @dev Create this ERC721 contract
@@ -63,7 +54,6 @@ contract WebaverseERC721 is ERC721 {
      * @param baseUri Base URI (example is http://)
      * @param _erc20Contract ERC20 contract attached to fungible tokens
      * @param _treasuryAddress Address of the treasury account
-     * @param _isSingleIssue Whether the token is single issue (name based) or no (hash based)
      * @param _isPublicallyMintable Whether anyone can mint tokens with this contract
      * I.E. collaborators and separate creatorship and ownership
      */
@@ -74,14 +64,12 @@ contract WebaverseERC721 is ERC721 {
         WebaverseERC20 _erc20Contract,
         uint256 _mintFee,
         address _treasuryAddress,
-        bool _isSingleIssue,
         bool _isPublicallyMintable
     ) public ERC721(name, symbol) {
         _setBaseURI(baseUri);
         erc20Contract = _erc20Contract;
         mintFee = _mintFee;
         treasuryAddress = _treasuryAddress;
-        isSingleIssue = _isSingleIssue;
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
     }
@@ -171,8 +159,6 @@ contract WebaverseERC721 is ERC721 {
      * This is the main reason that we can only mint so many tokens at once.
      * @param to Address of who is receiving the token on mint
      * Example: 0x08E242bB06D85073e69222aF8273af419d19E4f6
-     * @param hash Hash of the file to mint
-     * Example: 0x1
      * @param name Name of the token
      * @param ext File extension of the token
      * Example: "png"
@@ -181,22 +167,15 @@ contract WebaverseERC721 is ERC721 {
      */
     function mint(
         address to,
-        string memory hash,
         string memory name,
         string memory ext,
         string memory description,
-        uint256 count
     ) public {
-        require(!isSingleIssue, "wrong mint method called"); // Single issue tokens should use mintSingle
         require(
             isPublicallyMintable || isAllowedMinter(msg.sender),
             "not allowed to mint"
         ); // Only allowed minters can mint
-        require(bytes(hash).length > 0, "hash cannot be empty"); // Hash cannot be empty (minting null items)
         require(count > 0, "count must be greater than zero"); // Count must be 1 or more (cannot mint no items)
-        require(hashToTotalSupply[hash] == 0, "hash already exists"); // Prevent multiple mints of the same file (all files minted must be unique)
-
-        hashToStartTokenId[hash] = nextTokenId + 1; // Increment token ID by one
 
         uint256 i = 0;
         while (i < count) {
@@ -207,51 +186,15 @@ contract WebaverseERC721 is ERC721 {
             _mint(to, tokenId);
             minters[tokenId] = to;
 
-            tokenIdToHash[tokenId] = hash;
+            tokenIdToMetadata[tokenId].push(Metadata("name", name));
+            tokenIdToMetadata[tokenId].push(Metadata("ext", ext));
+            tokenIdToMetadata[tokenId].push(Metadata("description", description));
+            tokenIdToCollaborators[tokenId].push(to);
+
             i++;
         }
-        hashToTotalSupply[hash] = count;
-        hashToMetadata[hash].push(Metadata("name", name));
-        hashToMetadata[hash].push(Metadata("ext", ext));
-        hashToMetadata[hash].push(Metadata("description", description));
-        hashToCollaborators[hash].push(to);
 
         // Unless the mint free, transfer fungible tokens and attempt to pay the fee
-        if (mintFee != 0) {
-            require(
-                erc20Contract.transferFrom(
-                    msg.sender,
-                    treasuryAddress,
-                    mintFee
-                ),
-                "mint transfer failed"
-            );
-        }
-    }
-
-    /**
-     * @dev Mint one non-fungible tokens with this contract
-     * @param to Address of who is receiving the token on mint
-     * Example: 0x08E242bB06D85073e69222aF8273af419d19E4f6
-     * @param hash Hash of the file to mint
-     */
-    function mintSingle(address to, string memory hash) public {
-        require(isSingleIssue, "wrong mint method called");
-        require(
-            isPublicallyMintable || isAllowedMinter(msg.sender),
-            "not allowed to mint"
-        );
-        require(hashToTotalSupply[hash] == 0, "hash already exists");
-
-        nextTokenId = SafeMath.add(nextTokenId, 1);
-        uint256 tokenId = nextTokenId;
-        _mint(to, tokenId);
-        minters[tokenId] = to;
-
-        tokenIdToHash[tokenId] = hash;
-        hashToTotalSupply[hash] = 1;
-        hashToCollaborators[hash].push(to);
-
         if (mintFee != 0) {
             require(
                 erc20Contract.transferFrom(
@@ -364,85 +307,12 @@ contract WebaverseERC721 is ERC721 {
     }
 
     /**
-     * @dev Check is an address has access as a collaborator (for development of a token between multiple users)
-     * @param hash Hash of the token to test
-     * @param a Address to query
-     * @return Returns true if the address is a collaborator on this token
-     */
-    function isCollaborator(string memory hash, address a)
-        public
-        view
-        returns (bool)
-    {
-        for (uint256 i = 0; i < hashToCollaborators[hash].length; i++) {
-            if (hashToCollaborators[hash][i] == a) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * @dev List collaborators for a token
-     * @param hash Hash of the token to get collaborators for
-     */
-    function getCollaborators(string memory hash) public view returns (address[] memory) {
-        address[] memory collaborators = hashToCollaborators[hash];
-        return collaborators;
-    }
-
-    /**
-     * @dev Add collaborator to a token
-     * @param hash Hash of the token to add the collaborator to
-     * @param a Address to whitelist
-     */
-    function addCollaborator(string memory hash, address a) public {
-        require(isCollaborator(hash, msg.sender), "you are not a collaborator");
-        require(!isCollaborator(hash, a), "they are already a collaborator");
-        hashToCollaborators[hash].push(a);
-        
-        emit CollaboratorAdded(hash, a);
-    }
-
-    /**
-     * @dev Remove collaborator from a token
-     * @param hash Hash of the token to remove the collaborator from
-     * @param a Address to remove from whitelist
-     */
-    function removeCollaborator(string memory hash, address a) public {
-        require(isCollaborator(hash, msg.sender), "you are not a collaborator");
-        require(
-            isCollaborator(hash, a),
-            "they are not a collaborator"
-        );
-
-        uint256 newSize = 0;
-        for (uint256 i = 0; i < hashToCollaborators[hash].length; i++) {
-            if (hashToCollaborators[hash][i] != a) {
-                newSize++;
-            }
-        }
-
-        address[] memory newCollaborators = new address[](newSize);
-        uint256 index = 0;
-        for (uint256 i = 0; i < hashToCollaborators[hash].length; i++) {
-            address oldCollaborator = hashToCollaborators[hash][i];
-            if (oldCollaborator != a) {
-                newCollaborators[index++] = oldCollaborator;
-            }
-        }
-        hashToCollaborators[hash] = newCollaborators;
-        
-        emit CollaboratorRemoved(hash, a);
-    }
-
-    /**
-     * @dev Check if this address is a collaborator on a single issue token (like land)
+     * @dev Check if this address is a collaborator on a token
      * @param tokenId ID of the token
      * @param a Address to check
      * @return Returns true if the address is a collaborator on the token
      */
-    function isSingleCollaborator(uint256 tokenId, address a)
+    function isCollaborator(uint256 tokenId, address a)
         public
         view
         returns (bool)
@@ -459,42 +329,42 @@ contract WebaverseERC721 is ERC721 {
      * @dev List collaborators for a token
      * @param tokenId Token ID of the token to get collaborators for
      */
-    function getSingleCollaborators(uint256 tokenId) public view returns (address[] memory) {
+    function getCollaborators(uint256 tokenId) public view returns (address[] memory) {
         address[] memory collaborators = tokenIdToCollaborators[tokenId];
         return collaborators;
     }
 
     /**
-     * @dev Add a collaborator to a single token (like land)
+     * @dev Add a collaborator to a token
      * @param tokenId ID of the token
      * @param a Address to whitelist
      */
-    function addSingleCollaborator(uint256 tokenId, address a) public {
+    function addCollaborator(uint256 tokenId, address a) public {
         require(
-            ownerOf(tokenId) == a || isSingleCollaborator(tokenId, msg.sender),
+            ownerOf(tokenId) == a || isCollaborator(tokenId, msg.sender),
             "you are not a collaborator"
         );
         require(
-            !isSingleCollaborator(tokenId, a),
+            !isCollaborator(tokenId, a),
             "they are already a collaborator"
         );
         tokenIdToCollaborators[tokenId].push(a);
         
-        emit SingleCollaboratorAdded(tokenId, a);
+        emit CollaboratorAdded(tokenId, a);
     }
 
     /**
-     * @dev Remove a collaborator from a single token (like land)
+     * @dev Remove a collaborator from a token
      * @param tokenId ID of the token
      * @param a Address to remove from whitelist
      */
-    function removeSingleCollaborator(uint256 tokenId, address a) public {
+    function removeCollaborator(uint256 tokenId, address a) public {
         require(
-            ownerOf(tokenId) == a || isSingleCollaborator(tokenId, msg.sender),
+            ownerOf(tokenId) == a || isCollaborator(tokenId, msg.sender),
             "you are not a collaborator"
         );
         require(
-            isSingleCollaborator(tokenId, msg.sender),
+            isCollaborator(tokenId, msg.sender),
             "they are not a collaborator"
         );
 
@@ -515,7 +385,7 @@ contract WebaverseERC721 is ERC721 {
         }
         tokenIdToCollaborators[tokenId] = newTokenIdCollaborators;
         
-        emit SingleCollaboratorRemoved(tokenId, a);
+        emit CollaboratorRemoved(tokenId, a);
     }
 
     /**
@@ -614,15 +484,10 @@ contract WebaverseERC721 is ERC721 {
         string memory hash;
         string memory name;
         string memory ext;
-        if (isSingleIssue) {
-            hash = getSingleMetadata(tokenId, "hash");
-            name = tokenIdToHash[tokenId];
-            ext = getSingleMetadata(tokenId, "ext");
-        } else {
-            hash = tokenIdToHash[tokenId];
-            name = getMetadata(hash, "name");
-            ext = getMetadata(hash, "ext");
-        }
+
+        hash = getMetadata(tokenId, "hash");
+        name = getMetadata(tokenId, "name");
+        ext = getMetadata(tokenId, "ext");
 
         address minter = minters[tokenId];
         address owner = _exists(tokenId) ? ownerOf(tokenId) : address(0);
@@ -645,15 +510,11 @@ contract WebaverseERC721 is ERC721 {
         string memory hash;
         string memory name;
         string memory ext;
-        if (isSingleIssue) {
-            hash = getSingleMetadata(tokenId, "hash");
-            name = tokenIdToHash[tokenId];
-            ext = getSingleMetadata(tokenId, "ext");
-        } else {
-            hash = tokenIdToHash[tokenId];
-            name = getMetadata(hash, "name");
-            ext = getMetadata(hash, "ext");
-        }
+
+        hash = getMetadata(tokenId, "hash");
+        name = getMetadata(tokenId, "name");
+        ext = getMetadata(tokenId, "ext");
+
         address minter = minters[tokenId];
         uint256 balance = balanceOfHash(owner, hash);
         uint256 totalSupply = hashToTotalSupply[hash];
@@ -668,25 +529,6 @@ contract WebaverseERC721 is ERC721 {
                 balance,
                 totalSupply
             );
-    }
-
-    /**
-     * @dev Get metadata for the token. Metadata is a key-value store that can be set by owners and collaborators
-     * @param hash Token hash to query for metadata
-     * @param key Key to query for a value
-     * @return Value corresponding to metadata key
-     */
-    function getMetadata(string memory hash, string memory key)
-        public
-        view
-        returns (string memory)
-    {
-        for (uint256 i = 0; i < hashToMetadata[hash].length; i++) {
-            if (streq(hashToMetadata[hash][i].key, key)) {
-                return hashToMetadata[hash][i].value;
-            }
-        }
-        return "";
     }
 
     /**
@@ -718,12 +560,12 @@ contract WebaverseERC721 is ERC721 {
     }
 
     /**
-     * @dev Get metadata for a single token (non-hashed)
+     * @dev Get metadata for a token
      * @param tokenId Token hash to add metadata to
      * @param key Key to retrieve value for
      * @return Returns the value stored for the key
      */
-    function getSingleMetadata(uint256 tokenId, string memory key)
+    function getMetadata(uint256 tokenId, string memory key)
         public
         view
         returns (string memory)
@@ -737,19 +579,19 @@ contract WebaverseERC721 is ERC721 {
     }
 
     /**
-     * @dev Set metadata for a single token (non-hashed)
+     * @dev Set metadata for a token
      * @param tokenId Token hash to add metadata to
      * @param key Key to store value at
      * @param value Value to store
      */
-    function setSingleMetadata(
+    function setMetadata(
         uint256 tokenId,
         string memory key,
         string memory value
     ) public {
         require(
             ownerOf(tokenId) == msg.sender ||
-                isSingleCollaborator(tokenId, msg.sender),
+                isCollaborator(tokenId, msg.sender),
             "not an owner or collaborator"
         );
 
@@ -765,7 +607,7 @@ contract WebaverseERC721 is ERC721 {
             tokenIdToMetadata[tokenId].push(Metadata(key, value));
         }
 
-        emit SingleMetadataSet(tokenId, key, value);
+        emit MetadataSet(tokenId, key, value);
     }
 
     /**
