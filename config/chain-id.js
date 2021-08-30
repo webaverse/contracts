@@ -10,7 +10,6 @@ export default {
   testnet: {
     FT: 1,
     NFT: 2,
-    LAND: 3,
   },
   testnetsidechain: {
     FT: 4,
