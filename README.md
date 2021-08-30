@@ -12,21 +12,23 @@ First, copy .env.default and rename it to .env, then configure it for the networ
 npm install
 npm run deploy-<netwogrk> // i.e. npm run deploy-polygon
 ```
+
 Consult package.json for more options
 
 # Deployment
 
 To deploy contracts, you will need several things:
+
 1. A deployment wallet with enough Mainnet Ethereum, Rinkeby and/or Polygon/MATIC token to pay for the gas of deploying.
-    Your best option is to download Metamask. Create a new Metamask wallet for this purpose so you can use the private keys for your signing authority.
+   Your best option is to download Metamask. Create a new Metamask wallet for this purpose so you can use the private keys for your signing authority.
 
 2. Several BIP39 mnemonics and private keys
- -- Treasury addresses, for handling tokens owned by your treasury
- -- Signing addresses, for handling chain transfers and other transactions
- -- Private keys for each of the networks you want to interact with
+   -- Treasury addresses, for handling tokens owned by your treasury
+   -- Signing addresses, for handling chain transfers and other transactions
+   -- Private keys for each of the networks you want to interact with
 
- You can generate BIP39 mnemonics with Metamask (recommended) or here: 
- https://particl.github.io/bip39/bip39-standalone.html
+You can generate BIP39 mnemonics with Metamask (recommended) or here:
+https://particl.github.io/bip39/bip39-standalone.html
 
 The first step is to add your private keys to the .env file. You can export your private key from your Metamask wallet. Assuming you have one wallet with all of your deployment currency, this should look like this:
 
@@ -50,7 +52,7 @@ Make sure you are generating addresses for the ethereum network. They will have 
 
 ```
 .env
-mainnetTreasuryAddress=0xebDeFbB0B1efc88603BF3Ea7DCac4d11628Fb862	
+mainnetTreasuryAddress=0xebDeFbB0B1efc88603BF3Ea7DCac4d11628Fb862
 polygonTreasuryAddress=0x05FD932b8EE9E94CB80D799a298E0FfB233a42A7
 mainnetsidechainTreasuryAddress=0x69E3396DFb3c9e4a0b8e8F63Cf74928f40f8e4a1
 testnetTreasuryAddress=0x9aA26FaBE68BC7E6CF9af378b7d5DBB0af88D6Fb
@@ -83,128 +85,181 @@ Once you've deployed to the Webaverse sidechain, you can additionally deploy to 
 It is suggested that you start with the polygon/matic network and make sure your infrastructure is fully working before deploying contracts to mainnet ethereum. The contracts can be deployed on Polygon/Matic for a fraction of the mainnet gas fees.
 
 # Webaverse Contracts
+
 Information about the Webaverse contracts is provided below, larger for the convenience of our development team.
 
 # mainnet
 
 ## Account
+
 // nothing
+
 ## FT
+
 SILK, SILK, 2147483648000000000000000000
+
 ## FTProxy
+
 ${FT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 1
+
 ## NFT
+
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
+
 ## NFTProxy
+
 ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 2
+
 ## Trade
+
 ${FT}, ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 3
 
 # mainnetsidechain
 
 ## Account
+
 // nothing
+
 ## FT
+
 SILK, SILK, 2147483648000000000000000000
+
 ## FTProxy
+
 ${FT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 4
+
 ## NFT
+
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68, false, true
+
 ## NFTProxy
+
 ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 5
+
 ## Trade
+
 ${FT}, ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 6
 
 # testnet / rinkeby
 
 ## Account
+
 // nothing
+
 ## FT
+
 SILK, SILK, 2147483648000000000000000000
+
 ## FTProxy
+
 ${FT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 1
+
 ## NFT
+
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
+
 ## NFTProxy
+
 ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 2
+
 ## Trade
+
 ${FT}, ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
+
 ## LAND
+
 LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
+
 ## LANDProxy
+
 ${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 3
 
 # testnetsidechain
 
 ## Account
+
 // nothing
+
 ## FT
+
 SILK, SILK, 2147483648000000000000000000
+
 ## FTProxy
+
 ${FT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 4
+
 ## NFT
+
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68, false, true
+
 ## NFTProxy
+
 ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 5
+
 ## Trade
+
 ${FT}, ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 6
 
 # polygon
 
 ## Account
+
 // nothing
+
 ## FT
+
 SILK, SILK, 2147483648000000000000000000
+
 ## FTProxy
+
 ${FT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 1
+
 ## NFT
+
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
+
 ## NFTProxy
+
 ${NFT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 2
+
 ## Trade
+
 ${FT}, ${NFT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 3
 
 # testpolygon
 
 ## Account
+
 // nothing
+
 ## FT
+
 SILK, SILK, 2147483648000000000000000000
+
 ## FTProxy
+
 ${FT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 4
+
 ## NFT
+
 ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
+
 ## NFTProxy
+
 ${NFT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 5
+
 ## Trade
+
 ${FT}, ${NFT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 6
 
 # OpenSea links
 
 ## mainnet
+
 https://opensea.io/webaverse
 
 ## testnet (rinkeby)
+
 https://testnets.opensea.io/get-listed/step-two
 
 # Addressess used
