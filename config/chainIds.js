@@ -1,37 +1,30 @@
 module.exports = {
-  "mainnet": {
-    "SILK": 1,
-    "ASSET": 2,
-    "LAND": 3
+  mainnet: {
+    SILK: 1,
+    ASSET: 2,
   },
-  "mainnetsidechain": {
-    "SILK": 4,
-    "ASSET": 5,
-    "LAND": 6
+  mainnetsidechain: {
+    SILK: 4,
+    ASSET: 5,
   },
-  "polygon": {
-    "SILK": 7,
-    "ASSET": 8,
-    "LAND": 9
+  polygon: {
+    SILK: 7,
+    ASSET: 8,
   },
-  "testnet": {
-    "SILK": 1,
-    "ASSET": 2,
-    "LAND": 3
+  testnet: {
+    SILK: 1,
+    ASSET: 2,
   },
-  "testnetsidechain": {
-    "SILK": 4,
-    "ASSET": 5,
-    "LAND": 6
+  testnetsidechain: {
+    SILK: 4,
+    ASSET: 5,
   },
-  "testnetpolygon": {
-    "SILK": 7,
-    "ASSET": 8,
-    "LAND": 9
+  testnetpolygon: {
+    SILK: 7,
+    ASSET: 8,
   },
-  "development": {
-    "SILK": 7,
-    "ASSET": 8,
-    "LAND": 9
-  }
-}
+  development: {
+    SILK: 7,
+    ASSET: 8,
+  },
+};
