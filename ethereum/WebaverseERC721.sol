@@ -228,11 +228,11 @@ contract WebaverseERC721 is ERC721 {
      * @param to Who should receive the minted token
      * @param tokenId ID of the token to mint (ie: 250)
      */
-    function mintTokenId(address to, uint256 tokenId) public {
-        require(isAllowedMinter(msg.sender), "minter not allowed");
+    // function mintTokenId(address to, uint256 tokenId) public {
+    //     require(isAllowedMinter(msg.sender), "minter not allowed");
 
-        _mint(to, tokenId);
-    }
+    //     _mint(to, tokenId);
+    // }
 
     /**
      * @dev Set the base URI for this contract
