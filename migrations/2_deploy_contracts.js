@@ -4,6 +4,7 @@ const ERC20Proxy = artifacts.require("WebaverseERC20Proxy");
 const ERC721 = artifacts.require("WebaverseERC721");
 const ERC721Proxy = artifacts.require("WebaverseERC721Proxy");
 const Trade = artifacts.require("WebaverseTrade");
+const Marketplace = artifacts.require("WebaverseMarketplace");
 
 const chainId = require("../config/chainIds.js");
 
@@ -73,14 +74,20 @@ module.exports = async function (deployer) {
   await deployer.deploy(ERC20, ERC20ContractName, ERC20Symbol, 10)
   let erc20 = await ERC20.deployed()
   const ERC20Address = erc20.address;
-  
   console.log("ERC20 address is " + ERC20Address);
+
   /** parentAddress, signerAddress, _chainId */
   await deployer.deploy(ERC20Proxy, ERC20Address, signer[networkType], chainId[networkType][ERC20ContractName])
   let erc20Proxy = await ERC20Proxy.deployed()
   const ERC20ProxyAddress = erc20Proxy.address;
-  
   console.log("ERC20Proxy address is " + ERC20ProxyAddress);
+
+  // TODO: deploy marketplace address and set to marketplaceAddress
+  await deployer.deploy(Marketplace)
+  let marketplace = await Marketplace.deployed()
+  console.log("Marketplace address is " + marketplace.address);
+
+
 
   console.log("Attempting to deploy ERC721 contract with these variables")
   console.log(ERC721TokenContractName,
@@ -89,8 +96,9 @@ module.exports = async function (deployer) {
     ERC20Address,
     mintFee,
     treasurer[networkType],
+    marketplace.address,
     tokenIsPublicallyMintable)
-  /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _isPublicallyMintable */
+  /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _marketplaceAddress,  _isPublicallyMintable */
   await deployer.deploy(ERC721,
     ERC721TokenContractName,
     ERC721TokenContractSymbol,
@@ -98,6 +106,7 @@ module.exports = async function (deployer) {
     ERC20Address,
     mintFee,
     treasurer[networkType],
+    marketplaceAddress,
     tokenIsPublicallyMintable)
 
   let erc721 = await ERC721.deployed()
