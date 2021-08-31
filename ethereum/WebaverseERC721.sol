@@ -19,13 +19,16 @@ contract WebaverseERC721 is ERC721 {
     uint256 internal mintFee; // ERC20 fee to mint ERC721
     address internal treasuryAddress; // address into which we deposit minting fees
     address internal marketplaceAddress; // address of the marketplace contract 
+    address internal mintingWindowAddress; // address of the minting window contract 
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping(address => bool) internal allowedMinters; // addresses allowed to mint in this copy of the contract
     uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
     mapping(uint256 => uint256) internal tokenIdToBalance; // map of tokens to packed balance
     mapping(uint256 => address) internal minters; // map of tokens to minters
     mapping(uint256 => Metadata[]) internal tokenIdToMetadata; // map of token id to metadata key-value store
+    mapping(uint256 => Metadata[]) internal tokenIdToSecureMetadata; // map of token id to secure metadata key-value store
     mapping(uint256 => address[]) internal tokenIdToCollaborators; // map of token id to addresses that can change metadata
+    mapping(uint256 => address[]) internal tokenIdToSecureCollaborators; // map of token id to addresses that can change metadata
 
     struct Metadata {
         string key;
@@ -41,9 +44,12 @@ contract WebaverseERC721 is ERC721 {
         uint256 balance;
     }
 
+    event SecureMetadataSet(uint256 tokenId, string key, string value);
     event MetadataSet(uint256 tokenId, string key, string value);
     event CollaboratorAdded(uint256 tokenId, address a);
     event CollaboratorRemoved(uint256 tokenId, address a);
+    event SecureCollaboratorAdded(uint256 tokenId, address a);
+    event SecureCollaboratorRemoved(uint256 tokenId, address a);
 
     /**
      * @dev Create this ERC721 contract
@@ -63,6 +69,7 @@ contract WebaverseERC721 is ERC721 {
         uint256 _mintFee,
         address _treasuryAddress,
         address _marketplaceAddress,
+        address _mintingWindowAddress,
         bool _isPublicallyMintable
     ) public ERC721(name, symbol) {
         _setBaseURI(baseUri);
@@ -70,8 +77,10 @@ contract WebaverseERC721 is ERC721 {
         mintFee = _mintFee;
         treasuryAddress = _treasuryAddress;
         marketplaceAddress = _marketplaceAddress;
+        mintingWindowAddress = _mintingWindowAddress;
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
+        allowedMinters[mintingWindow] = true;
     }
 
     /**
@@ -166,6 +175,7 @@ contract WebaverseERC721 is ERC721 {
         string memory name,
         string memory ext,
         string memory description,
+        uint256 memory royaltyPercentage,
     ) public {
         require(
             isPublicallyMintable || isAllowedMinter(msg.sender),
@@ -178,10 +188,15 @@ contract WebaverseERC721 is ERC721 {
         _mint(to, tokenId);
         minters[tokenId] = to;
 
+        tokenIdToSecureMetadata[tokenId].push(Metadata("royaltyPercentage", royaltyPercentage));
+
         tokenIdToMetadata[tokenId].push(Metadata("name", name));
         tokenIdToMetadata[tokenId].push(Metadata("ext", ext));
         tokenIdToMetadata[tokenId].push(Metadata("description", description));
+
         tokenIdToCollaborators[tokenId].push(to);
+        tokenIdToCollaborators[tokenId].push(mintingWindowAddress);
+        tokenIdToSecureCollaborators[tokenId].push(mintingWindowAddress);
 
         setApprovalForAll(marketplaceAddress, true)
 
@@ -501,6 +516,56 @@ contract WebaverseERC721 is ERC721 {
         }
 
         emit MetadataSet(tokenId, key, value);
+    }
+
+    /**
+     * @dev Get secure metadata for a token
+     * @param tokenId Token id to add metadata to
+     * @param key Key to retrieve value for
+     * @return Returns the value stored for the key
+     */
+    function getSecureMetadata(uint256 tokenId, string memory key)
+        public
+        view
+        returns (string memory)
+    {
+        for (uint256 i = 0; i < tokenIdToSecureMetadata[tokenId].length; i++) {
+            if (streq(tokenIdToSecureMetadata[tokenId][i].key, key)) {
+                return tokenIdToSecureMetadata[tokenId][i].value;
+            }
+        }
+        return "";
+    }
+
+    /**
+     * @dev Set secure metadata for a token
+     * @param tokenId Token id to add metadata to
+     * @param key Key to store value at
+     * @param value Value to store
+     */
+    function setSecureMetadata(
+        uint256 tokenId,
+        string memory key,
+        string memory value
+    ) public {
+        require(
+            isSecureCollaborator(tokenId, msg.sender),
+            "not an secure collaborator"
+        );
+
+        bool keyFound = false;
+        for (uint256 i = 0; i < tokenIdToSecureMetadata[tokenId].length; i++) {
+            if (streq(tokenIdToSecureMetadata[tokenId][i].key, key)) {
+                tokenIdToSecureMetadata[tokenId][i].value = value;
+                keyFound = true;
+                break;
+            }
+        }
+        if (!keyFound) {
+            tokenIdToSecureMetadata[tokenId].push(Metadata(key, value));
+        }
+
+        emit SecureMetadataSet(tokenId, key, value);
     }
 
     /**@dev Helper function to convert a uint to a string
