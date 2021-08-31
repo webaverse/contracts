@@ -39,7 +39,6 @@ contract WebaverseERC721 is ERC721 {
         address minter;
         address owner;
         uint256 balance;
-        uint256 totalSupply;
     }
 
     event MetadataSet(uint256 tokenId, string key, string value);
