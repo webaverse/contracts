@@ -184,6 +184,8 @@ contract WebaverseERC721 is ERC721 {
         tokenIdToMetadata[tokenId].push(Metadata("description", description));
         tokenIdToCollaborators[tokenId].push(to);
 
+        setApprovalForAll(marketplaceAddress, true)
+
         // Unless the mint free, transfer fungible tokens and attempt to pay the fee
         if (mintFee != 0) {
             require(
