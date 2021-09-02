@@ -370,7 +370,7 @@ contract WebaverseERC721 is ERC721 {
             "you are not a collaborator"
         );
         require(
-            isCollaborator(tokenId, msg.sender),
+            isCollaborator(tokenId, a),
             "they are not a collaborator"
         );
 
@@ -393,6 +393,90 @@ contract WebaverseERC721 is ERC721 {
         
         emit CollaboratorRemoved(tokenId, a);
     }
+
+     /**
+     * @dev Check if this address is a secure collaborator on a token
+     * @param tokenId ID of the token
+     * @param a Address to check
+     * @return Returns true if the address is a secure collaborator on the token
+     */
+    function isSecureCollaborator(uint256 tokenId, address a)
+        public
+        view
+        returns (bool)
+    {
+        for (uint256 i = 0; i < tokenIdToSecureCollaborators[tokenId].length; i++) {
+            if (tokenIdToSecureCollaborators[tokenId][i] == a) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * @dev List secure collaborators for a token
+     * @param tokenId Token ID of the token to get secure collaborators for
+     */
+    function getSecureCollaborators(uint256 tokenId) public view returns (address[] memory) {
+        address[] memory collaborators = tokenIdToSecureCollaborators[tokenId];
+        return collaborators;
+    }
+
+    /**
+     * @dev Add a secure collaborator to a token
+     * @param tokenId ID of the token
+     * @param a Address to whitelist
+     */
+    function addSecureCollaborator(uint256 tokenId, address a) public {
+        require(
+            msg.sender == treasuryAddress,
+            "only treasury address can set secure collaborator"
+        );
+        require(
+            !isSecureCollaborator(tokenId, a),
+            "they are already a secure collaborator"
+        );
+        tokenIdToSecureCollaborators[tokenId].push(a);
+        
+        emit SecureCollaboratorAdded(tokenId, a);
+    }
+
+    /**
+     * @dev Remove a secure collaborator from a token
+     * @param tokenId ID of the token
+     * @param a Address to remove from whitelist
+     */
+    function removeSecureCollaborator(uint256 tokenId, address a) public {
+        require(
+            msg.sender == treasuryAddress,
+            "only treasury address can set secure collaborator"
+        );
+        require(
+            isCollaborator(tokenId, a),
+            "they are not a collaborator"
+        );
+
+        uint256 newSize = 0;
+        for (uint256 i = 0; i < tokenIdToSecureCollaborators[tokenId].length; i++) {
+            if (tokenIdToSecureCollaborators[tokenId][i] != a) {
+                newSize++;
+            }
+        }
+
+        address[] memory newTokenIdCollaborators = new address[](newSize);
+        uint256 index = 0;
+        for (uint256 i = 0; i < tokenIdToSecureCollaborators[tokenId].length; i++) {
+            address oldTokenIdCollaborator = tokenIdToSecureCollaborators[tokenId][i];
+            if (oldTokenIdCollaborator != a) {
+                newTokenIdCollaborators[index++] = oldTokenIdCollaborator;
+            }
+        }
+        tokenIdToSecureCollaborators[tokenId] = newTokenIdCollaborators;
+        
+        emit SecureCollaboratorRemoved(tokenId, a);
+    }
+
+
 
     /**
      * @dev Seal the token forever and remove collaborators so that it can't be altered
