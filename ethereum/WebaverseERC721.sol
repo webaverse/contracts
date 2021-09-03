@@ -207,7 +207,11 @@ contract WebaverseERC721 is ERC721 {
         _mint(to, tokenId);
         minters[tokenId] = to;
 
-        tokenIdToSecureMetadata[tokenId].push(Metadata("royaltyPercentage", royaltyPercentage.toString()));
+        string memory royalty = royaltyPercentage.toString();
+
+        tokenIdToSecureMetadata[tokenId].push(
+            Metadata("royaltyPercentage", royalty)
+        );
 
         if (keccak256(bytes(isTransferLocked)) == keccak256(bytes("true"))) {
             require(
@@ -538,13 +542,15 @@ contract WebaverseERC721 is ERC721 {
     function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
         string memory name;
         string memory ext;
+        string memory royalty;
         uint256 royaltyPercentage;
         string memory isTransferLocked;
 
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
+        royalty = getSecureMetadata(tokenId, "royaltyPercentage");
 
-        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage").parseInt();
+        royaltyPercentage = royalty.parseInt();
         isTransferLocked = getSecureMetadata(tokenId, "isTransferLocked");
 
         address minter = minters[tokenId];
@@ -566,13 +572,16 @@ contract WebaverseERC721 is ERC721 {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
         string memory name;
         string memory ext;
+        string memory royalty;
         uint256 royaltyPercentage;
         string memory isTransferLocked;
 
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
 
-        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage").parseInt();
+        royalty = getSecureMetadata(tokenId, "royaltyPercentage");
+        royaltyPercentage = royalty.parseInt();
+
         isTransferLocked = getSecureMetadata(tokenId, "isTransferLocked");
 
         address minter = minters[tokenId];
