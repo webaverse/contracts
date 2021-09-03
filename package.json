@@ -22,7 +22,9 @@
     "deploy-polygon-testnet": "truffle migrate --network testnetpolygon",
     "deploy-polygon-testnet-reset": "truffle migrate --network testnetpolygon --reset",
     "deploy-polygon": "truffle migrate --network polygon",
-    "deploy-polygon-reset": "truffle migrate --network polygon --reset"
+    "deploy-polygon-reset": "truffle migrate --network polygon --reset",
+    "build": "waffle",
+    "test": "export NODE_ENV=test && mocha"
   },
   "author": "",
   "license": "ISC",
