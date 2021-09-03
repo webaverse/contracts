@@ -7,6 +7,7 @@ import "./Counters.sol";
 import "./Strings.sol";
 import "./WebaverseERC20.sol";
 import "./WebaverseERC721.sol";
+import "hardhat/console.sol";
 
 contract WebaverseMarketplace is ReentrancyGuard {
   using Strings for *;
