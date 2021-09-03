@@ -5,7 +5,6 @@ const ERC721 = artifacts.require("WebaverseERC721");
 const ERC721Proxy = artifacts.require("WebaverseERC721Proxy");
 const Trade = artifacts.require("WebaverseTrade");
 const Marketplace = artifacts.require("WebaverseMarketplace");
-const MintingWindow = artifacts.require("WebaverseMintingWindow");
 
 const chainId = require("../config/chainIds.js");
 
@@ -93,9 +92,6 @@ module.exports = async function (deployer) {
   let marketplace = await Marketplace.deployed();
   console.log("Marketplace address is " + marketplace.address);
 
-  await deployer.deploy(MintingWindow);
-  let mintingWindow = await MintingWindow.deployed();
-  console.log("MintingWindow address is " + mintingWindow.address);
 
   console.log("Attempting to deploy ERC721 contract with these variables");
   console.log(
