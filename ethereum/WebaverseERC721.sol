@@ -70,14 +70,12 @@ contract WebaverseERC721 is ERC721 {
         WebaverseERC20 _erc20Contract,
         uint256 _mintFee,
         address _treasuryAddress,
-        address _marketplaceAddress,
         bool _isPublicallyMintable
     ) public ERC721(name, symbol) {
         _setBaseURI(baseUri);
         erc20Contract = _erc20Contract;
         mintFee = _mintFee;
         treasuryAddress = _treasuryAddress;
-        marketplaceAddress = _marketplaceAddress;
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
     }
@@ -104,6 +102,18 @@ contract WebaverseERC721 is ERC721 {
             "must be set from treasury address"
         );
         treasuryAddress = _treasuryAddress;
+    }
+
+    /**
+     * @dev Set the marketplace address
+     * @param _marketplaceAddress Account address of the marketplace 
+     */
+    function setMarketplaceAddress(address _marketplaceAddress) public {
+        require(
+            msg.sender == treasuryAddress,
+            "must be set from treasury address"
+        );
+        marketplaceAddress = _marketplaceAddress;
     }
 
     /**
