@@ -9,8 +9,8 @@ library Strings {
      * @dev Converts a `uint256` to its ASCII `string` representation.
      */
     function toString(uint256 value) internal pure returns (string memory) {
-        // Inspired by OraclizeAPI's implementation - MIT licence
-        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
+    //     // Inspired by OraclizeAPI's implementation - MIT licence
+    //     // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
 
         if (value == 0) {
             return "0";
@@ -40,14 +40,14 @@ library Strings {
      * @param _value The ASCII string to be converted to an unsigned integer
      */
     function parseInt(string memory _value)
-        public
+        internal 
         pure
-        returns (uint _ret) {
+        returns (uint256 _ret) {
         bytes memory _bytesValue = bytes(_value);
-        uint j = 1;
-        for(uint i = _bytesValue.length-1; i >= 0 && i < _bytesValue.length; i--) {
+        uint256 j = 1;
+        for(uint256 i = _bytesValue.length-1; i >= 0 && i < _bytesValue.length; i--) {
             assert(uint8(_bytesValue[i]) >= 48 && uint8(_bytesValue[i]) <= 57);
-            _ret += (uint8(_bytesValue[i]) - 48)*j;
+            _ret += uint256(uint8(_bytesValue[i]) - 48)*j;
             j*=10;
         }
     }  
