@@ -72,7 +72,7 @@ module.exports = async function (deployer) {
   let account = await Account.deployed();
   console.log("Account address is " + account.address);
 
-  await deployer.deploy(ERC20, ERC20ContractName, ERC20Symbol, 10);
+  await deployer.deploy(ERC20, ERC20ContractName, ERC20Symbol, ERC20MarketCap);
   let erc20 = await ERC20.deployed();
   const ERC20Address = erc20.address;
   console.log("ERC20 address is " + ERC20Address);
