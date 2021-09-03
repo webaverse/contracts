@@ -81,7 +81,7 @@ contract WebaverseERC721 is ERC721 {
         mintingWindowAddress = _mintingWindowAddress;
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
-        allowedMinters[mintingWindow] = true;
+        allowedMinters[mintingWindowAddress] = true;
     }
 
     /**
@@ -503,7 +503,7 @@ contract WebaverseERC721 is ERC721 {
      */
     function seal(uint256 tokenId) public {
         require(isCollaborator(tokenId, msg.sender), "not a collaborator");
-        delete tokenIdToCollaborators[tokenid];
+        delete tokenIdToCollaborators[tokenId];
     }
 
     /**
