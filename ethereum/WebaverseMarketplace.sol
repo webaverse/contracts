@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.6.2;
+pragma experimental ABIEncoderV2;
 
 import "./ReentrancyGuard.sol";
+import "./Counters.sol";
+import "./Strings.sol";
 import "./WebaverseERC20.sol";
 import "./WebaverseERC721.sol";
 
 contract WebaverseMarket is ReentrancyGuard {
+  using Strings for *;
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds;
   Counters.Counter private _itemsSold;
@@ -86,7 +90,7 @@ contract WebaverseMarket is ReentrancyGuard {
 
     uint tokenId = idToMarketItem[itemId].tokenId;
     uint listingFee = (price / (10000/listingFeePercentage));
-    uint royaltyFee = parentERC721.getSecureMetadata(tokenId, "royaltyFee");
+    uint royaltyFee = parentERC721.getSecureMetadata(tokenId, "royaltyFee").parseInt();
 
     // Subtract listing and royalty fee from price paid to seller
     price = price - listingFee - royaltyFee;
