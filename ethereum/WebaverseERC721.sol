@@ -41,7 +41,8 @@ contract WebaverseERC721 is ERC721 {
         string ext;
         address minter;
         address owner;
-        uint256 balance;
+        uint256 royaltyPercentage;
+        bool isTransferLocked;
     }
 
     event SecureMetadataSet(uint256 tokenId, string key, string value);
@@ -184,8 +185,8 @@ contract WebaverseERC721 is ERC721 {
         string memory name,
         string memory ext,
         string memory description,
-        uint256 memory royaltyPercentage,
-        bool memory isTransferLocked
+        uint256 royaltyPercentage,
+        bool isTransferLocked
     ) public {
         require(
             isPublicallyMintable || isAllowedMinter(msg.sender),
@@ -531,13 +532,18 @@ contract WebaverseERC721 is ERC721 {
     function tokenByIdFull(uint256 tokenId) public view returns (Token memory) {
         string memory name;
         string memory ext;
+        uint256 royaltyPercentage;
+        bool isTransferLocked;
 
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
 
+        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage");
+        isTransferLocked = getSecureMetadata(tokenId, "isTransferLocked");
+
         address minter = minters[tokenId];
         address owner = _exists(tokenId) ? ownerOf(tokenId) : address(0);
-        return Token(tokenId, name, ext, minter, owner, 0);
+        return Token(tokenId, name, ext, minter, owner, royaltyPercentage, isTransferLocked);
     }
 
     /**
@@ -554,12 +560,17 @@ contract WebaverseERC721 is ERC721 {
         uint256 tokenId = tokenOfOwnerByIndex(owner, index);
         string memory name;
         string memory ext;
+        uint256 royaltyPercentage;
+        bool isTransferLocked;
 
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
 
+        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage");
+        isTransferLocked = getSecureMetadata(tokenId, "isTransferLocked");
+
         address minter = minters[tokenId];
-        return Token(tokenId, name, ext, minter, owner);
+        return Token(tokenId, name, ext, minter, owner, royaltyPercentage, isTransferLocked);
     }
 
     /**
