@@ -1,14 +1,19 @@
 const { expect, use } = require("chai");
-const { deployContract, MockProvider, solidity } = require("ethereum-waffle");
+const { deployContract } = require("ethereum-waffle");
+const { zeroAddress } = require("ethereumjs-util");
 const { Contract } = require("ethers");
 const WebaverseERC20Contract = require("../build/WebaverseERC20.json");
 const WebaverseERC721Contract = require("../build/WebaverseERC721.json");
 const WebaverseMarketplace = require("../build/WebaverseMarketplace.json");
 
+const { waffle } = require("hardhat");
+const { solidity } = waffle;
+const provider = waffle.provider;
+
 use(solidity);
 
 describe("WebaverseMarketplace", () => {
-  const [wallet, walletTo] = new MockProvider().getWallets();
+  const [wallet, walletTo] = provider.getWallets();
   let erc20Contract, erc721Contract, marketplaceContract;
 
   const tokenName = "SILK";
@@ -40,49 +45,36 @@ describe("WebaverseMarketplace", () => {
       tokenIsPublicallyMintable,
     ]);
 
-
-    marke = await deployContract(wallet, WebaverseMarketplace, [
+    marketplaceContract = await deployContract(wallet, WebaverseMarketplace, [
       erc20Contract.address,
       erc721Contract.address,
     ]);
 
-    erc721Contract.setMarketplaceAddress(marketplaceContract.address);
+    await erc721Contract.setMarketplaceAddress(marketplaceContract.address);
   });
 
-  it("Assigns initial balance", async () => {
-    expect(await erc20Contract.balanceOf(wallet.address)).to.equal(1000);
+  it("Mint Token", async () => {
+    const tokenId = 1;
+    await erc721Contract.mintTokenId(wallet.address, tokenId);
+    expect(await erc721Contract.balanceOf(wallet.address)).to.equal(1);
+    expect(await erc721Contract.ownerOf(tokenId)).to.equal(wallet.address);
+    expect(await erc721Contract.totalSupply()).to.equal(1);
   });
 
-  it("Transfer adds amount to destination account", async () => {
-    await erc20Contract.transfer(walletTo.address, 7);
-    expect(await erc20Contract.balanceOf(walletTo.address)).to.equal(7);
-  });
+  it("Mint Token and create market item", async () => {
+    const tokenId = 1;
+    await erc721Contract.mintTokenId(wallet.address, tokenId);
+    expect(await erc721Contract.balanceOf(wallet.address)).to.equal(1);
+    expect(await erc721Contract.ownerOf(tokenId)).to.equal(wallet.address);
+    expect(await erc721Contract.totalSupply()).to.equal(1);
 
-  it("Transfer emits event", async () => {
-    await expect(erc20Contract.transfer(walletTo.address, 7))
-      .to.emit(erc20Contract, "Transfer")
-      .withArgs(wallet.address, walletTo.address, 7);
-  });
+    await marketplaceContract.createMarketItem(erc721Contract.address, 1, 100, {
+      from: wallet.address,
+      gasLimit: 300000000,
+      value: 100,
+    });
 
-  it("Can not transfer above the amount", async () => {
-    await expect(erc20Contract.transfer(walletTo.address, 1007)).to.be.reverted;
-  });
-
-  it("Can not transfer from empty account", async () => {
-    const tokenFromOtherWallet = erc20Contract.connect(walletTo);
-    await expect(tokenFromOtherWallet.transfer(wallet.address, 1)).to.be
-      .reverted;
-  });
-
-  it("Calls totalSupply on ERC20 contract", async () => {
-    await erc20Contract.totalSupply();
-    expect("totalSupply").to.be.calledOnContract(erc20Contract);
-  });
-
-  it("Calls balanceOf with sender address on ERC20 contract", async () => {
-    await erc20Contract.balanceOf(wallet.address);
-    expect("balanceOf").to.be.calledOnContractWith(erc20Contract, [
-      wallet.address,
-    ]);
+    // const item = await marketplaceContract.getMarketItem(1);
+    // console.log(item);
   });
 });
