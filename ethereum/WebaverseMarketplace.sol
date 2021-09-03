@@ -8,7 +8,7 @@ import "./Strings.sol";
 import "./WebaverseERC20.sol";
 import "./WebaverseERC721.sol";
 
-contract WebaverseMarket is ReentrancyGuard {
+contract WebaverseMarketplace is ReentrancyGuard {
   using Strings for *;
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds;
