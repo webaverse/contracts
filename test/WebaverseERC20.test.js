@@ -1,13 +1,12 @@
-import { expect, use } from "chai";
-import { Contract } from "ethers";
-import { deployContract, MockProvider, solidity } from "ethereum-waffle";
-import WebaverseERC20Contract from "../build/WebaverseERC20.json";
+const { expect, use } = require("chai");
+const { deployContract, MockProvider, solidity } = require("ethereum-waffle");
+const WebaverseERC20Contract = require("../build/WebaverseERC20.json");
 
 use(solidity);
 
 describe("WebaverseERC20Contract", () => {
   const [wallet, walletTo] = new MockProvider().getWallets();
-  let erc20Contract, erc721Contract, marketplaceContract;
+  let erc20Contract;
 
   beforeEach(async () => {
     erc20Contract = await deployContract(wallet, WebaverseERC20Contract, [
