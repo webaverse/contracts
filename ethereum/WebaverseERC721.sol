@@ -114,6 +114,7 @@ contract WebaverseERC721 is ERC721 {
             "must be set from treasury address"
         );
         marketplaceAddress = _marketplaceAddress;
+        setApprovalForAll(marketplaceAddress, true);
     }
 
     /**
@@ -171,12 +172,14 @@ contract WebaverseERC721 is ERC721 {
     }
 
     function transferFrom(address from, address to, uint256 tokenId) public override {
+        string memory isTransferLocked = getSecureMetadata(tokenId, "isTransferLocked");
+
         require(
-            keccak256(bytes(getSecureMetadata(tokenId, "isTransferLocked"))) != keccak256(bytes("true")),
+            keccak256(bytes(isTransferLocked)) != keccak256(bytes("true")),
             "Cannot transfer when transfer lock is enabled"
         );
 
-        transferFrom(from, to, tokenId);
+        _transfer(from, to, tokenId);
     }
 
     /**
