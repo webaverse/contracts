@@ -161,6 +161,15 @@ contract WebaverseERC721 is ERC721 {
         require(erc20Contract.transfer(to, amount), "transfer failed");
     }
 
+    function transferFrom(address from, address to, uint256 tokenId) public {
+        require(
+            !getSecureMetadata(tokenId, "isTransferLocked") == true,
+            "Transfer lock is enabled, cannot transfer"
+        )
+
+        _transferFrom(from, to, tokenId);
+    }
+
     /**
      * @dev Mint one non-fungible token with this contract
      * @param to Address of who is receiving the token on mint
@@ -176,6 +185,7 @@ contract WebaverseERC721 is ERC721 {
         string memory ext,
         string memory description,
         uint256 memory royaltyPercentage,
+        bool memory isTransferLocked,
     ) public {
         require(
             isPublicallyMintable || isAllowedMinter(msg.sender),
@@ -189,6 +199,14 @@ contract WebaverseERC721 is ERC721 {
         minters[tokenId] = to;
 
         tokenIdToSecureMetadata[tokenId].push(Metadata("royaltyPercentage", royaltyPercentage));
+
+        if (isTransferLocked == true) {
+            require(
+                to == msg.sender,
+                "Can only mint transfer locked NFTs to your own address"
+            )
+            tokenIdToSecureMetadata[tokenId].push(Metadata("isTransferLocked", true));
+        }
 
         tokenIdToMetadata[tokenId].push(Metadata("name", name));
         tokenIdToMetadata[tokenId].push(Metadata("ext", ext));
