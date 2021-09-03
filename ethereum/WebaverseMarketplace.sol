@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
+pragma solidity ^0.6.2;
+
 import "./ReentrancyGuard.sol";
 import "./WebaverseERC20.sol";
 import "./WebaverseERC721.sol";
@@ -13,7 +15,7 @@ contract WebaverseMarket is ReentrancyGuard {
   address payable owner;
   uint256 listingFeePercentage = 250; // percentage fee (2.5%) in basis points/bps
 
-  constructor(WebaverseERC20 _parentERC20, WebaverseERC721 _parentERC721) {
+  constructor(WebaverseERC20 _parentERC20, WebaverseERC721 _parentERC721) public {
     owner = payable(msg.sender);
     parentERC20 = _parentERC20;
     parentERC721 = _parentERC721;
