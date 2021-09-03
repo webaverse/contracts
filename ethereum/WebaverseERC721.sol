@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import "./ERC721.sol";
 import "./EnumerableSet.sol";
 import "./Math.sol";
+import "./Strings.sol";
 import "./WebaverseERC20.sol";
 
 /**
@@ -14,6 +15,7 @@ import "./WebaverseERC20.sol";
  */
 contract WebaverseERC721 is ERC721 {
     using EnumerableSet for EnumerableSet.UintSet;
+    using Strings for *;
 
     WebaverseERC20 internal erc20Contract; // ERC20 contract for fungible tokens
     uint256 internal mintFee; // ERC20 fee to mint ERC721
@@ -42,7 +44,7 @@ contract WebaverseERC721 is ERC721 {
         address minter;
         address owner;
         uint256 royaltyPercentage;
-        bool isTransferLocked;
+        string isTransferLocked;
     }
 
     event SecureMetadataSet(uint256 tokenId, string key, string value);
@@ -162,13 +164,13 @@ contract WebaverseERC721 is ERC721 {
         require(erc20Contract.transfer(to, amount), "transfer failed");
     }
 
-    function transferFrom(address from, address to, uint256 tokenId) public {
+    function transferFrom(address from, address to, uint256 tokenId) public override {
         require(
-            !getSecureMetadata(tokenId, "isTransferLocked") == true,
-            "Transfer lock is enabled, cannot transfer"
+            keccak256(bytes(getSecureMetadata(tokenId, "isTransferLocked"))) != keccak256(bytes("true")),
+            "Cannot transfer when transfer lock is enabled"
         );
 
-        _transferFrom(from, to, tokenId);
+        transferFrom(from, to, tokenId);
     }
 
     /**
@@ -186,7 +188,7 @@ contract WebaverseERC721 is ERC721 {
         string memory ext,
         string memory description,
         uint256 royaltyPercentage,
-        bool isTransferLocked
+        string memory isTransferLocked
     ) public {
         require(
             isPublicallyMintable || isAllowedMinter(msg.sender),
@@ -199,14 +201,14 @@ contract WebaverseERC721 is ERC721 {
         _mint(to, tokenId);
         minters[tokenId] = to;
 
-        tokenIdToSecureMetadata[tokenId].push(Metadata("royaltyPercentage", royaltyPercentage));
+        tokenIdToSecureMetadata[tokenId].push(Metadata("royaltyPercentage", royaltyPercentage.toString()));
 
-        if (isTransferLocked == true) {
+        if (keccak256(bytes(isTransferLocked)) == keccak256(bytes("true"))) {
             require(
                 to == msg.sender,
                 "Can only mint transfer locked NFTs to your own address"
             );
-            tokenIdToSecureMetadata[tokenId].push(Metadata("isTransferLocked", true));
+            tokenIdToSecureMetadata[tokenId].push(Metadata("isTransferLocked", "true"));
         }
 
         tokenIdToMetadata[tokenId].push(Metadata("name", name));
@@ -256,16 +258,16 @@ contract WebaverseERC721 is ERC721 {
             keccak256(abi.encodePacked((b))));
     }
 
-    /**
+        /**
      * @dev Mint a token with a specific ID
      * @param to Who should receive the minted token
      * @param tokenId ID of the token to mint (ie: 250)
      */
-    // function mintTokenId(address to, uint256 tokenId) public {
-    //     require(isAllowedMinter(msg.sender), "minter not allowed");
+    function mintTokenId(address to, uint256 tokenId) public {
+        require(isAllowedMinter(msg.sender), "minter not allowed");
 
-    //     _mint(to, tokenId);
-    // }
+        _mint(to, tokenId);
+    }
 
     /**
      * @dev Set the base URI for this contract
@@ -499,7 +501,7 @@ contract WebaverseERC721 is ERC721 {
 
     /**
      * @dev Seal the token forever and remove collaborators so that it can't be altered
-     * @param token id of the collaborative token
+     * @param tokenId id of the collaborative token
      */
     function seal(uint256 tokenId) public {
         require(isCollaborator(tokenId, msg.sender), "not a collaborator");
@@ -533,12 +535,12 @@ contract WebaverseERC721 is ERC721 {
         string memory name;
         string memory ext;
         uint256 royaltyPercentage;
-        bool isTransferLocked;
+        string memory isTransferLocked;
 
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
 
-        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage");
+        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage").parseInt();
         isTransferLocked = getSecureMetadata(tokenId, "isTransferLocked");
 
         address minter = minters[tokenId];
@@ -561,12 +563,12 @@ contract WebaverseERC721 is ERC721 {
         string memory name;
         string memory ext;
         uint256 royaltyPercentage;
-        bool isTransferLocked;
+        string memory isTransferLocked;
 
         name = getMetadata(tokenId, "name");
         ext = getMetadata(tokenId, "ext");
 
-        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage");
+        royaltyPercentage = getSecureMetadata(tokenId, "royaltyPercentage").parseInt();
         isTransferLocked = getSecureMetadata(tokenId, "isTransferLocked");
 
         address minter = minters[tokenId];
