@@ -21,7 +21,6 @@ contract WebaverseERC721 is ERC721 {
     uint256 internal mintFee; // ERC20 fee to mint ERC721
     address internal treasuryAddress; // address into which we deposit minting fees
     address internal marketplaceAddress; // address of the marketplace contract 
-    address internal mintingWindowAddress; // address of the minting window contract 
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping(address => bool) internal allowedMinters; // addresses allowed to mint in this copy of the contract
     uint256 internal nextTokenId = 0; // the next token id to use (increases linearly)
@@ -72,7 +71,6 @@ contract WebaverseERC721 is ERC721 {
         uint256 _mintFee,
         address _treasuryAddress,
         address _marketplaceAddress,
-        address _mintingWindowAddress,
         bool _isPublicallyMintable
     ) public ERC721(name, symbol) {
         _setBaseURI(baseUri);
@@ -80,10 +78,8 @@ contract WebaverseERC721 is ERC721 {
         mintFee = _mintFee;
         treasuryAddress = _treasuryAddress;
         marketplaceAddress = _marketplaceAddress;
-        mintingWindowAddress = _mintingWindowAddress;
         isPublicallyMintable = _isPublicallyMintable;
         allowedMinters[msg.sender] = true;
-        allowedMinters[mintingWindowAddress] = true;
     }
 
     /**
@@ -216,8 +212,6 @@ contract WebaverseERC721 is ERC721 {
         tokenIdToMetadata[tokenId].push(Metadata("description", description));
 
         tokenIdToCollaborators[tokenId].push(to);
-        tokenIdToCollaborators[tokenId].push(mintingWindowAddress);
-        tokenIdToSecureCollaborators[tokenId].push(mintingWindowAddress);
 
         setApprovalForAll(marketplaceAddress, true);
 
