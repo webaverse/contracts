@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.2;
 pragma experimental ABIEncoderV2;
 
 import "./ERC721.sol";
@@ -165,7 +165,7 @@ contract WebaverseERC721 is ERC721 {
         require(
             !getSecureMetadata(tokenId, "isTransferLocked") == true,
             "Transfer lock is enabled, cannot transfer"
-        )
+        );
 
         _transferFrom(from, to, tokenId);
     }
@@ -185,7 +185,7 @@ contract WebaverseERC721 is ERC721 {
         string memory ext,
         string memory description,
         uint256 memory royaltyPercentage,
-        bool memory isTransferLocked,
+        bool memory isTransferLocked
     ) public {
         require(
             isPublicallyMintable || isAllowedMinter(msg.sender),
@@ -204,7 +204,7 @@ contract WebaverseERC721 is ERC721 {
             require(
                 to == msg.sender,
                 "Can only mint transfer locked NFTs to your own address"
-            )
+            );
             tokenIdToSecureMetadata[tokenId].push(Metadata("isTransferLocked", true));
         }
 
@@ -216,7 +216,7 @@ contract WebaverseERC721 is ERC721 {
         tokenIdToCollaborators[tokenId].push(mintingWindowAddress);
         tokenIdToSecureCollaborators[tokenId].push(mintingWindowAddress);
 
-        setApprovalForAll(marketplaceAddress, true)
+        setApprovalForAll(marketplaceAddress, true);
 
         // Unless the mint free, transfer fungible tokens and attempt to pay the fee
         if (mintFee != 0) {
@@ -559,14 +559,7 @@ contract WebaverseERC721 is ERC721 {
         ext = getMetadata(tokenId, "ext");
 
         address minter = minters[tokenId];
-        return
-            Token(
-                tokenId,
-                name,
-                ext,
-                minter,
-                owner,
-            );
+        return Token(tokenId, name, ext, minter, owner);
     }
 
     /**
