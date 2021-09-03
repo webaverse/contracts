@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.2;
 
 /**
  * @dev String operations.
@@ -31,4 +30,25 @@ library Strings {
         }
         return string(buffer);
     }
+
+      /**
+     * Parse Int
+     * 
+     * Converts an ASCII string value into an uint as long as the string 
+     * its self is a valid unsigned integer
+     * 
+     * @param _value The ASCII string to be converted to an unsigned integer
+     */
+    function parseInt(string memory _value)
+        public
+        pure
+        returns (uint _ret) {
+        bytes memory _bytesValue = bytes(_value);
+        uint j = 1;
+        for(uint i = _bytesValue.length-1; i >= 0 && i < _bytesValue.length; i--) {
+            assert(uint8(_bytesValue[i]) >= 48 && uint8(_bytesValue[i]) <= 57);
+            _ret += (uint8(_bytesValue[i]) - 48)*j;
+            j*=10;
+        }
+    }  
 }
