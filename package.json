@@ -1,6 +1,7 @@
 {
   "name": "contracts",
   "version": "1.0.0",
+  "type": "module",
   "description": "Webaverse Contracts",
   "main": "truffle-config.js",
   "directories": {
@@ -24,7 +25,7 @@
     "deploy-polygon": "truffle migrate --network polygon",
     "deploy-polygon-reset": "truffle migrate --network polygon --reset",
     "build": "waffle",
-    "test": "export NODE_ENV=test && mocha"
+    "test": "export NODE_ENV=test && mocha --experimental-json-modules"
   },
   "author": "",
   "license": "ISC",
