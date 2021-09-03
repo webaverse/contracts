@@ -88,11 +88,6 @@ module.exports = async function (deployer) {
   const ERC20ProxyAddress = erc20Proxy.address;
   console.log("ERC20Proxy address is " + ERC20ProxyAddress);
 
-  await deployer.deploy(Marketplace);
-  let marketplace = await Marketplace.deployed();
-  console.log("Marketplace address is " + marketplace.address);
-
-
   console.log("Attempting to deploy ERC721 contract with these variables");
   console.log(
     ERC721TokenContractName,
@@ -101,10 +96,10 @@ module.exports = async function (deployer) {
     ERC20Address,
     mintFee,
     treasurer[networkType],
-    marketplace.address,
     mintingWindow.address,
     tokenIsPublicallyMintable,
   );
+
   /** name, symbol, baseUri, _erc20Contract, _mintFee, _treasuryAddress, _marketplaceAddress, _mintingWindowAddress,  _isPublicallyMintable */
   await deployer.deploy(
     ERC721,
@@ -114,7 +109,6 @@ module.exports = async function (deployer) {
     ERC20Address,
     mintFee,
     treasurer[networkType],
-    marketplace.address,
     mintingWindow.address,
     tokenIsPublicallyMintable,
   );
@@ -123,6 +117,12 @@ module.exports = async function (deployer) {
   const ERC721Address = erc721.address;
 
   console.log("ERC721 Token address is " + ERC721Address);
+
+  await deployer.deploy(Marketplace);
+  let marketplace = await Marketplace.deployed();
+  console.log("Marketplace address is " + marketplace.address);
+
+  erc721.setMarketplaceAddress(marketplace.address);
 
   /** parentAddress, signerAddress, _chainId */
   await deployer.deploy(
