@@ -1,7 +1,7 @@
-const { expect, use } = require("chai");
+const { expect, use, assert } = require("chai");
 const { deployContract } = require("ethereum-waffle");
 const { zeroAddress } = require("ethereumjs-util");
-const { Contract } = require("ethers");
+const { Contract, BigNumber } = require("ethers");
 const WebaverseERC20Contract = require("../build/WebaverseERC20.json");
 const WebaverseERC721Contract = require("../build/WebaverseERC721.json");
 const WebaverseMarketplace = require("../build/WebaverseMarketplace.json");
@@ -61,20 +61,66 @@ describe("WebaverseMarketplace", () => {
     expect(await erc721Contract.totalSupply()).to.equal(1);
   });
 
-  it("Mint Token and create market item", async () => {
+  it("Create market item", async () => {
     const tokenId = 1;
     await erc721Contract.mintTokenId(wallet.address, tokenId);
     expect(await erc721Contract.balanceOf(wallet.address)).to.equal(1);
     expect(await erc721Contract.ownerOf(tokenId)).to.equal(wallet.address);
     expect(await erc721Contract.totalSupply()).to.equal(1);
 
-    await marketplaceContract.createMarketItem(erc721Contract.address, 1, 100, {
-      from: wallet.address,
+    const price = 100;
+    const royaltyFee = Math.ceil(100 / (10000 / 250));
+    await marketplaceContract.createMarketItem(
+      erc721Contract.address,
+      1,
+      price,
+      {
+        from: wallet.address,
+        gasLimit: 300000000,
+        value: royaltyFee,
+      },
+    );
+
+    const item = await marketplaceContract.getMarketItem(1);
+
+    expect(item[3]).to.equal(wallet.address);
+    expect(item[1]).to.equal(erc721Contract.address);
+  });
+
+  it("Sell market item and check balances", async () => {
+    const tokenId = 1;
+    await erc721Contract.mintTokenId(wallet.address, tokenId);
+    expect(await erc721Contract.balanceOf(wallet.address)).to.equal(1);
+    expect(await erc721Contract.ownerOf(tokenId)).to.equal(wallet.address);
+    expect(await erc721Contract.totalSupply()).to.equal(1);
+
+    const price = 100;
+    const royaltyFee = Math.ceil(100 / (10000 / 250));
+    await marketplaceContract.createMarketItem(
+      erc721Contract.address,
+      1,
+      price,
+      {
+        from: wallet.address,
+        gasLimit: 300000000,
+        value: royaltyFee,
+      },
+    );
+
+    await marketplaceContract.getMarketItem(1);
+
+    const balanceBeforeSale = await provider.getBalance(wallet.address);
+
+    await marketplaceContract.createMarketSale(erc721Contract.address, 1, {
       gasLimit: 300000000,
-      value: 100,
+      value: price,
     });
 
-    // const item = await marketplaceContract.getMarketItem(1);
-    // console.log(item);
+    const balanceAfterSale = await provider.getBalance(wallet.address);
+
+    // Address will get less after sale because of the Webaverse fee
+    expect(BigNumber.from(balanceAfterSale)).to.be.below(
+      BigNumber.from(balanceBeforeSale),
+    );
   });
 });
