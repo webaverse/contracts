@@ -56,7 +56,7 @@ contract WebaverseMarketplace is ReentrancyGuard {
     uint256 price
   ) public payable nonReentrant {
     require(price > 0, "Price must be at least 1 wei");
-    require(msg.value == (price / (10000/listingFeePercentage)), "Must send 2.5% fee");
+    require(msg.value > (price / (10000/listingFeePercentage)), "Must send 2.5% fee");
 
     _itemIds.increment();
     uint256 itemId = _itemIds.current();
