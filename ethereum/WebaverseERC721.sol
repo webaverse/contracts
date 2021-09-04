@@ -204,7 +204,7 @@ contract WebaverseERC721 is ERC721 {
         string memory ext,
         string memory description,
         uint256 royaltyPercentage,
-        string memory isTransferLocked
+        bool isTransferLocked
     ) public {
         require(
             isPublicallyMintable || isAllowedMinter(msg.sender),
@@ -223,7 +223,7 @@ contract WebaverseERC721 is ERC721 {
             Metadata("royaltyPercentage", royalty)
         );
 
-        if (keccak256(bytes(isTransferLocked)) == keccak256(bytes("true"))) {
+        if (isTransferLocked) {
             require(
                 to == msg.sender,
                 "Can only mint transfer locked NFTs to your own address"
