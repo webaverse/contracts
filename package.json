@@ -24,8 +24,8 @@
     "deploy-polygon": "truffle migrate --network polygon",
     "deploy-polygon-reset": "truffle migrate --network polygon --reset",
     "build": "waffle",
-    "just-test": "export NODE_ENV=test && mocha --experimental-json-modules",
-    "test": "npm run build && export NODE_ENV=test && mocha --experimental-json-modules"
+    "test": "npm run build && hardhat test",
+    "test": "hardhat test"
   },
   "author": "",
   "license": "ISC",
