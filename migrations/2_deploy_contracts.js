@@ -153,6 +153,7 @@ module.exports = async function (deployer) {
   console.log("Deploying on the " + networkType + " networkType");
   console.log("*******************************");
   console.log('"' + networkType + '": {');
+  console.log(' "Marketplace": ' + '"' + marketplace.address + '",');
   console.log(' "Account": ' + '"' + account.address + '",');
   console.log(' "FT": ' + '"' + ERC20Address + '",');
   console.log(' "FTProxy": ' + '"' + ERC20ProxyAddress + '",');
