@@ -1,0 +1,5 @@
+{
+  "compilerType": "solcjs",
+  "sourceDirectory": "./ethereum",
+  "outputDirectory": "./build"
+}
