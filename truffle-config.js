@@ -23,11 +23,11 @@ module.exports = {
       network_id: "1337",
     },
     testnetpolygon: {
-      provider: () => new HDWalletProvider(process.env.testnetpolygon, `https://rpc-mumbai.matic.today`),
+      provider: () => new HDWalletProvider(process.env.testnetpolygon, `https://matic-mumbai.chainstacklabs.com`),
       network_id: 80001,
       confirmations: 1,
-      timeoutBlocks: 500,
-      networkCheckTimeout: 20000,
+      timeoutBlocks: 4500,
+      networkCheckTimeout: 320000,
       skipDryRun: true
     },
     mainnet: {
@@ -45,10 +45,10 @@ module.exports = {
       networkCheckTimeout: 10000,
     },
     polygon: {
-      provider: () => new HDWalletProvider(process.env.polygon, `https://rpc-mainnet.polygon.network`),
+      provider: () => new HDWalletProvider(process.env.polygon, `https://polygon-rpc.com`),
       network_id: 137,
       confirmations: 2,
-      timeoutBlocks: 200,
+      timeoutBlocks: 500,
       networkCheckTimeout: 10000,
       skipDryRun: false
     }
@@ -62,13 +62,17 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "^0.6.2",
+      version: "0.8.7",
       settings: {
         optimizer: {
           enabled: true,
-          runs: 1500
+          runs: 15000
         }
       }
     }
+  },
+  plugins: ['truffle-plugin-verify'],
+  api_keys: {
+    polygonscan: '16X7NBNHE9FF11P6K11HIIBBMF8KPVXW5J'
   }
 }

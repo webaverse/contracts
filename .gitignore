@@ -1,6 +1,3 @@
-.vscode
-.secret
-build/
-node_modules/
-.gitignore
+node_modules
+build
 .env
