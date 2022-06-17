@@ -183,6 +183,19 @@ contract WebaverseERC1155 is
         _tokenURIs[tokenId] = _uri;
     }
 
+    function getTokenIdsByOwner(address owner) public view returns (uint256[] memory, uint256) {
+        uint256[] memory ids = new uint256[](currentTokenId);
+        uint256 index = 0;
+        for (uint256 i = 1; i <= currentTokenId; i++) {
+            if(minters[i] == owner) 
+            {
+                ids[index] = i;
+                index++;
+            }
+        }
+        return (ids, index);
+    }
+
     /**
      * @notice Mints a single NFT with given parameters.
      * @param to The address on which the NFT will be minted.
@@ -198,6 +211,7 @@ contract WebaverseERC1155 is
         setTokenURI(tokenId, _uri);
         _incrementTokenId();
         _tokenBalances[tokenId] = balance;
+        minters[tokenId] = to;
     }
 
     /**
@@ -221,6 +235,7 @@ contract WebaverseERC1155 is
             uint256 tokenId = getNextTokenId();
             ids[i] = tokenId;
             setTokenURI(ids[i], uris[i]);
+            minters[tokenId] = to;
         }
         _mintBatch(to, ids, balances, data);
     }

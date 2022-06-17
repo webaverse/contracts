@@ -1,3 +1,5 @@
+const { deployProxy } = require('@openzeppelin/truffle-upgrades');
+
 const ERC20 = artifacts.require("WebaverseERC20");
 const ERC1155 = artifacts.require("WebaverseERC1155");
 const Webaverse = artifacts.require("Webaverse");
@@ -12,7 +14,6 @@ const ERC20MarketCap = "2147483648000000000000000000";
 // NFTs
 const ERC1155TokenContractName = "WebaverseERC1155";
 const ERC1155TokenContractSymbol = "ASSET";
-// const tokenBaseUri = "https://tokens.webaverse.com/";
 const tokenBaseUri = "https://ipfs.webaverse.com/";
 // const mintFee = 10; // mintFee !=0 in webaverse sidechain 
 const mintFee = 0; // minFee = 0 in Polygon and Polygon testchain: mumbai.
@@ -66,18 +67,15 @@ module.exports = async function (deployer) {
 
   console.log("Deploying on the " + networkType + " networkType");
 //////////////////////////// ERC20 ////////////////////////////
-  await deployer.deploy(ERC20, ERC20ContractName, ERC20Symbol, ERC20MarketCap);
-  let erc20 = await ERC20.deployed();
+  let erc20 = await deployProxy(ERC20, [ERC20ContractName, ERC20Symbol, ERC20MarketCap], { deployer });
   const ERC20Address = erc20.address;
   
   console.log("ERC20 address is " + ERC20Address);
 /////////////////////////// ERC1155 //////////////////////////
-  await deployer.deploy(ERC1155, ERC1155TokenContractName, ERC1155TokenContractSymbol, "")
-  let erc1155 = await ERC1155.deployed()
+  let erc1155 = await deployProxy(ERC1155, [ERC1155TokenContractName, ERC1155TokenContractSymbol, "tokenBaseUri", "0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB"], { deployer });
   const ERC1155Address = erc1155.address;
 ////////////////////////////// webaverse /////////////////////////////////
-await deployer.deploy(Webaverse, ERC1155Address, ERC20Address, 0, "0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB")
-let webaverse = await Webaverse.deployed()
+  let webaverse = await deployProxy(Webaverse, [ERC1155Address, ERC20Address, 0, "0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB"], { deployer })
 const WebaverseAddress = webaverse.address;
 //////////////////////////////////////////////////////////////////////////
 

@@ -12,9 +12,12 @@ contract WebaverseVoucher is EIP712Upgradeable {
     // mapping to store the bunred nonces for the signers to prevent replay attacks
     mapping(uint256 => bool) public burnedNonces;
 
-    function _webaverse_voucher_init() public initializer {
+    function _webaverse_voucher_init() public onlyInitializing {
         __EIP712_init(SIGNING_DOMAIN, SIGNATURE_VERSION);
     }
+    // function _webaverse_voucher_init() public initializer {
+    //     __EIP712_init(SIGNING_DOMAIN, SIGNATURE_VERSION);
+    // }
 
     /// @dev Represents a schema to claim an NFT, which has already been minted on blockchain. A signed voucher can be redeemed for a real NFT using the claim function.
     struct NFTVoucher {
