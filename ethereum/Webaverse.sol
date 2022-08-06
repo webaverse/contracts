@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./WebaverseERC1155.sol";
 import "./WebaverseERC20.sol";
 
-contract Webaverse is OwnableUpgradeable {
+contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
     WebaverseERC1155 private _nftContract;
     WebaverseERC20 private _silkContract;
     uint256 private _mintFee; // ERC20 fee to mint ERC721
@@ -115,6 +115,43 @@ contract Webaverse is OwnableUpgradeable {
             );
         }
         _nftContract.mint(to, balance, uri, data);
+    }
+
+    /**
+     * @notice Claims(Mints) the a single NFT with given parameters.
+     * @param to The address on which the NFT will be minted(claimed).
+     * @param data The data to store when claim.
+     * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
+     **/
+    function claim_NFT(
+        address to,
+        bytes memory data,
+        NFTVoucher calldata voucher
+    ) public {
+        if (mintFee() != 0) {
+            require(
+                _silkContract.transferFrom(
+                    msg.sender,
+                    treasuryAddress(),
+                    mintFee()
+                ),
+                "Webaverse: Mint transfer failed"
+            );
+        }
+        _nftContract.claim(to, data, voucher);
+    }
+
+    /**
+     * @notice Claims(Mints) the a FT with given parameters.
+     * @param to The address on which the FT will be minted(claimed).
+     * @param data The data to store when claim.
+     * @param voucher A signed NFTVoucher(FTVoucher) that describes the FT to be redeemed.
+     **/
+    function claim_FT(
+        address to,
+        NFTVoucher calldata voucher
+    ) public {
+        _silkContract.claim(to, voucher);
     }
 
     /**

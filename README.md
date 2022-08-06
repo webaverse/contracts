@@ -2,8 +2,6 @@
 
 Webaverse contracts.
 
-Audit: https://github.com/webaverse/audit
-
 # Setup and Installation
 
 First, copy .env.default and rename it to .env, then configure it for the network you want to deploy to.
@@ -11,6 +9,7 @@ First, copy .env.default and rename it to .env, then configure it for the networ
 ```
 npm install
 npm run deploy-<network> // i.e. npm run deploy-polygon
+npm run deploy-verify // verify deployed smart contracts
 ```
 Consult package.json for more options
 
@@ -86,137 +85,36 @@ It is suggested that you start with the polygon/matic network and make sure your
 Information about the Webaverse contracts is provided below, larger for the convenience of our development team.
 
 # mainnet
+Webaverse
+https://polygonscan.com/address/0x2C50E626bFF88845ec2b150f0C044995AC101e87#code
 
-## Account
-// nothing
-## FT
-SILK, SILK, 2147483648000000000000000000
-## FTProxy
-${FT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 1
-## NFT
-ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
-${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 2
-## Trade
-${FT}, ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 3
+WebaverseERC20
+https://polygonscan.com/address/0x5d4043C9b67627F57A36373210E03134681230fd#code
 
-# mainnetsidechain
-
-## Account
-// nothing
-## FT
-SILK, SILK, 2147483648000000000000000000
-## FTProxy
-${FT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 4
-## NFT
-ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68, false, true
-## NFTProxy
-${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 5
-## Trade
-${FT}, ${NFT}, 0x6a93d2daf3b017c77d433628e690ddee0d561960
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0x6a93d2daf3b017c77d433628e690ddee0d561960, 6
-
-# testnet / rinkeby
-
-## Account
-// nothing
-## FT
-SILK, SILK, 2147483648000000000000000000
-## FTProxy
-${FT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 1
-## NFT
-ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
-${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 2
-## Trade
-${FT}, ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 3
-
-# testnetsidechain
-
-## Account
-// nothing
-## FT
-SILK, SILK, 2147483648000000000000000000
-## FTProxy
-${FT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 4
-## NFT
-ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 10, 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68, false, true
-## NFTProxy
-${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 5
-## Trade
-${FT}, ${NFT}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4, 6
-
-# polygon
-
-## Account
-// nothing
-## FT
-SILK, SILK, 2147483648000000000000000000
-## FTProxy
-${FT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 1
-## NFT
-ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
-${NFT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 2
-## Trade
-${FT}, ${NFT}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7, 3
-
-# testpolygon
-
-## Account
-// nothing
-## FT
-SILK, SILK, 2147483648000000000000000000
-## FTProxy
-${FT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 4
-## NFT
-ASSET, ASSET, "https://tokens.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, false, false
-## NFTProxy
-${NFT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 5
-## Trade
-${FT}, ${NFT}, 0xD2e62C19d31A987870f1582163A99702E3628D5E
-## LAND
-LAND, LAND, "https://land.webaverse.com/", ${FT}, 0, 0x000000000000000000000000000000000000dEaD, true, false
-## LANDProxy
-${LAND}, 0xD2e62C19d31A987870f1582163A99702E3628D5E, 6
+WebaverseERC1155
+https://polygonscan.com/address/0x6281a08fe28a733d2A906dC851878D9786F72F21#code
 
 # OpenSea links
 
 ## mainnet
-https://opensea.io/webaverse
-
+```bash
+https://opensea.io/webaverse 
+(https://opensea.io/contractaddress)
+```
 ## testnet (rinkeby)
+```bash
 https://testnets.opensea.io/get-listed/step-two
-
+```
 # Addressess used
 
 burn: 0x000000000000000000000000000000000000dEaD
 
-mainnet signer: 0x6a93d2daf3b017c77d433628e690ddee0d561960
+mainnet signer: 0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB
 
-testnet signer: 0xfa80e7480e9c42a9241e16d6c1e7518c1b1757e4
+testnet signer: 0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB
 
-polygon signer: 0x5d4e8c60b51a7e5941f10d67090026e1877d15d7
+polygon signer: 0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB
 
-testnetpolygon signer: 0xD2e62C19d31A987870f1582163A99702E3628D5E
+testnetpolygon signer: 0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB
 
-treasury: 0xd459de6c25f61ed5dcec66468dab39fc70c0ff68
+treasury: 0xB565D3A7Bcf568f231726585e0b84f9E2a3722dB

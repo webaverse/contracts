@@ -3,6 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./WebaverseVoucher.sol";
 
 contract WebaverseERC1155 is
@@ -10,6 +11,8 @@ contract WebaverseERC1155 is
     WebaverseVoucher,
     OwnableUpgradeable
 {
+    using ECDSA for bytes32;
+
     string private _name;
     string private _symbol;
     mapping(uint256 => string) private _tokenURIs;
@@ -20,6 +23,7 @@ contract WebaverseERC1155 is
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping(uint256 => attribute[]) internal tokenIdToAttributes; // map of token id to attributes (additional attributes) key-value store
     mapping(uint256 => address) internal minters; // map of tokens to minters
+    mapping(uint256 => bool) public serverVoucher; // official flag
 
     struct attribute {
         string trait_type;
@@ -305,32 +309,30 @@ contract WebaverseERC1155 is
     /**
      * @notice Redeems an NFTVoucher for an actual NFT, authorized by the owner.
      * @param claimer The address of the account which will receive the NFT upon success.
+     * @param data The data to store.
      * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
      * @dev Verification through ECDSA signature of 'typed' data.
      * @dev Voucher must contain valid signature, nonce, and expiry.
      **/
-    function claim(address claimer, NFTVoucher calldata voucher)
+    function claim(address claimer, bytes memory data, NFTVoucher calldata voucher)
         public
         virtual
-        returns (uint256)
+        onlyMinter
     {
         // make sure signature is valid and get the address of the signer
         address signer = verifyVoucher(voucher);
 
-        require(
-            balanceOf(signer, voucher.tokenId) != 0,
-            "WBVRS: Authorization failed: Invalid signature"
-        );
+        require(owner() == signer, "Wrong signature!");
 
-        // transfer the token to the claimer
-        _safeTransferFrom(
-            signer,
-            claimer,
-            voucher.tokenId,
-            voucher.balance,
-            "0x01"
-        );
-        return voucher.tokenId;
+        uint256 tokenId = getNextTokenId();
+        _mint(claimer, tokenId, voucher.balance, data);
+        serverVoucher[tokenId] = true;
+
+        // setURI with metadatahash of verified voucher
+        setTokenURI(tokenId, voucher.metadatahash);
+        _incrementTokenId();
+        _tokenBalances[tokenId] = voucher.balance;
+        minters[tokenId] = claimer;
     }
 
     /**
