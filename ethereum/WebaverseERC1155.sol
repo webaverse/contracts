@@ -199,7 +199,7 @@ contract WebaverseERC1155 is
         return (ids, index);
     }
 
-    function getTokenAttr(uint256 tokenId) public view returns (uint256[] memory, uint256) {
+    function getTokenAttr(uint256 tokenId) public view returns (string memory, string memory, string memory) {
         string memory url = _tokenURIs[tokenId];
         string memory tokenName = getAttribute(tokenId, "name");
         string memory tokenLevel = getAttribute(tokenId, "level");
