@@ -246,12 +246,14 @@ contract WebaverseERC1155 is
     /**
      * @notice Redeems an NFTVoucher for an actual NFT, authorized by the owner.
      * @param to The address of the account which will receive the NFT upon success.
+     * @param name The name to store.
+     * @param level The level to store.
      * @param data The data to store.
      * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
      * @dev Verification through ECDSA signature of 'typed' data.
      * @dev Voucher must contain valid signature, nonce, and expiry.
      **/
-    function mintServerDrop(address to, string memory name, string memory level, bytes memory data, NFTVoucher calldata voucher)
+    function mintServerDrop(address claimer, string memory name, string memory level, bytes memory data, NFTVoucher calldata voucher)
         public
         virtual
         onlyMinter
