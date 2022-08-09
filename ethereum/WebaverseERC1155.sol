@@ -201,10 +201,10 @@ contract WebaverseERC1155 is
 
     function getTokenAttr(uint256 tokenId) public view returns (uint256[] memory, uint256) {
         string memory url = _tokenURIs[tokenId];
-        string memory name = getAttribute(tokenId, "name");
-        string memory level = getAttribute(tokenId, "level");
+        string memory tokenName = getAttribute(tokenId, "name");
+        string memory tokenLevel = getAttribute(tokenId, "level");
         
-        return (url, name, level);
+        return (url, tokenName, tokenLevel);
     }
 
     /**
@@ -253,15 +253,15 @@ contract WebaverseERC1155 is
 
     /**
      * @notice Redeems an NFTVoucher for an actual NFT, authorized by the owner.
-     * @param to The address of the account which will receive the NFT upon success.
-     * @param name The name to store.
-     * @param level The level to store.
+     * @param claimer The address of the account which will receive the NFT upon success.
+     * @param dropName The name to store.
+     * @param dropLevel The level to store.
      * @param data The data to store.
      * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
      * @dev Verification through ECDSA signature of 'typed' data.
      * @dev Voucher must contain valid signature, nonce, and expiry.
      **/
-    function mintServerDrop(address claimer, string memory name, string memory level, bytes memory data, NFTVoucher calldata voucher)
+    function mintServerDrop(address claimer, string memory dropName, string memory dropLevel, bytes memory data, NFTVoucher calldata voucher)
         public
         virtual
         onlyMinter
@@ -276,8 +276,8 @@ contract WebaverseERC1155 is
 
         // setURI with metadataurl of verified voucher
         setTokenURI(tokenId, voucher.metadataurl);
-        setAttribute(tokenId, "name", name, "");
-        setAttribute(tokenId, "level", level, "");
+        setAttribute(tokenId, "name", dropName, "");
+        setAttribute(tokenId, "level", dropLevel, "");
         _incrementTokenId();
         _tokenBalances[tokenId] = voucher.balance;
         minters[tokenId] = claimer;
