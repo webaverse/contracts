@@ -199,6 +199,14 @@ contract WebaverseERC1155 is
         return (ids, index);
     }
 
+    function getTokenAttr(uint256 tokenId) public view returns (uint256[] memory, uint256) {
+        string memory url = _tokenURIs[tokenId];
+        string memory name = getAttribute(tokenId, "name");
+        string memory level = getAttribute(tokenId, "level");
+        
+        return (url, name, level);
+    }
+
     /**
      * @notice Mints a single NFT with given parameters.
      * @param to The address on which the NFT will be minted.
