@@ -154,6 +154,34 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
     }
 
     /**
+     * @notice Claims(Mints) the a single Server Drop NFT with given parameters.
+     * @param to The address on which the NFT will be minted(claimed).
+     * @param data The data to store when claim.
+     * @param name The name to store when claim.
+     * @param level The level to store when claim.
+     * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
+     **/
+    function claimServerDrop(
+        address to,
+        string memory name,
+        string memory level,
+        bytes memory data,
+        NFTVoucher calldata voucher
+    ) public {
+        if (mintFee() != 0) {
+            require(
+                _silkContract.transferFrom(
+                    msg.sender,
+                    treasuryAddress(),
+                    mintFee()
+                ),
+                "Webaverse: Mint transfer failed"
+            );
+        }
+        _nftContract.mintServerDrop(to, name, level, data, voucher);
+    }
+
+    /**
      * @notice Mints the a single NFT with given parameters.
      * @param tokenId The id of the token.
      * @param trait_type Name of the attribute (as per opensea metadata standard).

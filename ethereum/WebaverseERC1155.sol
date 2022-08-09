@@ -23,7 +23,6 @@ contract WebaverseERC1155 is
     bool internal isPublicallyMintable; // whether anyone can mint tokens in this copy of the contract
     mapping(uint256 => attribute[]) internal tokenIdToAttributes; // map of token id to attributes (additional attributes) key-value store
     mapping(uint256 => address) internal minters; // map of tokens to minters
-    mapping(uint256 => bool) public serverVoucher; // official flag
 
     struct attribute {
         string trait_type;
@@ -245,6 +244,36 @@ contract WebaverseERC1155 is
     }
 
     /**
+     * @notice Redeems an NFTVoucher for an actual NFT, authorized by the owner.
+     * @param to The address of the account which will receive the NFT upon success.
+     * @param data The data to store.
+     * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
+     * @dev Verification through ECDSA signature of 'typed' data.
+     * @dev Voucher must contain valid signature, nonce, and expiry.
+     **/
+    function mintServerDrop(address to, string memory name, string memory level, bytes memory data, NFTVoucher calldata voucher)
+        public
+        virtual
+        onlyMinter
+    {
+        // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        require(owner() == signer, "Wrong signature!");
+
+        uint256 tokenId = getNextTokenId();
+        _mint(claimer, tokenId, voucher.balance, data);
+
+        // setURI with metadataurl of verified voucher
+        setTokenURI(tokenId, voucher.metadataurl);
+        setAttribute(tokenId, "name", name, "");
+        setAttribute(tokenId, "level", level, "");
+        _incrementTokenId();
+        _tokenBalances[tokenId] = voucher.balance;
+        minters[tokenId] = claimer;
+    }
+
+    /**
      * @dev Get attributes for the token. attribute is a key-value store that can be set by owners and collaborators
      * @param tokenId Token id to query for attribute
      * @param trait_type Key to query for a value
@@ -326,10 +355,9 @@ contract WebaverseERC1155 is
 
         uint256 tokenId = getNextTokenId();
         _mint(claimer, tokenId, voucher.balance, data);
-        serverVoucher[tokenId] = true;
 
-        // setURI with metadatahash of verified voucher
-        setTokenURI(tokenId, voucher.metadatahash);
+        // setURI with metadataurl of verified voucher
+        setTokenURI(tokenId, voucher.metadataurl);
         _incrementTokenId();
         _tokenBalances[tokenId] = voucher.balance;
         minters[tokenId] = claimer;
