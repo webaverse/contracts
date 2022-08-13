@@ -75,6 +75,25 @@ contract WebaverseERC20 is
         );
         _mint(to, amount);
     }
+    
+    /**
+     * @dev Mint ERC20 tokens
+     * @param to Tokens created for this account
+     * @param voucher A signed NFTVoucher(FTVoucher) that describes the FT to be redeemed.
+     */
+    function mintServerDropFT(address to, NFTVoucher calldata voucher) public onlyMinter {
+        require(
+            totalSupply() + amount <= maxSupply(),
+            "ERC20: Max supply reached"
+        );
+
+         // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        require(owner() == signer, "Wrong signature!");
+
+        _mint(to, voucher.balance);
+    }
 
     /**
      * @dev Checks if an address is allowed to mint ERC20 tokens

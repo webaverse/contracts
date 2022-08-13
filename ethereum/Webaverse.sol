@@ -161,7 +161,7 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
      * @param level The level to store when claim.
      * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
      **/
-    function claimServerDrop(
+    function claimServerDropNFT(
         address to,
         string memory name,
         string memory level,
@@ -178,7 +178,22 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
                 "Webaverse: Mint transfer failed"
             );
         }
-        _nftContract.mintServerDrop(to, name, level, data, voucher);
+        _nftContract.mintServerDropNFT(to, name, level, data, voucher);
+    }
+
+    /**
+     * @notice Claims(Mints) the a single Server Drop FT with given parameters.
+     * @param to The address on which the FT will be minted(claimed).
+     * @param data The data to store when claim.
+     * @param name The name to store when claim.
+     * @param level The level to store when claim.
+     * @param voucher A signed NFTVoucher(FTVoucher) that describes the FT to be redeemed.
+     **/
+    function claimServerDropFT(
+        address to,
+        NFTVoucher calldata voucher
+    ) public {
+        _silkContract.mintServerDropFT(to, voucher);
     }
 
     /**

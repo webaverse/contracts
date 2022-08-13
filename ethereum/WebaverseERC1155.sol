@@ -261,7 +261,7 @@ contract WebaverseERC1155 is
      * @dev Verification through ECDSA signature of 'typed' data.
      * @dev Voucher must contain valid signature, nonce, and expiry.
      **/
-    function mintServerDrop(address claimer, string memory dropName, string memory dropLevel, bytes memory data, NFTVoucher calldata voucher)
+    function mintServerDropNFT(address claimer, string memory dropName, string memory dropLevel, bytes memory data, NFTVoucher calldata voucher)
         public
         virtual
         onlyMinter
