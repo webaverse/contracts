@@ -361,16 +361,19 @@ contract WebaverseERC1155 is
         // make sure signature is valid and get the address of the signer
         address signer = verifyVoucher(voucher);
 
-        require(owner() == signer, "Wrong signature!");
+        require(
+            balanceOf(signer, voucher.tokenId) != 0,
+            "WBVRS: Authorization failed: Invalid signature"
+        );
 
-        uint256 tokenId = getNextTokenId();
-        _mint(claimer, tokenId, voucher.balance, data);
-
-        // setURI with metadataurl of verified voucher
-        setTokenURI(tokenId, voucher.metadataurl);
-        _incrementTokenId();
-        _tokenBalances[tokenId] = voucher.balance;
-        minters[tokenId] = claimer;
+        // transfer the token to the claimer
+        _safeTransferFrom(
+            signer,
+            claimer,
+            voucher.tokenId,
+            voucher.balance,
+            "0x01"
+        );
     }
 
     /**

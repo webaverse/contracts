@@ -17,6 +17,9 @@ contract WebaverseERC20 is
     // Max supply of tokens
     uint256 private _maxSupply;
 
+    // url of tokens
+    string private _tokenuri;
+
     // Event occuring when a token is redeemed by a user in the webaverse world for the native smart contract
     event Claim(address signer, address claimer, uint256 balance);
 
