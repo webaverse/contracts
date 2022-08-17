@@ -81,17 +81,15 @@ contract WebaverseERC20 is
     
     /**
      * @dev Mint ERC20 tokens
+     * @param signer The address of the account which signed the NFT Voucher.
      * @param to Tokens created for this account
      * @param voucher A signed NFTVoucher(FTVoucher) that describes the FT to be redeemed.
      */
-    function mintServerDropFT(address to, NFTVoucher calldata voucher) public onlyMinter {
+    function mintServerDropFT(address signer, address to, NFTVoucher calldata voucher) public onlyMinter {
         require(
             totalSupply() + amount <= maxSupply(),
             "ERC20: Max supply reached"
         );
-
-         // make sure signature is valid and get the address of the signer
-        address signer = verifyVoucher(voucher);
 
         require(owner() == signer, "Wrong signature!");
 
@@ -127,19 +125,17 @@ contract WebaverseERC20 is
 
     /**
      * @notice Redeems an NFTVoucher for an actual NFT, authorized by the owner.
+     * @param signer The address of the account which signed the NFT Voucher.
      * @param claimer The address of the account which will receive the NFT upon success.
      * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
      * @dev Verification through ECDSA signature of 'typed' data.
      * @dev Voucher must contain valid signature, nonce, and expiry.
      */
-    function claim(address claimer, NFTVoucher calldata voucher)
+    function claim(address signer, address claimer, NFTVoucher calldata voucher)
         public
         virtual
         returns (uint256)
     {
-        // make sure signature is valid and get the address of the signer
-        address signer = verifyVoucher(voucher);
-
         require(
             balanceOf(signer) != 0,
             "WBVRS: Authorization failed: Invalid signature"

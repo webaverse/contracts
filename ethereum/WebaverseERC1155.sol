@@ -253,6 +253,7 @@ contract WebaverseERC1155 is
 
     /**
      * @notice Redeems an NFTVoucher for an actual NFT, authorized by the owner.
+     * @param signer The address of the account which signed the NFT Voucher.
      * @param claimer The address of the account which will receive the NFT upon success.
      * @param dropName The name to store.
      * @param dropLevel The level to store.
@@ -261,14 +262,11 @@ contract WebaverseERC1155 is
      * @dev Verification through ECDSA signature of 'typed' data.
      * @dev Voucher must contain valid signature, nonce, and expiry.
      **/
-    function mintServerDropNFT(address claimer, string memory dropName, string memory dropLevel, bytes memory data, NFTVoucher calldata voucher)
+    function mintServerDropNFT(address signer, address claimer, string memory dropName, string memory dropLevel, bytes memory data, NFTVoucher calldata voucher)
         public
         virtual
         onlyMinter
     {
-        // make sure signature is valid and get the address of the signer
-        address signer = verifyVoucher(voucher);
-
         require(owner() == signer, "Wrong signature!");
 
         uint256 tokenId = getNextTokenId();
@@ -347,25 +345,32 @@ contract WebaverseERC1155 is
 
     /**
      * @notice Redeems an NFTVoucher for an actual NFT, authorized by the owner.
+     * @param signer The address of the account which signed the NFT Voucher.
      * @param claimer The address of the account which will receive the NFT upon success.
      * @param data The data to store.
      * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
      * @dev Verification through ECDSA signature of 'typed' data.
      * @dev Voucher must contain valid signature, nonce, and expiry.
      **/
-    function claim(address claimer, bytes memory data, NFTVoucher calldata voucher)
+    function claim(address signer, address claimer, bytes memory data, NFTVoucher calldata voucher)
         public
         virtual
         onlyMinter
     {
         // make sure signature is valid and get the address of the signer
-        address signer = verifyVoucher(voucher);
+        // address signer = verifyVoucher(voucher);
 
         require(
             balanceOf(signer, voucher.tokenId) != 0,
             "WBVRS: Authorization failed: Invalid signature"
         );
 
+        require(
+            minters[voucher.tokenId] == signer,
+            "WBVRS: Authorization failed: Invalid signature"
+        );
+
+        minters[voucher.tokenId] = claimer;
         // transfer the token to the claimer
         _safeTransferFrom(
             signer,

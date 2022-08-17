@@ -11,6 +11,7 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
     WebaverseERC20 private _silkContract;
     uint256 private _mintFee; // ERC20 fee to mint ERC721
     address private _treasuryAddress;
+    using ECDSA for bytes32;
 
     /**
      * @dev Creates the Upgradeable Webaverse contract
@@ -128,6 +129,8 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
         bytes memory data,
         NFTVoucher calldata voucher
     ) public {
+        address signer = verifyVoucher(voucher);
+
         if (mintFee() != 0) {
             require(
                 _silkContract.transferFrom(
@@ -138,7 +141,7 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
                 "Webaverse: Mint transfer failed"
             );
         }
-        _nftContract.claim(to, data, voucher);
+        _nftContract.claim(signer, to, data, voucher);
     }
 
     /**
@@ -150,7 +153,10 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
         address to,
         NFTVoucher calldata voucher
     ) public {
-        _silkContract.claim(to, voucher);
+        // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        _silkContract.claim(signer, to, voucher);
     }
 
     /**
@@ -178,7 +184,11 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
                 "Webaverse: Mint transfer failed"
             );
         }
-        _nftContract.mintServerDropNFT(to, name, level, data, voucher);
+
+        // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        _nftContract.mintServerDropNFT(signer, to, name, level, data, voucher);
     }
 
     /**
@@ -193,7 +203,10 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
         address to,
         NFTVoucher calldata voucher
     ) public {
-        _silkContract.mintServerDropFT(to, voucher);
+        // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        _silkContract.mintServerDropFT(signer, to, voucher);
     }
 
     /**
