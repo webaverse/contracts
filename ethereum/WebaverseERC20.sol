@@ -87,7 +87,7 @@ contract WebaverseERC20 is
      */
     function mintServerDropFT(address signer, address to, NFTVoucher calldata voucher) public onlyMinter {
         require(
-            totalSupply() + amount <= maxSupply(),
+            totalSupply() + voucher.balance <= maxSupply(),
             "ERC20: Max supply reached"
         );
 

@@ -194,9 +194,6 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
     /**
      * @notice Claims(Mints) the a single Server Drop FT with given parameters.
      * @param to The address on which the FT will be minted(claimed).
-     * @param data The data to store when claim.
-     * @param name The name to store when claim.
-     * @param level The level to store when claim.
      * @param voucher A signed NFTVoucher(FTVoucher) that describes the FT to be redeemed.
      **/
     function claimServerDropFT(
