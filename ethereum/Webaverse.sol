@@ -27,6 +27,7 @@ contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
         address treasuryAddress_
     ) public initializer {
         __Ownable_init();
+        _webaverse_voucher_init();
         _nftContract = WebaverseERC1155(_nftAddress);
         _silkContract = WebaverseERC20(_silkAddress);
         _mintFee = mintFee_;
