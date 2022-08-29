@@ -64,8 +64,6 @@ contract WebaverseERC1155 is
         _allowedMinters[minter] = true;
     }
 
-    // constructor() ERC1155("") {}
-
     /**
      * @return Returns the name of the collection.
      */
