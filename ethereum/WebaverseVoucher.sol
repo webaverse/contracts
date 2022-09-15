@@ -23,6 +23,8 @@ contract WebaverseVoucher is EIP712Upgradeable {
     struct NFTVoucher {
         // The id of the token to be redeemed. Must be unique - if another token with this ID already exists, the claim function will revert.
         uint256 tokenId;
+        // The hash of metadata in the ipfs
+        string metadataurl;
         // In case of ERC20 and ERC1155 the balance should be greater than 1. For ERC721 it must be set to 1.
         uint256 balance;
         // The valid nonce value of the NFT creator, fetched through _nonces mapping.
@@ -73,9 +75,10 @@ contract WebaverseVoucher is EIP712Upgradeable {
                 keccak256(
                     abi.encode(
                         keccak256(
-                            "NFTVoucher(uint256 tokenId,uint256 balance,uint256 nonce,uint256 expiry)"
+                            "NFTVoucher(uint256 tokenId,string metadataurl,uint256 balance,uint256 nonce,uint256 expiry)"
                         ),
                         voucher.tokenId,
+                        keccak256(abi.encodePacked(voucher.metadataurl)),
                         voucher.balance,
                         voucher.nonce,
                         voucher.expiry
@@ -91,7 +94,7 @@ contract WebaverseVoucher is EIP712Upgradeable {
      * @return returns the address of the signer on succesful verification.
      **/
     function _verify(NFTVoucher calldata voucher)
-        internal
+        public
         view
         returns (address)
     {

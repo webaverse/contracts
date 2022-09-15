@@ -6,11 +6,12 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./WebaverseERC1155.sol";
 import "./WebaverseERC20.sol";
 
-contract Webaverse is OwnableUpgradeable {
+contract Webaverse is WebaverseVoucher, OwnableUpgradeable {
     WebaverseERC1155 private _nftContract;
     WebaverseERC20 private _silkContract;
     uint256 private _mintFee; // ERC20 fee to mint ERC721
     address private _treasuryAddress;
+    using ECDSA for bytes32;
 
     /**
      * @dev Creates the Upgradeable Webaverse contract
@@ -26,6 +27,7 @@ contract Webaverse is OwnableUpgradeable {
         address treasuryAddress_
     ) public initializer {
         __Ownable_init();
+        _webaverse_voucher_init();
         _nftContract = WebaverseERC1155(_nftAddress);
         _silkContract = WebaverseERC20(_silkAddress);
         _mintFee = mintFee_;
@@ -102,6 +104,7 @@ contract Webaverse is OwnableUpgradeable {
         address to,
         uint256 balance,
         string memory uri,
+        string memory name,
         bytes memory data
     ) public {
         if (mintFee() != 0) {
@@ -114,7 +117,95 @@ contract Webaverse is OwnableUpgradeable {
                 "Webaverse: Mint transfer failed"
             );
         }
-        _nftContract.mint(to, balance, uri, data);
+        _nftContract.mint(to, balance, uri, name, data);
+    }
+
+    /**
+     * @notice Claims(Mints) the a single NFT with given parameters.
+     * @param to The address on which the NFT will be minted(claimed).
+     * @param data The data to store when claim.
+     * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
+     **/
+    function claim_NFT(
+        address to,
+        bytes memory data,
+        NFTVoucher calldata voucher
+    ) public {
+        address signer = verifyVoucher(voucher);
+
+        if (mintFee() != 0) {
+            require(
+                _silkContract.transferFrom(
+                    msg.sender,
+                    treasuryAddress(),
+                    mintFee()
+                ),
+                "Webaverse: Mint transfer failed"
+            );
+        }
+        _nftContract.claim(signer, to, data, voucher);
+    }
+
+    /**
+     * @notice Claims(Mints) the a FT with given parameters.
+     * @param to The address on which the FT will be minted(claimed).
+     * @param voucher A signed NFTVoucher(FTVoucher) that describes the FT to be redeemed.
+     **/
+    function claim_FT(
+        address to,
+        NFTVoucher calldata voucher
+    ) public {
+        // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        _silkContract.claim(signer, to, voucher);
+    }
+
+    /**
+     * @notice Claims(Mints) the a single Server Drop NFT with given parameters.
+     * @param to The address on which the NFT will be minted(claimed).
+     * @param data The data to store when claim.
+     * @param name The name to store when claim.
+     * @param level The level to store when claim.
+     * @param voucher A signed NFTVoucher that describes the NFT to be redeemed.
+     **/
+    function claimServerDropNFT(
+        address to,
+        string memory name,
+        string memory level,
+        bytes memory data,
+        NFTVoucher calldata voucher
+    ) public {
+        if (mintFee() != 0) {
+            require(
+                _silkContract.transferFrom(
+                    msg.sender,
+                    treasuryAddress(),
+                    mintFee()
+                ),
+                "Webaverse: Mint transfer failed"
+            );
+        }
+
+        // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        _nftContract.mintServerDropNFT(signer, to, name, level, data, voucher);
+    }
+
+    /**
+     * @notice Claims(Mints) the a single Server Drop FT with given parameters.
+     * @param to The address on which the FT will be minted(claimed).
+     * @param voucher A signed NFTVoucher(FTVoucher) that describes the FT to be redeemed.
+     **/
+    function claimServerDropFT(
+        address to,
+        NFTVoucher calldata voucher
+    ) public {
+        // make sure signature is valid and get the address of the signer
+        address signer = verifyVoucher(voucher);
+
+        _silkContract.mintServerDropFT(signer, to, voucher);
     }
 
     /**
