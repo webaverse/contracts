@@ -213,11 +213,14 @@ contract WebaverseERC1155 is
         address to,
         uint256 balance,
         string memory _uri,
+        string memory _name,
         bytes memory data
     ) public onlyMinter {
         uint256 tokenId = getNextTokenId();
         _mint(to, tokenId, balance, data);
         setTokenURI(tokenId, _uri);
+        setAttribute(tokenId, "name", _name, "");
+        setAttribute(tokenId, "level", "1", "");
         _incrementTokenId();
         _tokenBalances[tokenId] = balance;
         minters[tokenId] = to;
